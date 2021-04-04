@@ -12,7 +12,7 @@ import { Text,
    
            
         } from 'react-native';
-import {Icon,Button} from 'native-base';        
+import {Icon,Button,Thumbnail} from 'native-base';        
 import { Header ,Image} from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
 
@@ -32,7 +32,14 @@ export default class RegisterForm extends Component {
         email_Error: '',
         phone_number_Error: '',
         ID_Error:'',
-        ProfilePic_Error:''
+        ProfilePic_Error:'',
+        NameOK:0,
+        IDOK:0,
+        EmailOK:0,
+        PassWordOK:0,
+        PhoneOK:0,
+        canAddUser:0,
+       
     }
     componentDidMount (){
       this.AddUser;
@@ -45,7 +52,7 @@ export default class RegisterForm extends Component {
       FullName:this.state.fullName,
       Credit:0
     }
-    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?', {
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar2/api/UserCredits?', {
       method: 'POST',
       body: JSON.stringify(UserCredits),
       headers: new Headers({
@@ -93,6 +100,7 @@ export default class RegisterForm extends Component {
       (error) => {
       console.log("err post=", error);
       });
+      this.props.navigation.navigate('Login');
    
   }
     onChangeText = (key, val) => {
@@ -101,9 +109,9 @@ export default class RegisterForm extends Component {
       validateName(){
         let rjx=/^[a-zA-Z]+$/;
         let isNameValid= rjx.test(this.state.fullName);
-        console.warn(isNameValid);
+        console.log("name is valid?: "+isNameValid);
         if(!isNameValid){
-          this.setState({fullName_Error:"Name should be letters from a-z or A-Z"});
+          this.setState({fullName_Error:"a-z או A-Z שם צריך להכיל אותיות מ א'-ת' או מ "});
         }
         else{
           this.setState({fullName_Error:""})
@@ -112,9 +120,9 @@ export default class RegisterForm extends Component {
       validateEmail(){
         let rjx=/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$/;
         let isEmailValid= rjx.test(this.state.email);
-        console.warn(isEmailValid);
+        console.log("email is valid?: "+isEmailValid);
         if(!isEmailValid){
-          this.setState({email_Error:"Format should be text@domain.com"});
+          this.setState({email_Error:"text@domain.com הפורמפט לכתובת מייל הוא "});
         }
         else{
           this.setState({email_Error:""})
@@ -123,9 +131,9 @@ export default class RegisterForm extends Component {
       validatePassword(){
         let rjx=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}/;
         let isPasswordValid= rjx.test(this.state.password);
-        console.warn(isPasswordValid);
+        console.log("passwordisValid?: "+isPasswordValid);
         if(!isPasswordValid){
-          this.setState({password_Error:"Password must be contain Minimum eight characters, at least one uppercase letter and at least one number"});
+          this.setState({password_Error:"סיסמא צריכה להכיל מינימום 8 אותיות לפחות אות קטנה אות גדולה ומספר באנגלית"});
         }
         else{
           this.setState({password_Error:""})
@@ -134,9 +142,9 @@ export default class RegisterForm extends Component {
       validatePhone(){
         let rjx=/[0-9]{10}/;
         let isPhoneValid= rjx.test(this.state.phone_number);
-        console.warn(isPhoneValid);
+        console.log("phone is valid?: "+isPhoneValid);
         if(!isPhoneValid){
-          this.setState({phone_number_Error:"phone number is 10 digits"});
+          this.setState({phone_number_Error:"מספר טלפון הוא בעל 10 ספרות"});
         }
         else{
           this.setState({phone_number_Error:""})
@@ -145,61 +153,95 @@ export default class RegisterForm extends Component {
       validateID(){
         let rjx=/[0-9]{9}/;
         let isIDValid= rjx.test(this.state.ID);
-        console.warn(isIDValid);
+        console.log("id is valid?: "+isIDValid);
         if(!isIDValid){
-          this.setState({ID_Error:"phone number is 9 digits"});
+          this.setState({ID_Error:"מספר מזהה הוא בעל 9 ספרות"});
         }
         else{
           this.setState({ID_Error:""})
         }
       }
-      validate =()=>{
-        let fullName_Error= "";
-        let password_Error= "";
-        let email_Error = "";
-        let phone_number_Error= "";
-        let ID_Error="";
-        let ProfilePic_Error="";
+      validateInPuts(){
+        console.log("validateInputs")
+      
         this.validateName();
         this.validateEmail();
         this.validatePassword();
         this.validatePhone();
         this.validateID();
-        if(ID_Error){
-          this.setState({ID_Error});
-          return false;
+         
+
+      }
+      validate =()=>{
+        console.log("------------------starting validate")
+        this.validateInPuts();
+        console.log("after iputs")
+        console.log(this.state)
+        // let fullName_Error= "";
+        // let password_Error= "";
+        // let email_Error = "";
+        // let phone_number_Error= "";
+        // let ID_Error="";
+        // let ProfilePic_Error="";
+        let OK=0
+        // this.validateName();
+        // this.validateEmail();
+        // this.validatePassword();
+        // this.validatePhone();
+        // this.validateID();
+        if(this.state.ID_Error===""){
+          this.setState({IDOK:1});
+          OK+=1;
+          // return false;
         }
-        if(phone_number_Error){
-          this.setState({phone_number_Error});
-          return false;
+        if(this.state.phone_number_Error===""){
+          this.setState({PhoneOK:1});
+          // return false;
+          OK+=1;
         }
-        if(email_Error){
-          this.setState({email_Error});
-          return false;
+        if(this.state.email_Error===""){
+          this.setState({EmailOK:1});
+          // return false;
+          OK+=1;
         }
-        if(fullName_Error){
-          this.setState({fullName_Error});
-          return false;
+        if(this.state.fullName_Error===""){
+          this.setState({NameOK:1});
+          // return false;
+          OK+=1;
         }
-        if(ProfilePic_Error){
-          this.setState({ProfilePic_Error});
-          return false;
+        // if(this.state.ProfilePic_Error===""){
+        //   this.setState({ProfilePic_Error});
+        //   return false;
+        // }
+        if(this.state.password_Error===""){
+          this.setState({PassWordOK:1});
+          // return false;
+          OK+=1;
         }
-        if(password_Error){
-          this.setState({password_Error});
-          return false;
+        if(OK===5){
+          this.setState({canAddUser:1});
+          return true;
         }
-        return true;
+      //  if(OK<5){
+      //     OK=0
+      //     this.setState({IDOK:0});
+      //     this.setState({PhoneOK:0});
+      //     this.setState({EmailOK:0});
+      //     this.setState({NameOK:0});
+      //     this.setState({PassWordOK:0});
+      //     return false
+      //   }
+        
       }
       signUp = async () => {
         const user={ Fullname:this.state.fullName,Password:this.state.password,EmailAddress:this.state.email,PhoneNum:this.state.phone_number ,UserId:this.state.ID , ProfilePic:this.state.ProfilePic} 
         try {
           // here place your signup logic
           const isValid= this.validate();
-          if(isValid===true){
+          if(isValid===true && this.state.canAddUser===1){
               this.AddUser();
-              alert(JSON.stringify(user));
-              this.props.navigation.navigate('Login');
+              
+              
 
           // console.log('user successfully signed up!: ', success)
           }
@@ -207,7 +249,7 @@ export default class RegisterForm extends Component {
         } catch (err) {
           console.log('error signing up:', err)
         }
-      { this.props.navigation.navigate('Register'); }
+      // { this.props.navigation.navigate('Register'); }
       }
       btnOpenGalery = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -225,11 +267,11 @@ export default class RegisterForm extends Component {
            <SafeAreaView>
          </SafeAreaView>
         <View>
-    <Text style={{textAlign:'center',fontSize:30}}>ברוך הבא ל JESTAPP</Text>
-    <Image
-      source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl97_NDIiRpKTDKaKSDtnGPZbLMRl-A8EWIw&usqp=CAU' }}
-      style={{ width: 100, height: 100, justifyContent: 'center',alignItems:'center',marginLeft:140 }}
-    />
+    <Text style={{ fontSize: 30, textAlign: 'center', fontWeight: 'bold', marginBottom: 30 }}>ברוך הבא ל JESTAPP</Text>
+    <Thumbnail source={{uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl97_NDIiRpKTDKaKSDtnGPZbLMRl-A8EWIw&usqp=CAU'}}
+          style={{ width: 90, height: 90, justifyContent: 'center',alignItems:'center',alignSelf:'center'}}
+          />     
+  
     </View>
             <View>
                 <View style={styles.container}>
@@ -303,15 +345,15 @@ export default class RegisterForm extends Component {
         onDateChange={(date) => {this.setState({birthdate: date}) }}
       />
         </View> */}
-        <View style={{ alignSelf: 'center', marginTop: 10 }}
+        <View style={{ alignSelf: 'center',marginBottom:20 }}
 >
-        <Button  onPress={this.btnOpenGalery.bind(this)} style={{ alignSelf: 'center', backgroundColor: '#A7D489', marginTop:10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  תמונת פרופיל </Text> 
+        <Button  onPress={this.btnOpenGalery.bind(this)} style={{ alignSelf: 'center', backgroundColor: '#A7D489',  borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  תמונת פרופיל </Text> 
         <Icon name="image" style={{ alignSelf: 'center',  }} />
         </Button>
 
         </View>
         <View>
-        <Button  onPress={this.signUp} style={{ alignSelf: 'center', backgroundColor: '#A7D489', marginTop:30, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}> הרשם עכשיו </Text> 
+        <Button  onPress={this.signUp} style={{ alignSelf: 'center', backgroundColor: '#A7D489', marginBottom:10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}> הרשם עכשיו </Text> 
         <Icon name="train" style={{ alignSelf: 'center',  }} />
         </Button>
          
@@ -333,7 +375,7 @@ const styles = StyleSheet.create({
       width: 300,
       height: 55,
       backgroundColor: '#A7D489',
-      margin: 10,
+      margin: 5,
       padding: 8,
       color: 'white',
       borderRadius: 14,
@@ -355,7 +397,7 @@ const styles = StyleSheet.create({
   },
   
     container: {
-      marginTop:50,
+      marginTop:10,
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center'
