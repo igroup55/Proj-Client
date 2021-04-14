@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import { List, Checkbox, Button } from 'react-native-paper';
-import { SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View } from 'react-native';
+import { Modal, SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -35,6 +35,8 @@ class CCDeliveryFeed1 extends React.Component {
     EstationLong: 0,
     canOpenLocker: 0,
     error: null,
+    AlertModal: '',
+    modalVisible: false
 
 
   }
@@ -46,6 +48,8 @@ class CCDeliveryFeed1 extends React.Component {
 
   async componentDidMount() {
     { this.getData() }
+
+
 
     let values = await AsyncStorage.multiGet(['StartStation', 'EndStation', 'SStationName', 'EStationName'])
     let locationValues = await AsyncStorage.multiGet(['SstationLat', 'SstationLong']);
@@ -68,6 +72,10 @@ class CCDeliveryFeed1 extends React.Component {
 
   }
 
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
+
   async getData() {
     try {
       jsonValue = await AsyncStorage.getItem('UserId')
@@ -76,7 +84,11 @@ class CCDeliveryFeed1 extends React.Component {
       this.setState({ UserDetail: UserDetail.UserId })
 
     } catch (e) {
-      alert('Error get Item')
+
+
+      this.setState({ AlertModal: 'Error get Item' });
+
+      { this.setModalVisible(true) }
       // error reading value
     }
   }
@@ -91,12 +103,15 @@ class CCDeliveryFeed1 extends React.Component {
     CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
     console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
-      alert("אתה נמצא בקרבת הלוקר !!");
+
+    
       this.setState({ canOpenLocker: 1 })
 
     }
     else {
-      alert("אינך נמצא בקרבת הלוקר !! ");
+
+      this.setState({ AlertModal: "אינך נמצא בקרבת הלוקר !! " });
+      { this.setModalVisible(true) }
 
     }
 
@@ -140,9 +155,11 @@ class CCDeliveryFeed1 extends React.Component {
 
   AddTDUser(weight) {
 
+    this.setState({ AlertModal: 'קטגוריה סומנה בהצלחה !! ' + ' לחץ - אני כאן - בעת ההגעה לתחנת רכבת' });
+
+    { this.setModalVisible(true) }
 
 
-    alert('קטגוריה סומנה בהצלחה !! ' + ' לחץ - אני כאן - בעת ההגעה לתחנת רכבת ')
 
 
 
@@ -221,22 +238,36 @@ class CCDeliveryFeed1 extends React.Component {
 
       if (weight === 3)
         if (this.state.PackagesList1.length === 0)
-          alert('No Packages Found')
+        {
+
+          this.setState({ AlertModal: "No Packages Found" });
+          { this.setModalVisible(true) }
+        }
         else { this.AddTDUser(weight) }
       if (weight === 6)
-        if (this.state.PackagesList2.length === 0)
-          alert('No Packages Found')
+        if (this.state.PackagesList2.length === 0){
+          this.setState({ AlertModal: "No Packages Found" });
+          { this.setModalVisible(true) }
+
+        }
+          
         else { this.AddTDUser(weight) }
       if (weight === 10)
         if (this.state.PackagesList3.length === 0)
-          alert('No Packages Found')
+        {
+          this.setState({ AlertModal: "No Packages Found" });
+          { this.setModalVisible(true) }
+        }
+          
         else { this.AddTDUser(weight) }
 
 
     }
     else {
-      alert('כבר התעניינת בקטגוריה')
 
+      this.setState({ AlertModal: 'כבר התעניינת בקטגוריה' });
+
+      { this.setModalVisible(true) }
 
     }
 
@@ -411,29 +442,27 @@ class CCDeliveryFeed1 extends React.Component {
     const response = await fetch(PackagesFoundUrl);
     const data = await response.json()
     console.log(data)
-   
+
     if (data.length !== 0) {
 
       if (IsInterested === 0) {
-
-        alert('אינך מתעניין בחבילה במסלול זה')
-
+        this.setState({ AlertModal: "אינך מתעניין בחבילה במסלול זה" });
+        { this.setModalVisible(true) }
       }
       else {
         this.isNearLocker();
         if (this.state.canOpenLocker === 1) {
-          
-          this.props.navigation.navigate('TDLockers')
-        }
-        else {
 
+          this.props.navigation.navigate('TDLockers')
         }
       }
 
     }
     else {
 
-      alert('אין חבילות במסלול שנבחר')
+      this.setState({ AlertModal: "אין חבילות במסלול שנבחר" });
+      { this.setModalVisible(true) }
+
     }
 
 
@@ -445,9 +474,30 @@ class CCDeliveryFeed1 extends React.Component {
 
   render() {
 
-
     return (
       <ScrollView>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              >
+                <Text style={styles.textStyle}>Hide Modal</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
         <List.Section title={this.state.SStationName + '    ---->   ' + this.state.EStationName} titleStyle={{ fontSize: 15, textAlign: 'center', }}  >
           <List.Accordion
             title=' חבילות עד 3 ק"ג'
@@ -532,7 +582,49 @@ const styles = ({
 
 
 
+  }, centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
   }
+
+
 
 });
 
