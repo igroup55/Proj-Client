@@ -1,13 +1,13 @@
 import React, { Component, useState } from 'react';
 import { CheckBox, Container, Header, Content, Form, Item, Input, Label, Picker, Footer, Right, Button, Icon } from 'native-base';
-import { SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Image } from 'react-native';
 import CheckBoxes from './CCCheckBox';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ReactDOM from "react-dom";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //עלות שריון לוקר
-const LockerCost= 25;
+const LockerCost = 25;
 //////////////////////////
 export default class CCSenderForm extends Component {
   constructor(props) {
@@ -17,8 +17,10 @@ export default class CCSenderForm extends Component {
       selected2: null,
       selected3: null,
       StationsList: [],
-      CustPNum: ' ',
-      CustName: ' ',
+      CustPNum: '',
+      Error_CustPNum: null,
+      CustName: '',
+      Error_CustName: null,
       SStationName: '',
       EStationName: '',
       PackageID: null,
@@ -26,7 +28,7 @@ export default class CCSenderForm extends Component {
       EEmptyLocker: null,
       UserId: null,
       Address: '',
-      UserCreditOBJ:[],
+      UserCreditOBJ: [],
 
     };
 
@@ -34,44 +36,28 @@ export default class CCSenderForm extends Component {
 
   async componentDidMount() {
 
-   { this.getData()}
-    //  fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations',{
-    //       method: 'GET',
-    //         headers: {
-    //              Accept: 'application/json, text/json, charset=UTF-8',
-    //              'Content-Type': 'application/json, text/json'
-    //        }
-    //       })
-    //       .then(response => response.json())
-    //      .then(data => {
-    //        this.setState({StationsList:data});
-    //      })
-    //      .catch(err => console.error(err));
-
-   
-    
-    
+    { this.getData() }
 
   };
-  async getStationsList(){
- //tar 2 stations צריך להחליף בסוף******************************
- const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
- const response = await fetch(apiStationsUrl);
- const data = await response.json()
+  async getStationsList() {
+    //tar 2 stations צריך להחליף בסוף******************************
+    const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
+    const response = await fetch(apiStationsUrl);
+    const data = await response.json()
 
- this.setState({ StationsList: data })
+    this.setState({ StationsList: data })
   }
- async getUserCredits(){
-//קבלת פרטי קרדיטים של משתמש
-     console.log("in usercredits before fetch")
-     console.log(this.state.UserId)
-   const UserID= this.state.UserId;
-    const apiUserCreditsUrl ='http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?UserID='+UserID;
+  async getUserCredits() {
+    //קבלת פרטי קרדיטים של משתמש
+
+
+    const UserID = this.state.UserId;
+    const apiUserCreditsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?UserID=' + UserID;
     const response2 = await fetch(apiUserCreditsUrl);
     const UCdata = await response2.json()
-    this.setState({UserCreditOBJ:UCdata,})
-    
-    console.log("in usercredits after fetch")
+    this.setState({ UserCreditOBJ: UCdata, })
+
+
 
   }
   onValueChange1 = (value) => {
@@ -168,10 +154,10 @@ export default class CCSenderForm extends Component {
 
       jsonValue != null ? UserDetails = JSON.parse(jsonValue) : null;
       this.setState({ UserId: UserDetails.UserId })
-     const UserId= UserDetails.UserId
+      const UserId = UserDetails.UserId
       this.getStationsList();
       this.getUserCredits();
-         
+
 
     } catch (e) {
       alert('Error get Item')
@@ -196,33 +182,33 @@ export default class CCSenderForm extends Component {
 
       if (stations.StationID === this.state.selected1) {
         this.storeData('StationName', stations.StationName)
-        this.storeData('stationLat',stations.Latitude)
-        this.storeData('stationLong',stations.Longitude)
+        this.storeData('stationLat', stations.Latitude)
+        this.storeData('stationLong', stations.Longitude)
       }
     })
 
   }
-///////////////עדכון טרנזקציות תשלום//////////////////
+  ///////////////עדכון טרנזקציות תשלום//////////////////
 
- UpdateSenderCredits(){
-  let FullName = this.state.UserCreditOBJ[0].FullName;
-  let selfCredit= this.state.UserCreditOBJ[0].Credit;
-  let UserId = this.state.UserId
-  let afterUpdate =Number(selfCredit)-LockerCost;
-  const UserCredits={
-    UserId:UserId,
-    FullName:FullName,
-    Credit:afterUpdate
-  }
-  const date= new Date();
-  const Transaction={
-    UserID1:this.state.UserId,
-    UserID2:1,
-    CreditAmount:LockerCost,
-    TransactionDate:date,
-  }
-  {/*לשים לב שהניתוב הוא ל tar 2 */}
-  fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Transaction', {
+  UpdateSenderCredits() {
+    let FullName = this.state.UserCreditOBJ[0].FullName;
+    let selfCredit = this.state.UserCreditOBJ[0].Credit;
+    let UserId = this.state.UserId
+    let afterUpdate = Number(selfCredit) - LockerCost;
+    const UserCredits = {
+      UserId: UserId,
+      FullName: FullName,
+      Credit: afterUpdate
+    }
+    const date = new Date();
+    const Transaction = {
+      UserID1: this.state.UserId,
+      UserID2: 1,
+      CreditAmount: LockerCost,
+      TransactionDate: date,
+    }
+    {/*לשים לב שהניתוב הוא ל tar 2 */ }
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Transaction', {
       method: 'POST',
       body: JSON.stringify(Transaction),
       headers: new Headers({
@@ -244,20 +230,92 @@ export default class CCSenderForm extends Component {
 
       )
 
-}
+  }
 
-////////////////////////////////////////////////////////
+  validate() {
+
+    { this.ValidateCust() }
+    { this.validatePnum() }
+
+    this.getCreditById();
+
+  }
+
+  ValidateCust() {
+    let rjx = /^[a-z\u0590-\u05fe]+$/;
+    let isNameValid = rjx.test(this.state.CustName);
+    console.log("name is valid?: " + isNameValid);
+    if (!isNameValid) {
+      this.setState({ Error_CustName: "שדה זה הינו חובה" })
+    }
+    else {
+      this.setState({ Error_CustName: "" })
+
+    }
+  }
+
+  validatePnum() {
+    let rjx = /[0-9]{10}/;
+    let isPhoneValid = rjx.test(this.state.CustPNum);
+    console.log("phone is valid?: " + isPhoneValid);
+    if (!isPhoneValid) {
+      this.setState({ Error_CustPNum: "שדה זה הינו חובה" })
+    }
+    else {
+      this.setState({ Error_CustPNum: "" })
+    }
+
+
+
+  }
+
+  async getCreditById() {
+
+
+
+
+    const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?UserID=' + this.state.UserId;
+    const response = await fetch(apiStationsUrl);
+    const data = await response.json()
+    this.setState({ UserCreditOBJ: data, })
+    console.log('Credit :' + data[0].Credit);
+    if (this.state.Error_CustName !== "שדה זה הינו חובה" && this.state.Error_CustPNum !== "שדה זה הינו חובה" )
+     if (data[0].Credit < 25) {
+        alert('אין לך מספיק קרדיטים ')
+        this.props.navigation.navigate('payments');
+      }
+      else {
+     
+        if (this.state.selected1 !== null && this.state.selected2 !== null) {
+
+          this.addPack()
+        }
+        else {
+          alert(' תחנת מוצא או יעד אינה תקינה ')
+        }
+
+      }
+
+    
+
+
+  }
+  ////////////////////////////////////////////////////////
   async addPack() {
+
+
 
     // ----------------------------------------------------------------------------------------------------------------
     // Search For empty lockers ( לוקרים פנויים )
     // ----------------------------------------------------------------------------------------------------------------
+
     let StartStation = this.state.selected1;
     const apiLockersUrl1 = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers?StationID=' + StartStation;
     const response1 = await fetch(apiLockersUrl1);
     const Start = await response1.json()
     this.setState({ SEmptyLocker: Start })
 
+    console.log('Start:' + Start)
 
 
 
@@ -267,123 +325,111 @@ export default class CCSenderForm extends Component {
     const End = await response.json()
 
     this.setState({ EEmptyLocker: End })
+    console.log('End :' + End)
+
+
+    if (this.state.selected1 !== this.state.selected2) {
+
+      if (this.state.SEmptyLocker.length !== 0 && this.state.SEmptyLocker.length !== 0) {
+
+
+        const package_data = {
+
+          StartStation: this.state.selected1,
+          EndStation: this.state.selected2,
+          Pweight: this.state.selected3,
+          UserId: this.state.UserId,
+          Status: 1
+
+        }
+
+
+        fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
+          method: 'POST',
+          body: JSON.stringify(package_data),
+          headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+          })
+        })
+          .then(res => {
+
+
+            return res.json()
+          })
+          .then(
+            (result) => {
+
+              this.setState({ PackageID: result })
+
+              this.AddCust()
+              this.UpdateLocker()
+              this.storeData('PackageID', result)
+              this.GetStationName()
+              this.storeData('SLockerID', this.state.SEmptyLocker[0]["LockerID"])
+              this.storeData('ELockerID', this.state.EEmptyLocker[0]["LockerID"])
+
+              this.UpdateSenderCredits();
+
+            },
+            (error) => {
+              console.log("err post=", error);
+            }).then(
 
 
 
-
-
-
-    if (this.state.EEmptyLocker !== null && this.state.SEmptyLocker !== null) {
-
-      const package_data = {
-
-        StartStation: this.state.selected1,
-        EndStation: this.state.selected2,
-        Pweight: this.state.selected3,
-        UserId: this.state.UserId,
-        Status: 1
+            );
 
 
       }
 
+      else {
 
-      fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
-        method: 'POST',
-        body: JSON.stringify(package_data),
-        headers: new Headers({
-          'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-        })
-      })
-        .then(res => {
+        alert('אין לוקרים פנויים כעת , נא לנסות מאוחר יותר');
 
+        //       ------------------------------------------------------------------------------------
+        // המשך לאפשרות העלאת המשלוח ושליחת הודעה קופצת לשולח בעת שמתפנה לוקר 
+        //       -----------------------------------------------------------------------------------
+        // const package_data = {
 
-          return res.json()
-        })
-        .then(
-          (result) => {
+        //   StartStation: this.state.selected1,
+        //   EndStation: this.state.selected2,
+        //   Pweight: this.state.selected3,
+        //   UserId: this.state.UserId,
+        //   Status: 0
+        // }
 
-            this.setState({ PackageID: result })
+        // fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
+        //   method: 'POST',
+        //   body: JSON.stringify(package_data),
+        //   headers: new Headers({
+        //     'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+        //   })
+        // })
+        //   .then(res => {
 
-            this.AddCust()
-            this.UpdateLocker()
-            this.storeData('PackageID', result)
-            this.GetStationName()
-            this.storeData('SLockerID', this.state.SEmptyLocker[0]["LockerID"])
-            this.storeData('ELockerID', this.state.EEmptyLocker[0]["LockerID"])
-            // /עדכון טרנזקצית תשלום
-               this.UpdateSenderCredits();
-            // ///
-            // this.props.navigation.navigate('CCLockers');
-          },
-          (error) => {
-            console.log("err post=", error);
-          }).then(
-              
+        //     return res.json()
+        //   })
+        //   .then(
+        //     (result) => {
 
+        //       this.setState({ PackageID: result })
 
-          );
+        //       this.AddCust()
+        //       this.props.navigation.navigate('CCLockers');
 
-
-
-
-
-      //  fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
-      //     method: 'POST',
-      //     body: JSON.stringify(package_data),
-      //     headers: new Headers({
-      //       'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-      //     })
-      //   }) 
-
-
-      // const apiLockersUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?UserID='+ this.state.UserId;
-      // const response = await fetch(apiLockersUrl);
-      // const ID = await response.json()
-      // this.setState({ PackageID: ID[0]["PackageId"]})
-
-
-
-
-
+        //     },
+        //     (error) => {
+        //       console.log("err post=", error);
+        //     }).then(
+        //      );
+      }
     }
 
     else {
+      alert('אי אפשר לבצע משלוח מתחנת מוצא ליעד זהים')
 
-      const package_data = {
-
-        StartStation: this.state.selected1,
-        EndStation: this.state.selected2,
-        Pweight: this.state.selected3,
-        UserId: this.state.UserId,
-        Status: 0
-
-
-      }
-
-      fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
-        method: 'POST',
-        body: JSON.stringify(package_data),
-        headers: new Headers({
-          'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-        })
-      })
-        .then(res => {
-
-          return res.json()
-        })
-        .then(
-          (result) => {
-
-            this.setState({ PackageID: result })
-
-            this.AddCust()
-            this.props.navigation.navigate('CCLockers');
-
-          },
-          (error) => {
-            console.log("err post=", error);
-          }).then(
-           );}}
+    }
+  }
 
   render() {
     let stations = this.state.StationsList.map((stations, key) => {
@@ -393,7 +439,7 @@ export default class CCSenderForm extends Component {
     return (
       <SafeAreaView>
         <ScrollView>
-          <View >
+          <View>
             <Header style={{ backgroundColor: 'green', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: 'green' }}> JestApp</Text></Header>
 
             <Form style={{ width: 390 }}>
@@ -410,9 +456,9 @@ export default class CCSenderForm extends Component {
                     placeholderIconColor="#007aff"
                     selectedValue={this.state.selected1}
                     onValueChange={this.onValueChange1.bind(this)}
-                   
+
                   >
-                    <Picker.Item label='בחר תחנת מוצא' value='None' />
+                    <Picker.Item label='בחר תחנת מוצא' value={null} />
                     {stations}
                   </Picker>
                 </Item>
@@ -432,7 +478,7 @@ export default class CCSenderForm extends Component {
                     selectedValue={this.state.selected2}
                     onValueChange={this.onValueChange2.bind(this)}
                   >
-                    <Picker.Item label="בחר תחנת יעד" value="key0" />
+                    <Picker.Item label="בחר תחנת יעד" value={null} />
                     {stations}
                   </Picker>
                 </Item>
@@ -450,10 +496,12 @@ export default class CCSenderForm extends Component {
                   placeholder="שם מלא"
                   returnKeyType='next'
                   keyboardType='default'
+
                   onChangeText={val => this.setState({ CustName: val })}
                 />
               </Item>
-         
+              <View><Text style={styles.FormErrorText}>{this.state.Error_CustName}</Text></View>
+
               <Item>
                 <Input style={styles.InputText}
                   placeholderTextColor="grey"
@@ -463,8 +511,16 @@ export default class CCSenderForm extends Component {
                   onChangeText={val => this.setState({ CustPNum: val })}
                 />
               </Item>
+              <View><Text style={styles.FormErrorText}>{this.state.Error_CustPNum}</Text></View>
               <View style={styles.section}>
-                <Icon name="line-weight" style={{ alignSelf: 'center', marginTop: 10 }} />
+                <Image
+
+
+                  source={{ uri: 'https://i.ibb.co/nrkbr12/icons8-weight-kg-24.png' }}
+                  style={{ width: 24, height: 24, alignSelf: 'center', marginTop: 10 }}
+                />
+
+
                 <Text style={styles.titles}> משקל חבילה </Text>
                 <Item picker style={styles.InputText}>
                   <Picker
@@ -473,7 +529,7 @@ export default class CCSenderForm extends Component {
                     placeholder="בחר משקל חבילה"
                     placeholderStyle={{ color: "#bfc6ea" }}
                     placeholderIconColor="#007aff"
-                    
+
                     selectedValue={this.state.selected3}
                     onValueChange={this.onValueChange3.bind(this)}
                   >
@@ -493,7 +549,7 @@ export default class CCSenderForm extends Component {
                   <Input />
                 </Item></View> */}
 
-              <Button onPress={() => { this.addPack() }} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  צור כרטיס משלוח  </Text></Button>
+              <Button onPress={() => { this.validate() }} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, marginBottom: 10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  צור כרטיס משלוח  </Text></Button>
 
             </Form>
           </View>
@@ -511,6 +567,11 @@ const styles = ({
     justifyContent: 'center',
 
   },
+  FormErrorText: {
+    fontSize: 12,
+    color: 'red'
+  },
+
   InputText: {
     textAlign: 'right',
     borderColor: 'green',

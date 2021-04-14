@@ -30,96 +30,115 @@ export default function App() {
         <Stack.Screen name="Login" component={CCLogin} options={{
           title: 'כניסה',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}}/>
+          }
+        }} />
         <Stack.Screen name="DeliveryFeed" component={CCDeliveryFeed1} options={{
           title: 'בחר קטגוריה של משקל',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}} />
+          }
+        }} />
         <Stack.Screen name="NewDelivery" component={CCSenderForm} options={{
           title: 'משלוח חדש',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}}/>
+          }
+        }} />
         <Stack.Screen name="Register" component={CCRegister} options={{
           title: 'הרשמה',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}}/>
+          }
+        }} />
         <Stack.Screen name="Home" component={CCHome} options={{
-          title:'מסך בית     ',
+          title: 'מסך בית     ',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}}/>
+          }
+        }} />
         <Stack.Screen name="HomeActivityList" component={HomeActivityList} />
         <Stack.Screen name="CCLockers" component={CCLockers} options={{
           title: '',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}}/>
+          }
+        }} />
         <Stack.Screen name="DeliveryExpress" component={CCDeliveryExpressFeed} />
         <Stack.Screen name="NewTrainRoute" component={CCTrainRouteSelection} />
         <Stack.Screen name="NewExpressRoute" component={CCExpressRouteSelection} />
         <Stack.Screen name="TrainSelection" component={CCTrainSelection} options={{
           title: 'בחר מסלול',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}} />
+          }
+        }} />
         <Stack.Screen name="TDLockers" component={CCTDLockers} options={{
           title: 'בחר קטגוריה של משקל',
           headerStyle: {
-          backgroundColor: 'green',
+            backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign:'center'
+            textAlign: 'center'
 
-          }}}/>
-          <Stack.Screen name="payments" component={CreditPay} />
+          }
+        }} />
+        <Stack.Screen name="payments" component={CreditPay} options={{
+          title: 'ארנק שלי',
+          headerStyle: {
+            backgroundColor: 'green',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center'
+
+          }
+        }} />
 
       </Stack.Navigator>
 

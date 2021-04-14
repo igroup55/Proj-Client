@@ -411,7 +411,7 @@ class CCDeliveryFeed1 extends React.Component {
     const response = await fetch(PackagesFoundUrl);
     const data = await response.json()
     console.log(data)
-    this.isNearLocker();
+   
     if (data.length !== 0) {
 
       if (IsInterested === 0) {
@@ -420,8 +420,9 @@ class CCDeliveryFeed1 extends React.Component {
 
       }
       else {
-
+        this.isNearLocker();
         if (this.state.canOpenLocker === 1) {
+          
           this.props.navigation.navigate('TDLockers')
         }
         else {

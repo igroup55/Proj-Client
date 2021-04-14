@@ -28,14 +28,20 @@ export default class Home extends Component {
   rightComponent={{ icon: 'home', color: '#fff' }}
     /> */}
         </View>
-        <View >
-     
+        <View style={{borderTopColor:'black',borderTopWidth:2 }} >
+         <View ><Text style={styles.ActivityHeader}> פעולות אחרונות </Text></View>
+    
+         <ScrollView>
+     <View style={{maxHeight:250}}>
+       
           <HomeActivityList  />
-
+          
+          </View>
+          </ScrollView>
           <Button
             title='הארנק שלי'
             onPress={() => { this.props.navigation.navigate('payments'); }}
-            buttonStyle={{width:100,alignSelf:'center',marginBottom:5,borderRadius:6,borderWidth:1.5,borderColor:'black'}}
+            buttonStyle={{width:100,alignSelf:'center',margin:10,borderRadius:6,borderWidth:1.5,borderColor:'black'}}
             titleStyle={{fontWeight:'bold',color:'black'}}/>
 
 
@@ -96,6 +102,16 @@ const styles = StyleSheet.create({
     backgroundColor:'green',
    
   
+
+  },
+  ActivityHeader:{
+textAlign:'center',
+fontSize:20,
+fontWeight:'bold',
+margin : 10,
+
+
+
 
   }
 });

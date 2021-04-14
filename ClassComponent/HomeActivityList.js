@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {StyleSheet} from 'react-native'
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text,  } from 'native-base';
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, View,  } from 'native-base';
 import { TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ActivityIndicator,Image } from 'react-native';
@@ -10,8 +10,9 @@ export default class HomeActivityList extends Component {
   constructor(props){
     super(props);
     this.state = {
-      ActivityList:[],
+      ActivityList1:[],
       UserID:0,
+      ActivityList2:[]
     };
   }
   async componentDidMount () {
@@ -22,12 +23,19 @@ export default class HomeActivityList extends Component {
    async getFromServer(){
     const UserId= this.state.UserID;
     console.log(this.state.UserID);
-      const apiStationsUrl ='http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ModuleActivity?UserID='+UserId;
-      const response = await fetch(apiStationsUrl);
-      const data = await response.json()
-      this.setState({ActivityList:data,})
+      const ActivityListData ='http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ModuleActivity?UserID='+UserId;
+      const responseActivityList = await fetch(ActivityListData);
+      const data = await responseActivityList.json()
+      this.setState({ActivityList1:data,})
       console.log(data);
+      
+      const ActivityListDataTD ='http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ModuleActivity/{ModuleActivityTD}/'+UserId;
+      const responseActivityListTD = await fetch(ActivityListDataTD);
+      const dataTD = await responseActivityListTD.json()
+      this.setState({ActivityList2:dataTD})
+      console.log(dataTD)
    }
+
    async getData() {
     try {
       jsonValue = await AsyncStorage.getItem('UserId')
@@ -45,20 +53,36 @@ export default class HomeActivityList extends Component {
     }
   }
 
+
   render() {
-    let Activities = this.state.ActivityList.map((Activities,key) =>{
-      return(<ListItem avatar key={key}><Right><Thumbnail source={{uri:'https://blog.cpanel.com/wp-content/uploads/2019/08/user-01.png'}}/>
+    let Activities = this.state.ActivityList1.map((Activities,key) =>{
+      
+     return(<ListItem avatar key={key} ><Right><Thumbnail style={{borderWidth:1 , borderColor:'black' }} source={{uri:'https://i.ibb.co/vcgW6dB/Sender-Package.jpg'}}/>
       </Right>
       <Body>
        <Text> </Text>
-        <Text style={{fontWeight:'bold'}} note > תחנת מוצא : {Activities.StartStation} </Text>
-        <Text style={{fontWeight:'bold'}} note > תחנת יעד: {Activities.EndStation} </Text>
+        <Text style={{fontWeight:'bold'}} note >מוצא :  {Activities.StartStation} </Text>
+        <Text style={{fontWeight:'bold'}} note >יעד :  {Activities.EndStation} </Text>
       </Body>
       <Left>
         <Text style={{fontWeight:'bold'}} note> סטטוס : {Activities.Status}    </Text>
       </Left>
        </ListItem>)
     });
+
+    let ActivitiesTD = this.state.ActivityList2.map((Activities,key) =>{
+      return(<ListItem avatar key={key}  ><Right><Thumbnail style={{borderWidth:1 , borderColor:'black' }} source={{uri:'https://i.ibb.co/HHjzgtP/Delivery-TD.jpg'}}/>
+       </Right>
+       <Body>
+        <Text> </Text>
+         <Text style={{fontWeight:'bold'}} note >מוצא :  {Activities.StartStation} </Text>
+         <Text style={{fontWeight:'bold'}} note >יעד :  {Activities.EndStation} </Text>
+       </Body>
+       <Left>
+         <Text style={{fontWeight:'bold'}} note> סטטוס : {Activities.Status}    </Text>
+       </Left>
+        </ListItem>)
+     });
     return (
       <ScrollView style={styles.LastOperations}>
       <Container style={styles.LastOperations}>
@@ -67,10 +91,12 @@ export default class HomeActivityList extends Component {
           
           <List >
           {/* <ActivityIndicator style={{marginTop:150}} size="large" color="#A7D489" /> */}
-            <TouchableOpacity>
-            {this.state.ActivityList.length>0?(Activities): <Image style={{width:200,height:150,alignSelf:'center',marginTop:40}} source={{ uri: 'https://i.gifer.com/FpSr.gif'}} />}
+            <View >
+
+            {this.state.ActivityList1.length > 0 || this.state.ActivityList2.length > 0 ?(<View >{ActivitiesTD}{Activities}</View>): <Image style={{width:200,height:150,alignSelf:'center',marginTop:40}} source={{ uri: 'https://i.gifer.com/FpSr.gif'}} />}
+
               {/* {Activities} */}
-            </TouchableOpacity>
+            </View>
            
           </List>
         </Content>
@@ -84,14 +110,11 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     LastOperations:{
-     maxHeight:250,
-     borderTopWidth:1,
+     
+    
      marginBottom:10,
    
     
      
     }
   });
-  const operation ={
-   
-  };

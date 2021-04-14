@@ -441,6 +441,10 @@ export default class CCLockers extends Component {
     var button =  <Button  onPress={() => { this.Deposit() }}  block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
         <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
       </Button>
+var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.ELockerID} להפקדה -</Text>
+
+    
+
      
 
     }
@@ -449,6 +453,8 @@ export default class CCLockers extends Component {
     var button =  <Button onPress={() => { this.PickUp() }} block danger style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
         <Text style={{ fontWeight: 'bold' }}>איסוף חבילה</Text>
       </Button>
+  var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} לאיסוף -</Text>
+
      
      
   }
@@ -470,8 +476,7 @@ export default class CCLockers extends Component {
           <Text style={styles.titles}>  משלוח מס' :</Text><Text style={styles.titles}> {this.state.PackageID} </Text>
           <Text style={styles.titles} > תחנה : </Text><Text style={styles.titles}> {this.state.SStationName} </Text>
         </View>
-        <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} לאיסוף -</Text>
-
+             {instruction}
              {button}
 
         {/* <Button onPress={()=>{this.CancelPackage()}} block danger style={{ marginRight: 40 ,marginLeft:40, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >

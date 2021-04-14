@@ -39,10 +39,11 @@ export default class RegisterForm extends Component {
         PassWordOK:0,
         PhoneOK:0,
         canAddUser:0,
+        UsersArr:[]
        
     }
     componentDidMount (){
-      this.AddUser;
+    
   }
 
 // {/*לשים לב להחליף ניתוב מTAR2*/}
@@ -64,50 +65,66 @@ export default class RegisterForm extends Component {
 
 
 
+ async CheckExistUser () {
 
-  AddUser = () => {
-
-    alert('in AddUser');
-    const User = {
-    Fullname: this.state.fullName,
-    EmailAddress: this.state.email,
-    password: this.state.password,
-    PhoneNum:this.state.phone_number,
-    UserId: this.state.ID,
-    ProfilePic: this.state.ProfilePic,
-    BirthDate:this.state.birthdate
+    const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users/{CheckExistUser}/'+this.state.ID;
+    const response = await fetch(apiUserUrl);
+    const data = await response.json();
+    this.setState({UsersArr:data})
+    if(this.state.UsersArr.length === 0)
+    {
+    this.AddUser();
     }
-    console.log(User.fullName);
-    console.log(User.email);
-    console.log(User.phone_number);
-    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users', {
-      method: 'POST',
-      body: JSON.stringify(User),
-      headers: new Headers({
-      'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-      })
-      })
-      .then(res => {
-      console.log('res=', res);
-      return res.json()
-      })
-      .then(
-      (result) => {
-      console.log("fetch POST= ", result);
-      this.AddUserToUserCredits();
-      
-      },
-      (error) => {
-      console.log("err post=", error);
-      });
-      this.props.navigation.navigate('Login');
+      else{
+      alert("משתמש רשום")
+    }
    
   }
+
+
+
+
+
+AddUser = () => {
+
+   
+      const User = {
+        Fullname: this.state.fullName,
+        EmailAddress: this.state.email,
+        password: this.state.password,
+        PhoneNum: this.state.phone_number,
+        UserId: this.state.ID,
+        ProfilePic: this.state.ProfilePic,
+        BirthDate: this.state.birthdate
+      }
+    
+      fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users', {
+        method: 'POST',
+        body: JSON.stringify(User),
+        headers: new Headers({
+          'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+        })
+      })
+        .then(res => {
+        
+          return res.json()
+        })
+        .then(
+          (result) => {
+            console.log("fetch POST= ", result);
+            this.AddUserToUserCredits();
+  
+          },
+          (error) => {
+            console.log("err post=", error);
+          });
+    }
+  
     onChangeText = (key, val) => {
         this.setState({ [key]: val })
       }
       validateName(){
-        let rjx=/^[a-zA-Z]+$/;
+        let rjx=/^[a-z\u0590-\u05fe]+$/i;
         let isNameValid= rjx.test(this.state.fullName);
         console.log("name is valid?: "+isNameValid);
         if(!isNameValid){
@@ -176,7 +193,7 @@ export default class RegisterForm extends Component {
         console.log("------------------starting validate")
         this.validateInPuts();
         console.log("after iputs")
-        console.log(this.state)
+      
         // let fullName_Error= "";
         // let password_Error= "";
         // let email_Error = "";
@@ -235,22 +252,16 @@ export default class RegisterForm extends Component {
       }
       signUp = async () => {
         const user={ Fullname:this.state.fullName,Password:this.state.password,EmailAddress:this.state.email,PhoneNum:this.state.phone_number ,UserId:this.state.ID , ProfilePic:this.state.ProfilePic} 
-        try {
+       
           // here place your signup logic
           const isValid= this.validate();
-          if(isValid===true && this.state.canAddUser===1){
-              this.AddUser();
-              
-              
+    
+           
+            {  this.CheckExistUser()}
 
-          // console.log('user successfully signed up!: ', success)
-          }
-        
-        } catch (err) {
-          console.log('error signing up:', err)
-        }
-      // { this.props.navigation.navigate('Register'); }
       }
+      // { this.props.navigation.navigate('Register'); }
+    
       btnOpenGalery = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
         //allowsEditing: true,
@@ -353,7 +364,7 @@ export default class RegisterForm extends Component {
 
         </View>
         <View>
-        <Button  onPress={this.signUp} style={{ alignSelf: 'center', backgroundColor: '#A7D489', marginBottom:10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}> הרשם עכשיו </Text> 
+        <Button onPress={this.signUp} style={{ alignSelf: 'center', backgroundColor: '#A7D489', marginBottom:10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}> הרשם עכשיו </Text> 
         <Icon name="train" style={{ alignSelf: 'center',  }} />
         </Button>
          
