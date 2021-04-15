@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Text, View, Image, TouchableOpacity ,Dimensions} from 'react-native'
+import { Text, View, Image, TouchableOpacity, Dimensions, Pressable, Modal } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from 'native-base';
+import { Button,Icon } from 'native-base';
 import CCSenderForm from './CCSenderForm';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps'
@@ -18,30 +18,38 @@ export default class CCLockers extends Component {
       ELockerID: null,
       PackageID: null,
       StationName: '',
-      latitude:0,
-      longitude:0,
-      stationLat:0,
-      stationLong:0,
-      error:null,
-      canOpenLocker:0
+      latitude: 0,
+      longitude: 0,
+      stationLat: 0,
+      stationLong: 0,
+      error: null,
+      canOpenLocker: 0,
+      AlertModal: '',
+      modalVisible: false,
     }
   }
+
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
+
 
   async componentDidMount() {
 
     this.getMultiple()
     this.getData()
     ///current location function
-    navigator.geolocation.getCurrentPosition(position =>{this.setState({
-      latitude:position.coords.latitude,
-      longitude:position.coords.longitude,
-      error:null
-    });
-  },
-  error => this.setState({error:error.message}),
-  {enableHighAccuracy:true,timeout:20000,maximumAge:2000}
-  );
-  // console.log(this.state.longitude+" , "+this.state.longitude+" , "+this.state.stationLat+" , "+this.state.stationLong);
+    navigator.geolocation.getCurrentPosition(position => {
+      this.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        error: null
+      });
+    },
+      error => this.setState({ error: error.message }),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
+    );
+    // console.log(this.state.longitude+" , "+this.state.longitude+" , "+this.state.stationLat+" , "+this.state.stationLong);
   }
 
   async getData() {
@@ -52,7 +60,8 @@ export default class CCLockers extends Component {
       this.setState({ UserName: UserDetails.FullName })
 
     } catch (e) {
-      alert('Error get Item')
+      this.setState({ AlertModal: 'Error get Item' });
+      { this.setModalVisible(true) }
       // error reading value
     }
   }
@@ -65,8 +74,8 @@ export default class CCLockers extends Component {
       let values = await AsyncStorage.multiGet(['PackageID', 'SLockerID', 'StationName', 'ELockerID'])
       let locationValues = await AsyncStorage.multiGet(['stationLat', 'stationLong']);
       this.setState({ SLockerID: values[1][1], PackageID: values[0][1], StationName: values[2][1], ELockerID: values[3][1] })
-      this.setState({stationLat:locationValues[0][1]})
-      this.setState({stationLong:locationValues[1][1]})
+      this.setState({ stationLat: locationValues[0][1] })
+      this.setState({ stationLong: locationValues[1][1] })
 
     } catch (e) {
       // read error
@@ -77,47 +86,48 @@ export default class CCLockers extends Component {
     // example console.log output:
     // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
   }
-//Location Distance Calculation Functions
+  //Location Distance Calculation Functions
 
-isNearLocker(){
-  const NearDistance=0.1;
-  let currentLat= this.state.latitude;
-  let currentLong= this.state.longitude;
-  let stationLat = this.state.stationLat;
-  let stationLong = this.state.stationLong;
-  let CurrentDistance= 0;
- CurrentDistance= this.computeDistance([currentLat,currentLong],[stationLat,stationLong]);
-  console.log("your distance from the station is :"+CurrentDistance + " km");
-  if(CurrentDistance >= NearDistance){
-    alert("אתה נמצא בקרבת הלוקר !!");
-    this.setState({canOpenLocker:1})
+  isNearLocker() {
+    const NearDistance = 0.1;
+    let currentLat = this.state.latitude;
+    let currentLong = this.state.longitude;
+    let stationLat = this.state.stationLat;
+    let stationLong = this.state.stationLong;
+    let CurrentDistance = 0;
+    CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
+    console.log("your distance from the station is :" + CurrentDistance + " km");
+    if (CurrentDistance >= NearDistance) {
+      this.setState({ AlertModal: 'אתה נמצא בקרבת הלוקר !!' });
+      { this.setModalVisible(true) }
+      this.setState({ canOpenLocker: 1 })
+
+    }
+    else {
+      this.setState({ AlertModal: 'אינך נמצא בקרבת הלוקר !!' });
+      { this.setModalVisible(true) }
+    }
 
   }
-  else{
-    alert("אינך נמצא בקרבת הלוקר !!");
+  //שימוש בנוסחאת האברסין לחישוב מרחק בין 2 נקודות בעלות נקודות אורך ורוחב
+  computeDistance([prevLat, prevLong], [lat, long]) {
+    const prevLatInRad = this.toRad(prevLat);
+    const prevLongInRad = this.toRad(prevLong);
+    const latInRad = this.toRad(lat);
+    const longInRad = this.toRad(long);
+
+    return (
+      // In kilometers
+      6377.830272 * Math.acos(Math.sin(prevLatInRad) * Math.sin(latInRad) + Math.cos(prevLatInRad) * Math.cos(latInRad) * Math.cos(longInRad - prevLongInRad),
+
+      )
+    );
   }
-  
 
-}
-//שימוש בנוסחאת האברסין לחישוב מרחק בין 2 נקודות בעלות נקודות אורך ורוחב
-computeDistance([prevLat, prevLong], [lat, long]) {
-  const prevLatInRad = this.toRad(prevLat);
-  const prevLongInRad =this.toRad(prevLong);
-  const latInRad = this.toRad(lat);
-  const longInRad = this.toRad(long);
-
-  return (
-    // In kilometers
-   6377.830272 * Math.acos(Math.sin(prevLatInRad) * Math.sin(latInRad) + Math.cos(prevLatInRad) * Math.cos(latInRad) * Math.cos(longInRad - prevLongInRad),
- 
-    )
-  );
-}
-
- toRad(angle) {
-  return (angle * Math.PI) / 180;
-}
-//---------------------------------------
+  toRad(angle) {
+    return (angle * Math.PI) / 180;
+  }
+  //---------------------------------------
   PackDeposit() {
 
     const Slocker_update = {
@@ -125,8 +135,6 @@ computeDistance([prevLat, prevLong], [lat, long]) {
       LockerID: this.state.SLockerID,
       PackageID: this.state.PackageID,
       Busy: 1,
-
-
     }
 
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers', {
@@ -153,17 +161,17 @@ computeDistance([prevLat, prevLong], [lat, long]) {
       })
     })
 
-    {this.UpdatePackageStatus()}
+    { this.UpdatePackageStatus() }
 
   }
 
-  UpdatePackageStatus (){
+  UpdatePackageStatus() {
 
     const Package_update = {
 
-     
+
       PackageID: this.state.PackageID,
-      Status:2
+      Status: 2
 
     }
 
@@ -174,18 +182,23 @@ computeDistance([prevLat, prevLong], [lat, long]) {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
+   
+    
+    .then(this.props.navigation.navigate('Home'),
+    this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' }),
+    this.setModalVisible(true) 
+    )
 
-    alert('המשלוח הופקד בהצלחה ')
-    this.props.navigation.navigate('Home')
+   
   }
 
-  CancelPackage (){
+  CancelPackage() {
 
     const Package_cancel = {
 
-     
+
       PackageID: this.state.PackageID,
-      Status:-1
+      Status: -1
 
     }
 
@@ -199,9 +212,9 @@ computeDistance([prevLat, prevLong], [lat, long]) {
 
     const SLocker_cancel = {
 
-     LockerID:this.state.SLockerID ,
+      LockerID: this.state.SLockerID,
       PackageID: -1,
-      Busy:0
+      Busy: 0
 
     }
 
@@ -215,24 +228,24 @@ computeDistance([prevLat, prevLong], [lat, long]) {
 
     const ELocker_cancel = {
 
-      LockerID:this.state.ELockerID ,
-       PackageID: -1,
-       Busy:0
- 
-     }
- 
-     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers', {
-       method: 'PUT',
-       body: JSON.stringify(ELocker_cancel),
-       headers: new Headers({
-         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-       })
-     }).then(
-        this.props.navigation.navigate('Home')
-     )
+      LockerID: this.state.ELockerID,
+      PackageID: -1,
+      Busy: 0
 
-     
-    
+    }
+
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers', {
+      method: 'PUT',
+      body: JSON.stringify(ELocker_cancel),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    }).then(
+      this.props.navigation.navigate('Home')
+    )
+
+
+
 
 
   }
@@ -240,39 +253,64 @@ computeDistance([prevLat, prevLong], [lat, long]) {
   render() {
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+
+            <View style={styles.modalView}>
+              <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+              <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              >
+                <Text style={styles.textStyle}> סגור </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+
         <Image
           source={{ uri: 'https://s4.gifyu.com/images/icons8-check-all-unscreen.gif' }}
-          style={{ width: 100, height: 100 , marginBottom:20 }}
+          style={{ width: 100, height: 100, marginBottom: 20 }}
         />
         <Text style={styles.greeting}>{this.state.UserName},</Text>
         <Text style={styles.greeting}>  המשלוח נוצר בהצלחה </Text>
 
 
-<View style={{borderWidth:2,backgroundColor:'lightblue' , direction:'rtl' ,padding:20,marginBottom:30,borderRadius:20}}>
-        <Text style={styles.titles}>  משלוח מס' :</Text><Text style={styles.titles}> {this.state.PackageID} </Text>
-        <Text style={styles.titles} > תחנה : </Text><Text style={styles.titles}> {this.state.StationName} </Text>
-  </View>
-  {/* {} */}
-  {this.state.canOpenLocker===0?(<View>
-    <Text style={styles.titles} >בדוק מרחק מהתחנה</Text>
-        <Button onPress={()=>{this.isNearLocker()}} block success style={{ marginRight: 90 ,marginLeft:90 ,marginBottom:15 , marginTop:20, paddingHorizontal:70,borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
-          <Text style={{ fontWeight: 'bold' }}>בדיקה</Text>
-        </Button>
-  </View>):(<View><Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} להפקדה -</Text>
-        <Button onPress={()=>{this.PackDeposit()}} block success style={{ marginRight: 90 ,marginLeft:90 ,marginBottom:15 , marginTop:20,borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
-          <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
-        </Button></View>)}
-  {/* <Text style={styles.titles} >בדוק מרחק מהלוקר</Text>
+        <View style={{ borderWidth: 2, backgroundColor: 'lightblue', direction: 'rtl', padding: 20, marginBottom: 30, borderRadius: 20 }}>
+          <Text style={styles.titles}>  משלוח מס' :</Text><Text style={styles.titles}> {this.state.PackageID} </Text>
+          <Text style={styles.titles} > תחנה : </Text><Text style={styles.titles}> {this.state.StationName} </Text>
+        </View>
+        {/* {} */}
+        {this.state.canOpenLocker === 0 ? (<View>
+          <Text style={styles.titles} >בדוק מרחק מהתחנה</Text>
+          <Button onPress={() => { this.isNearLocker() }} block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, paddingHorizontal: 70, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+            <Text style={{ fontWeight: 'bold' }}>בדיקה</Text>
+          </Button>
+        </View>) : (<View><Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} להפקדה -</Text>
+          <Button onPress={() => { this.PackDeposit() }} block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+            <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
+          </Button></View>)}
+        {/* <Text style={styles.titles} >בדוק מרחק מהלוקר</Text>
         <Button onPress={()=>{this.isNearLocker()}} block success style={{ marginRight: 90 ,marginLeft:90 ,marginBottom:15 , marginTop:20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
           <Text style={{ fontWeight: 'bold' }}>בדיקה</Text>
         </Button> */}
-  {/*  */}
+        {/*  */}
         {/* <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} להפקדה -</Text>
         <Button onPress={()=>{this.PackDeposit()}} block success style={{ marginRight: 90 ,marginLeft:90 ,marginBottom:15 , marginTop:20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
           <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
         </Button> */}
 
-        <Button onPress={()=>{this.CancelPackage()}} block danger style={{ marginRight: 40 ,marginLeft:40, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+        <Button onPress={() => { this.CancelPackage() }} block danger style={{ marginRight: 40, marginLeft: 40, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
           <Text style={{ fontWeight: 'bold' }}>ביטול משלוח</Text>
         </Button>
 
@@ -296,7 +334,7 @@ const styles = ({
     flexDirection: 'row',
     borderColor: 'green',
     borderStyle: 'solid',
- direction: 'rtl',
+    direction: 'rtl',
     borderRadius: 10,
     marginBottom: 20,
 
@@ -319,10 +357,52 @@ const styles = ({
     fontWeight: 'bold',
     fontSize: 30,
     marginBottom: 30,
-
-
-
   },
+
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#cbe8ba",
+  },
+  buttonClose: {
+    backgroundColor: "#cbe8ba",
+  },
+  textStyle: {
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: "bold",
+  }
+
 
 
 

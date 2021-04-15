@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Text, View, Image, TouchableOpacity } from 'react-native'
+import { Text, View, Image, TouchableOpacity,Pressable,Modal } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button } from 'native-base';
+import { Button ,Icon} from 'native-base';
 import CCSenderForm from './CCSenderForm';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps'
@@ -36,6 +36,8 @@ export default class CCLockers extends Component {
       canOpenLocker:0,
       UserCreditOBJ:[],
       TDPayment:25,
+      AlertModal: '',
+      modalVisible: false,
       
     }
   }
@@ -109,7 +111,8 @@ export default class CCLockers extends Component {
       this.getUserCredits();
 
     } catch (e) {
-      alert('Error get Item')
+      this.setState({ AlertModal: 'Error get Item' });
+      { this.setModalVisible(true) }
       // error reading value
     }
   }
@@ -183,9 +186,10 @@ export default class CCLockers extends Component {
       // )
       .then(
      
-        alert('תודה '+this.state.UserCreditOBJ[0].FullName +' החבילה הופקדה  !'),
-        this.props.navigation.navigate('Home')
 
+        this.setState({ AlertModal: 'תודה '+this.state.UserCreditOBJ[0].FullName +' החבילה הופקדה  !' }),
+      this.setModalVisible(true),
+        this.props.navigation.navigate('Home')
       )
 
 }
@@ -319,7 +323,9 @@ export default class CCLockers extends Component {
 
     })
   })
-  alert("החבילה נאספה מהלוקר !!");
+  
+  this.setState({ AlertModal: 'החבילה נאספה מהלוקר !!שתמש רשום' });
+      { this.setModalVisible(true) }
 
  }
   
@@ -371,7 +377,8 @@ export default class CCLockers extends Component {
       })
     })
 
-    alert('החבילה הופקדה בהצלחה')
+    this.setState({ AlertModal: 'החבילה הופקדה בהצלחה' });
+      { this.setModalVisible(true) }
     this.UpdateTDCredits()
 
   }
@@ -435,17 +442,19 @@ export default class CCLockers extends Component {
 
   }
 
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  }
+
+
   render() {
 
     if (this.state.Pressed === true) {
     var button =  <Button  onPress={() => { this.Deposit() }}  block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
         <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
       </Button>
-var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.ELockerID} להפקדה -</Text>
-
-    
-
-     
+var instruction = ( <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.ELockerID} להפקדה -</Text>)
+var stationName = (<Text style={styles.titles} > תחנה : {this.state.EStationName}</Text>)
 
     }
     else {
@@ -454,6 +463,7 @@ var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' 
         <Text style={{ fontWeight: 'bold' }}>איסוף חבילה</Text>
       </Button>
   var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} לאיסוף -</Text>
+  var stationName = (<Text style={styles.titles} > תחנה : {this.state.SStationName}</Text>)
 
      
      
@@ -461,7 +471,34 @@ var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' 
    
 
     return (
+
+      
       <View style={styles.container}>
+
+<Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+
+            <View style={styles.modalView}>
+              <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+              <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              >
+                <Text style={styles.textStyle}> סגור </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
         <Image
 
 
@@ -473,8 +510,8 @@ var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' 
 
 
         <View style={{ borderWidth: 2, backgroundColor: 'lightblue', direction: 'rtl', padding: 20, marginBottom: 30, borderRadius: 20 }}>
-          <Text style={styles.titles}>  משלוח מס' :</Text><Text style={styles.titles}> {this.state.PackageID} </Text>
-          <Text style={styles.titles} > תחנה : </Text><Text style={styles.titles}> {this.state.SStationName} </Text>
+        <Text style={styles.titles}>  משלוח מס' :</Text><Text style={styles.titles}> {this.state.PackageID} </Text>
+        {stationName}
         </View>
              {instruction}
              {button}
@@ -526,11 +563,50 @@ const styles = ({
     fontWeight: 'bold',
     fontSize: 30,
     marginBottom: 30,
-
-
-
   },
 
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#cbe8ba",
+  },
+  buttonClose: {
+    backgroundColor: "#cbe8ba",
+  },
+  textStyle: {
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: "bold",
+  }
 
 
 });

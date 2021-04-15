@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { CheckBox, Container, Header, Content, Form, Item, Input, Label, Picker, Footer, Right, Button, Icon} from 'native-base';
+import { CheckBox, Container, Header, Content, Form, Item, Input, Label, Picker, Footer, Right, Button, Icon } from 'native-base';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import CheckBoxes from './CCCheckBox';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -15,22 +15,22 @@ export default class CCTrainRouteSelection extends Component {
       selected1: null,
       selected2: null,
       selected3: null,
-      date:new Date(),
-       StationsList : []
+      date: new Date(),
+      StationsList: []
     };
-    
+
   }
-  setDate(newDate){
+  setDate(newDate) {
     this.setState({ chosenDate: newDate });
   }
-async componentDidMount () {
- 
-   const apiStationsUrl ='http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
-   const response = await fetch(apiStationsUrl);
-   const data = await response.json()
-   this.setState({StationsList:data,})
-   console.log(data);
-};
+  async componentDidMount() {
+
+    const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
+    const response = await fetch(apiStationsUrl);
+    const data = await response.json()
+    this.setState({ StationsList: data, })
+    console.log(data);
+  };
   onValueChange1 = (value) => {
     this.setState({
       selected1: value
@@ -53,17 +53,18 @@ async componentDidMount () {
   }
 
 
-   navigate = () => {
+  navigate = () => {
 
     this.props.navigation.navigate('DeliveryFeed')
 
 
-} 
+  }
 
   render() {
     const { date } = this.state;
-    let stations= this.state.StationsList.map((stations,key)=>{
-      return (<Picker.Item key={key} label={stations.StationName} value={stations.StationID} />)});
+    let stations = this.state.StationsList.map((stations, key) => {
+      return (<Picker.Item key={key} label={stations.StationName} value={stations.StationID} />)
+    });
 
     return (
       <SafeAreaView>
@@ -79,7 +80,7 @@ async componentDidMount () {
                 <Item picker style={styles.InputText}>
                   <Picker
                     mode="dropdown"
-                    style={{  textAlign: 'right' }}
+                    style={{ textAlign: 'right' }}
                     placeholder="בחר תחנת מוצא"
                     placeholderStyle={{ color: "#bfc6ea" }}
                     placeholderIconColor="#007aff"
@@ -87,11 +88,11 @@ async componentDidMount () {
                     onValueChange={this.onValueChange1.bind(this)}
                   >
 
-           <Picker.Item label='בחר תחנת מוצא' value='None' />
+                    <Picker.Item label='בחר תחנת מוצא' value='None' />
 
-                   {stations}
+                    {stations}
 
-                
+
                   </Picker>
                 </Item>
               </View>
@@ -117,9 +118,9 @@ async componentDidMount () {
 
 
 
-              <Text style={{ alignSelf: 'center', marginTop: 10,fontWeight:'bold' }}>בחר תאריך נסיעה</Text>
+              <Text style={{ alignSelf: 'center', marginTop: 10, fontWeight: 'bold' }}>בחר תאריך נסיעה</Text>
               {/* <Icon name="calendar"  style={{ alignSelf: 'center', marginTop: 10 }} /> */}
-              
+
               {/* <DatePicker
         style={{ alignSelf: 'center', marginTop: 10 }}
         date={this.state.date}
@@ -145,7 +146,7 @@ async componentDidMount () {
         onDateChange={(date) => {this.setState({date: date}) }}
       /> */}
 
-              <Button onPress = {this.navigate} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש משלוחים </Text></Button>
+              <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש משלוחים </Text></Button>
 
             </Form>
 
@@ -180,8 +181,8 @@ const styles = ({
   titles: {
     textAlign: 'center',
     fontWeight: 'bold',
-marginBottom: 5,
-marginTop:5,
+    marginBottom: 5,
+    marginTop: 5,
     alignItems: 'center'
   },
   section: {

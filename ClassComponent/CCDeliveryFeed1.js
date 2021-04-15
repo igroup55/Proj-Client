@@ -3,6 +3,7 @@ import * as React from 'react';
 import { List, Checkbox, Button } from 'react-native-paper';
 import { Modal, SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Icon } from 'native-base';
 
 
 class CCDeliveryFeed1 extends React.Component {
@@ -83,9 +84,8 @@ class CCDeliveryFeed1 extends React.Component {
       jsonValue != null ? UserDetail = JSON.parse(jsonValue) : null;
       this.setState({ UserDetail: UserDetail.UserId })
 
+
     } catch (e) {
-
-
       this.setState({ AlertModal: 'Error get Item' });
 
       { this.setModalVisible(true) }
@@ -104,7 +104,7 @@ class CCDeliveryFeed1 extends React.Component {
     console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
 
-    
+
       this.setState({ canOpenLocker: 1 })
 
     }
@@ -237,28 +237,26 @@ class CCDeliveryFeed1 extends React.Component {
     if (data.UserID === 0) {
 
       if (weight === 3)
-        if (this.state.PackagesList1.length === 0)
-        {
+        if (this.state.PackagesList1.length === 0) {
 
           this.setState({ AlertModal: "No Packages Found" });
           { this.setModalVisible(true) }
         }
         else { this.AddTDUser(weight) }
       if (weight === 6)
-        if (this.state.PackagesList2.length === 0){
+        if (this.state.PackagesList2.length === 0) {
           this.setState({ AlertModal: "No Packages Found" });
           { this.setModalVisible(true) }
 
         }
-          
+
         else { this.AddTDUser(weight) }
       if (weight === 10)
-        if (this.state.PackagesList3.length === 0)
-        {
+        if (this.state.PackagesList3.length === 0) {
           this.setState({ AlertModal: "No Packages Found" });
           { this.setModalVisible(true) }
         }
-          
+
         else { this.AddTDUser(weight) }
 
 
@@ -465,14 +463,11 @@ class CCDeliveryFeed1 extends React.Component {
 
     }
 
-
-
-
-
-
   }
 
   render() {
+
+
 
     return (
       <ScrollView>
@@ -486,13 +481,15 @@ class CCDeliveryFeed1 extends React.Component {
           }}
         >
           <View style={styles.centeredView}>
+
             <View style={styles.modalView}>
+              <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
               <Text style={styles.modalText}>{this.state.AlertModal}</Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => this.setModalVisible(!this.state.modalVisible)}
               >
-                <Text style={styles.textStyle}>Hide Modal</Text>
+                <Text style={styles.textStyle}> סגור </Text>
               </Pressable>
             </View>
           </View>
@@ -564,9 +561,6 @@ const styles = ({
     backgroundColor: '#cbe8ba',
     textAlign: 'center'
 
-
-
-
   },
   ItemTitle: {
     fontWeight: 'bold'
@@ -582,7 +576,8 @@ const styles = ({
 
 
 
-  }, centeredView: {
+  },
+  centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -604,24 +599,25 @@ const styles = ({
     elevation: 5
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 10,
     elevation: 2
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: "#cbe8ba",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#cbe8ba",
   },
   textStyle: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
     textAlign: "center"
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: "center",
+    fontWeight: "bold",
   }
 
 

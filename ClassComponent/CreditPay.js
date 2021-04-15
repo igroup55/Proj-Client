@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TextInput, Image } from 'react-native';
+import { Text, View, StyleSheet, TextInput, Image, Modal, Pressable } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import { ScrollView, TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
-import { Button, Icon, Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, } from 'native-base';
+import { Button, Icon, Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native';
 
 
 export default class CreditPay extends Component {
@@ -25,7 +26,8 @@ export default class CreditPay extends Component {
       CE_FormCardOwner: 0,
       CE_FormCardNumber: 0,
       CE_FormCVV: 0,
-
+      AlertModal: '',
+      modalVisible: false,
 
 
 
@@ -53,30 +55,34 @@ export default class CreditPay extends Component {
     // console.log(this.state.CE_FormCreditAmount)
 
     if (FormCreditAmount < 25) {
-      alert(" לא ניתן לקנות פחות מ 25 קרידיטים ")
+      this.setState({ AlertModal: ' לא ניתן לקנות פחות מ 25 קרידיטים' });
+      { this.setModalVisible(true) }
     }
-    else{
+    else {
       if (FormCardOwner === "") {
-        alert('לא רשמת שם בעל כרטיס')
+        this.setState({ AlertModal: 'לא רשמת שם בעל כרטיס' });
+        { this.setModalVisible(true) }
       }
-      else{
+      else {
         if (FormCardNumber.length < 10) {
-          alert('מספר כרטיס צריך להכיל לפחות 10 ספרות')
+          this.setState({ AlertModal: 'מספר כרטיס צריך להכיל לפחות 10 ספרות' });
+          { this.setModalVisible(true) }
         }
-        else{
-          if (FormCVV.length < 3 || FormCVV === 0 ) {
-            alert('CVV לא תקין ')
+        else {
+          if (FormCVV.length < 3 || FormCVV === 0) {
+            this.setState({ AlertModal: 'CVV לא תקין ' });
+            { this.setModalVisible(true) }
           }
-          else{
+          else {
             this.UpdateUserCredits();
           }
         }
       }
     }
-    
-   
- 
-   
+
+
+
+
 
 
 
@@ -92,12 +98,13 @@ export default class CreditPay extends Component {
       console.log(UserDetails.UserId);
       this.getDataFromServer();
     } catch (e) {
-      alert('Error get Item')
+      this.setState({ AlertModal: 'Error get Item' });
+      { this.setModalVisible(true) }
       // error reading value
     }
   }
 
-  
+
 
   async getDataFromServer() {
     console.log("userID is: " + this.state.UserID)
@@ -107,8 +114,8 @@ export default class CreditPay extends Component {
     const response = await fetch(apiStationsUrl);
     const data = await response.json()
     this.setState({ UserCreditOBJ: data, })
-    console.log('Credit :'+data[0].Credit);
-   
+    console.log('Credit :' + data[0].Credit);
+
 
 
     const apiStationsUrl2 = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Transaction?UserID=' + UserID;
@@ -173,11 +180,16 @@ export default class CreditPay extends Component {
         })
       )
       .then(
-        alert(' תודה ' + this.state.UserCreditOBJ[0].FullName + ' הקנייה בוצעה בהצלחה  !'),
 
-
+        this.setState({ AlertModal: ' תודה ' + this.state.UserCreditOBJ[0].FullName + ' הקנייה בוצעה בהצלחה  !' }),
+        this.setModalVisible(true)
       )
 
+  }
+
+
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
   }
 
   render() {
@@ -207,10 +219,36 @@ export default class CreditPay extends Component {
     return (
 
       <View style={styles.container2}>
-        <View style={{  borderWidth: 2, backgroundColor: 'lightblue', textAlign: 'center', direction: 'rtl', borderRadius: 20, margin:15 }}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+
+            <View style={styles.modalView}>
+              <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+              <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              >
+                <Text style={styles.textStyle}> סגור </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+
+
+        <View style={{ borderWidth: 2, backgroundColor: 'lightblue', textAlign: 'center', direction: 'rtl', borderRadius: 20, margin: 15 }}>
           {UserCredit}
         </View>
-      
+
         <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
 
           <Button onPress={() => { this.BuycreditsForm() }} block success style={{ paddingHorizontal: 30, marginRight: 20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
@@ -235,14 +273,6 @@ export default class CreditPay extends Component {
               autoCapitalize="none"
               onChangeText={val => this.setState({ FormCreditAmount: val })}
             />
-            {/* <TextInput style={styles.input}
-                    underlineColorAndroid="transparent"
-                    placeholder="מספר ת.ז/ח.פ"
-                    keyboardType="numeric"
-                    placeholderTextColor="green"
-                    autoCapitalize="none"
-                    onChangeText={val => this.setState({ email: val })}
-                /> */}
             <TextInput style={styles.input}
               underlineColorAndroid="transparent"
               placeholder="שם בעל הכרטיס"
@@ -305,29 +335,26 @@ export default class CreditPay extends Component {
         {this.state.PayTDForm === 1 ? (
 
 
-          <View>
-
-            <View style={styles.container3}>
-              <View style={{ flexDirection: 'row' }}>
+            <View  style={styles.container3} >
+              
+              <View style={{ flexDirection: 'row' , marginBottom:-40 , textAlign:'center'  }}>
                 <TouchableOpacity onPress={() => { this.setState({ PayTDForm: 0 }) }}><Icon name="close" style={{ marginRight: 90, marginTop: 10 }} /></TouchableOpacity>
                 <Text style={styles.titles, { marginRight: 100, marginTop: 10, fontWeight: 'bold', fontSize: 20 }}>עסקאות</Text>
               </View>
-
-
-              <ScrollView >
-                <Container>
+              <View style={{marginTop:40}} >
+              <SafeAreaView>
+                <ScrollView >
                   <Content>
                     <List>
                       {TransactionsList}
                     </List>
                   </Content>
-                </Container>
-              </ScrollView>
-
-
+                </ScrollView>
+              </SafeAreaView>
+              </View>
             </View>
 
-          </View>
+          
 
         ) : null}
 
@@ -446,6 +473,49 @@ const styles = ({
 
 
   },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#cbe8ba",
+  },
+  buttonClose: {
+    backgroundColor: "#cbe8ba",
+  },
+  textStyle: {
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: "bold",
+  }
 
 
 

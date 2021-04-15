@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { CheckBox, Container, Header, Content, Form, Item, Input, Label, Picker, Footer, Right, Button, Icon } from 'native-base';
-import { SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Image } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Image, Modal, Pressable } from 'react-native';
 import CheckBoxes from './CCCheckBox';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ReactDOM from "react-dom";
@@ -29,6 +29,8 @@ export default class CCSenderForm extends Component {
       UserId: null,
       Address: '',
       UserCreditOBJ: [],
+      AlertModal: '',
+      modalVisible: false
 
     };
 
@@ -160,7 +162,8 @@ export default class CCSenderForm extends Component {
 
 
     } catch (e) {
-      alert('Error get Item')
+      this.setState({ AlertModal: 'Error get item' });
+      { this.setModalVisible(true) }
       // error reading value
     }
   }
@@ -225,9 +228,9 @@ export default class CCSenderForm extends Component {
         })
       )
       .then(
-        alert('המשלוח נקלט בהצלחה'),
-        this.props.navigation.navigate('CCLockers')
-
+        this.setState({ AlertModal: 'המשלוח נקלט בהצלחה' }),
+        this.setModalVisible(true),
+        this.props.navigation.navigate('CCLockers'),
       )
 
   }
@@ -242,7 +245,7 @@ export default class CCSenderForm extends Component {
   }
 
   ValidateCust() {
-    let rjx = /^[a-z\u0590-\u05fe]+$/;
+    let rjx = /^[A-Za-z\u0590-\u05fe]+$/;
     let isNameValid = rjx.test(this.state.CustName);
     console.log("name is valid?: " + isNameValid);
     if (!isNameValid) {
@@ -279,24 +282,27 @@ export default class CCSenderForm extends Component {
     const data = await response.json()
     this.setState({ UserCreditOBJ: data, })
     console.log('Credit :' + data[0].Credit);
-    if (this.state.Error_CustName !== "שדה זה הינו חובה" && this.state.Error_CustPNum !== "שדה זה הינו חובה" )
-     if (data[0].Credit < 25) {
-        alert('אין לך מספיק קרדיטים ')
+    if (this.state.Error_CustName !== "שדה זה הינו חובה" && this.state.Error_CustPNum !== "שדה זה הינו חובה")
+      if (data[0].Credit < 25) {
         this.props.navigation.navigate('payments');
+        this.setState({ AlertModal: 'אין לך מספיק קרדיטים' });
+        { this.setModalVisible(true) }
       }
       else {
-     
+
         if (this.state.selected1 !== null && this.state.selected2 !== null) {
 
           this.addPack()
         }
         else {
-          alert(' תחנת מוצא או יעד אינה תקינה ')
+
+          this.setState({ AlertModal: 'תחנת מוצא או יעד אינה תקינה' });
+          { this.setModalVisible(true) }
         }
 
       }
 
-    
+
 
 
   }
@@ -384,8 +390,8 @@ export default class CCSenderForm extends Component {
 
       else {
 
-        alert('אין לוקרים פנויים כעת , נא לנסות מאוחר יותר');
-
+        this.setState({ AlertModal: 'אין לוקרים פנויים כעת , נא לנסות מאוחר יותר' });
+        { this.setModalVisible(true) }
         //       ------------------------------------------------------------------------------------
         // המשך לאפשרות העלאת המשלוח ושליחת הודעה קופצת לשולח בעת שמתפנה לוקר 
         //       -----------------------------------------------------------------------------------
@@ -426,9 +432,13 @@ export default class CCSenderForm extends Component {
     }
 
     else {
-      alert('אי אפשר לבצע משלוח מתחנת מוצא ליעד זהים')
-
+      this.setState({ AlertModal: 'אי אפשר לבצע משלוח מתחנת מוצא ליעד זהים' });
+      { this.setModalVisible(true) }
     }
+  }
+
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
   }
 
   render() {
@@ -437,8 +447,32 @@ export default class CCSenderForm extends Component {
     });
 
     return (
+
       <SafeAreaView>
         <ScrollView>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              this.setModalVisible(!this.state.modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+
+              <View style={styles.modalView}>
+                <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+                <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                >
+                  <Text style={styles.textStyle}> סגור </Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
           <View>
             <Header style={{ backgroundColor: 'green', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: 'green' }}> JestApp</Text></Header>
 
@@ -592,6 +626,48 @@ const styles = ({
   section: {
     marginTop: 15,
     marginBottom: 5
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#cbe8ba",
+  },
+  buttonClose: {
+    backgroundColor: "#cbe8ba",
+  },
+  textStyle: {
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: "bold",
   }
 
 });

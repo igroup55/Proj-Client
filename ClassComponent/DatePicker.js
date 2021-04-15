@@ -7,7 +7,7 @@ export default class DatePickerExample extends Component {
     this.state = { chosenDate: new Date() };
     this.setDate = this.setDate.bind(this);
   }
-  
+
   render() {
     return (
       <Text></Text>
