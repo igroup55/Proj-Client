@@ -451,11 +451,11 @@ export default class CCLockers extends Component {
 
     if (this.state.Pressed === true) {
     var button =  <Button  onPress={() => { this.Deposit() }}  block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
-        <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
+        <Text style={{ fontWeight: 'bold' }}>הפקדת חבילה</Text>
       </Button>
 var instruction = ( <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.ELockerID} להפקדה -</Text>)
 var stationName = (<Text style={styles.titles} > תחנה : {this.state.EStationName}</Text>)
-
+var activity = (<Text style={styles.greeting}> הלקוח ממתין להפקדתך </Text>)
     }
     else {
 
@@ -464,7 +464,7 @@ var stationName = (<Text style={styles.titles} > תחנה : {this.state.EStation
       </Button>
   var instruction = <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} לאיסוף -</Text>
   var stationName = (<Text style={styles.titles} > תחנה : {this.state.SStationName}</Text>)
-
+  var activity = (<Text style={styles.greeting}> החבילה מחכה לך לאיסוף </Text>)
      
      
   }
@@ -506,8 +506,7 @@ var stationName = (<Text style={styles.titles} > תחנה : {this.state.EStation
           style={{ width: 100, height: 100, marginBottom: 20 }}
         />
         <Text style={styles.greeting}>{this.state.UserName},</Text>
-        <Text style={styles.greeting}>  החבילה מחכה לך לאיסוף </Text>
-
+{activity}
 
         <View style={{ borderWidth: 2, backgroundColor: 'lightblue', direction: 'rtl', padding: 20, marginBottom: 30, borderRadius: 20 }}>
         <Text style={styles.titles}>  משלוח מס' :</Text><Text style={styles.titles}> {this.state.PackageID} </Text>

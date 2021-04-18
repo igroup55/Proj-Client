@@ -182,12 +182,11 @@ export default class CCLockers extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
-   
-    
-    .then(this.props.navigation.navigate('Home'),
-    this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' }),
     this.setModalVisible(true) 
-    )
+    this.props.navigation.navigate('Home')
+    this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
+    
+    
 
    
   }

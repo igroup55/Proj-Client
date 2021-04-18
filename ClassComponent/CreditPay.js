@@ -259,46 +259,45 @@ export default class CreditPay extends Component {
           </Button>
 
         </View>
-        {this.state.BuycreditsForm === 1 ? (<View >
-          <View style={styles.container}>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity onPress={() => { this.setState({ BuycreditsForm: 0 }) }}><Icon name="close" style={{ marginRight: 90, marginTop: 10 }} /></TouchableOpacity>
-              <Text style={styles.titles, { marginRight: 100, marginTop: 10, fontWeight: 'bold', fontSize: 20 }}>רכישת קרדיטים</Text>
-            </View>
-            <TextInput style={styles.input}
-              underlineColorAndroid="transparent"
-              placeholder="כמות קרדיטים"
-              keyboardType="numeric"
-              placeholderTextColor="green"
-              autoCapitalize="none"
-              onChangeText={val => this.setState({ FormCreditAmount: val })}
-            />
-            <TextInput style={styles.input}
-              underlineColorAndroid="transparent"
-              placeholder="שם בעל הכרטיס"
-              placeholderTextColor="green"
-              autoCapitalize="none"
-              onChangeText={val => this.setState({ FormCardOwner: val })}
-            />
-            <TextInput style={styles.input}
-              underlineColorAndroid="transparent"
-              placeholder="מספר כרטיס אשראי"
-              keyboardType="numeric"
-              placeholderTextColor="green"
-              autoCapitalize="none"
-              onChangeText={val => this.setState({ FormCardNumber: val })}
-            />
-            <TextInput style={styles.input}
-              underlineColorAndroid="transparent"
-              placeholder="קוד אימות(CVV)"
-              placeholderTextColor="green"
-              keyboardType="numeric"
-              autoCapitalize="none"
-              maxLength={3}
-              onChangeText={val => this.setState({ FormCVV: val })}
+        {this.state.BuycreditsForm === 1 ? (
+          <View >
+            <TouchableOpacity style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 30, backgroundColor: 'green', borderRadius: 20, borderWidth: 1 }} onPress={() => { this.setState({ BuycreditsForm: 0 }) }}><Icon name="close" /></TouchableOpacity>
+            <View style={{ alignItems: 'center' , backgroundColor:'white' , borderRadius:20 , borderWidth:1 , margin:20 , height:250}}>
+           
+              <TextInput style={styles.input}
+                underlineColorAndroid="transparent"
+                placeholder="כמות קרדיטים"
+                keyboardType="numeric"
+                placeholderTextColor="green"
+                autoCapitalize="none"
+                onChangeText={val => this.setState({ FormCreditAmount: val })}
+              />
+              <TextInput style={styles.input}
+                underlineColorAndroid="transparent"
+                placeholder="שם בעל הכרטיס"
+                placeholderTextColor="green"
+                autoCapitalize="none"
+                onChangeText={val => this.setState({ FormCardOwner: val })}
+              />
+              <TextInput style={styles.input}
+                underlineColorAndroid="transparent"
+                placeholder="מספר כרטיס אשראי"
+                keyboardType="numeric"
+                placeholderTextColor="green"
+                autoCapitalize="none"
+                onChangeText={val => this.setState({ FormCardNumber: val })}
+              />
+              <TextInput style={styles.input}
+                underlineColorAndroid="transparent"
+                placeholder="קוד אימות(CVV)"
+                placeholderTextColor="green"
+                keyboardType="numeric"
+                autoCapitalize="none"
+                maxLength={3}
+                onChangeText={val => this.setState({ FormCVV: val })}
 
-            />
-            {/* <View style={{flexDirection:'row'}}>
+              />
+              {/* <View style={{flexDirection:'row'}}>
                 <Text style={styles.titles2}>תוקף כרטיס</Text>
                 <TextInput style={styles.input2}
                     underlineColorAndroid="transparent"
@@ -317,44 +316,42 @@ export default class CreditPay extends Component {
                     onChangeText={val => this.setState({ email: val })}
                 />
               </View> */}
-          </View>
+            </View>
 
-          <View>
-            <Text style={styles.titles1} > סך הכל לתשלום: {this.state.FormCreditAmount} ש"ח</Text>
+            <View>
+              <Text style={styles.titles1} > סך הכל לתשלום: {this.state.FormCreditAmount} ש"ח</Text>
+            </View>
+            <View>
+              <Button onPress={() => { this.validatePayment() }} block success style={{ paddingHorizontal: 30, paddingVertical: 30, marginRight: 20, marginTop: 10, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+                <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>אישור תשלום</Text>
+              </Button>
+            </View>
           </View>
-          <View>
-            <Button onPress={() => { this.validatePayment() }} block success style={{ paddingHorizontal: 30, paddingVertical: 30, marginRight: 20, marginTop: 10, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
-              <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>אישור תשלום</Text>
-            </Button>
-          </View>
-        </View>
         ) : <View>
 
         </View>}
 
         {this.state.PayTDForm === 1 ? (
 
+          <View>
+            <TouchableOpacity style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 30, backgroundColor: 'green', borderRadius: 20, borderWidth: 1 }} onPress={() => { this.setState({ PayTDForm: 0 }) }}><Icon name="close" /></TouchableOpacity>
 
-            <View  style={styles.container3} >
-              
-              <View style={{ flexDirection: 'row' , marginBottom:-40 , textAlign:'center'  }}>
-                <TouchableOpacity onPress={() => { this.setState({ PayTDForm: 0 }) }}><Icon name="close" style={{ marginRight: 90, marginTop: 10 }} /></TouchableOpacity>
-                <Text style={styles.titles, { marginRight: 100, marginTop: 10, fontWeight: 'bold', fontSize: 20 }}>עסקאות</Text>
-              </View>
-              <View style={{marginTop:40}} >
-              <SafeAreaView>
-                <ScrollView >
-                  <Content>
-                    <List>
-                      {TransactionsList}
-                    </List>
-                  </Content>
-                </ScrollView>
-              </SafeAreaView>
+            <View style={{ backgroundColor: 'white', margin: 10, direction: 'rtl', borderRadius: 8, borderWidth: 1, maxHeight: 460 }} >
+
+              <View>
+                <SafeAreaView>
+                  <ScrollView >
+                    <Content>
+                      <List>
+                        {TransactionsList}
+                      </List>
+                    </Content>
+                  </ScrollView>
+                </SafeAreaView>
               </View>
             </View>
+          </View>
 
-          
 
         ) : null}
 

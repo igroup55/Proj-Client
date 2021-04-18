@@ -69,7 +69,7 @@ export default class CCLogin extends Component {
     { this.loginuser() }
   }
 
-  goToForgotPassword = () => this.props.navigation.navigate('ForgotPassword')
+  
 
   render() {
     return (
@@ -125,21 +125,14 @@ export default class CCLogin extends Component {
           onChangeText={val => this.setState({ password: val })}
 
         />
-
-
-
         <Button onPress={() => { this.login(this.state.email, this.state.password) }} style={styles.submitButton}><Text style={styles.submitButtonText}>Sign In          </Text></Button>
 
         <View style={{ flexDirection: 'row-reverse' }}>
           <Text style={{ color: 'blue' }}
             onPress={() => { this.props.navigation.navigate('Register'); }} >
-            Sign Up ? {'\u00A0'}
+            Not a member? Sign Up  {'\u00A0'}
           </Text>
-
-          <Text style={{ color: 'blue' }}
-            onPress={() => Linking.openURL('http://google.com')}>
-            Forgot Password ?
-          </Text>
+          
         </View>
       </View>
     )

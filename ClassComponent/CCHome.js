@@ -39,7 +39,7 @@ export default class Home extends Component {
                 <Text style={styles.modalText}>{this.state.AlertModal}</Text>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
-                  onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                  onPress={() => this.setModalVisible(true)}
                 >
                   <Text style={styles.textStyle}> סגור </Text>
                 </Pressable>
@@ -54,7 +54,7 @@ export default class Home extends Component {
             <View style={{ maxHeight: 250 }}>
               <HomeActivityList />
             </View>
-      
+       
           <Button
             title='הארנק שלי'
             onPress={() => { this.props.navigation.navigate('payments'); }}

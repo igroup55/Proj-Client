@@ -155,7 +155,7 @@ class CCDeliveryFeed1 extends React.Component {
 
   AddTDUser(weight) {
 
-    this.setState({ AlertModal: 'קטגוריה סומנה בהצלחה !! ' + ' לחץ - אני כאן - בעת ההגעה לתחנת רכבת' });
+    this.setState({ AlertModal: 'קטגוריה סומנה בהצלחה !! '  + "\n" + ' לחץ - אני כאן - בעת ההגעה לתחנת רכבת' });
 
     { this.setModalVisible(true) }
 

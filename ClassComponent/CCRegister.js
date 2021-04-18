@@ -56,6 +56,9 @@ export default class RegisterForm extends Component {
 
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
+    if(visible === false)
+    this.props.navigation.navigate('Login')
+
   }
 
 
@@ -68,6 +71,8 @@ export default class RegisterForm extends Component {
     this.setState({ UsersArr: data })
     if (this.state.UsersArr.length === 0) {
       this.AddUser();
+      this.setState({ AlertModal: 'נרשמת בהצלחה' })
+      this.setModalVisible(true)
     }
     else {
 
@@ -126,9 +131,11 @@ export default class RegisterForm extends Component {
     console.log("name is valid?: " + isNameValid);
     if (!isNameValid) {
       this.setState({ fullName_Error: "a-z או A-Z שם צריך להכיל אותיות מ א'-ת' או מ " });
+      return false
     }
     else {
       this.setState({ fullName_Error: "" })
+      return true
     }
   }
   validateEmail() {
@@ -137,9 +144,11 @@ export default class RegisterForm extends Component {
     console.log("email is valid?: " + isEmailValid);
     if (!isEmailValid) {
       this.setState({ email_Error: "text@domain.com הפורמפט לכתובת מייל הוא " });
+      return false
     }
     else {
       this.setState({ email_Error: "" })
+      return true
     }
   }
   validatePassword() {
@@ -148,9 +157,11 @@ export default class RegisterForm extends Component {
     console.log("passwordisValid?: " + isPasswordValid);
     if (!isPasswordValid) {
       this.setState({ password_Error: "סיסמא צריכה להכיל מינימום 8 אותיות לפחות אות קטנה אות גדולה ומספר באנגלית" });
+      return false
     }
     else {
       this.setState({ password_Error: "" })
+      return true
     }
   }
   validatePhone() {
@@ -159,9 +170,11 @@ export default class RegisterForm extends Component {
     console.log("phone is valid?: " + isPhoneValid);
     if (!isPhoneValid) {
       this.setState({ phone_number_Error: "מספר טלפון הוא בעל 10 ספרות" });
+      return false
     }
     else {
       this.setState({ phone_number_Error: "" })
+      return true
     }
   }
   validateID() {
@@ -170,91 +183,77 @@ export default class RegisterForm extends Component {
     console.log("id is valid?: " + isIDValid);
     if (!isIDValid) {
       this.setState({ ID_Error: "מספר מזהה הוא בעל 9 ספרות" });
+      return false
     }
     else {
       this.setState({ ID_Error: "" })
+      return true
     }
   }
   validateInPuts() {
     console.log("validateInputs")
 
-    this.validateName();
-    this.validateEmail();
-    this.validatePassword();
-    this.validatePhone();
-    this.validateID();
+    const Name = this.validateName();
+    const Email = this.validateEmail();
+    const Password = this.validatePassword();
+    const Phone = this.validatePhone();
+    const ID = this.validateID();
 
+    //  const isOk = this.validate()
 
-  }
-  validate = () => {
-    console.log("------------------starting validate")
-    this.validateInPuts();
-    console.log("after iputs")
+    if (Name === true && Email === true && Password === true && Phone === true && ID === true) {
 
-    // let fullName_Error= "";
-    // let password_Error= "";
-    // let email_Error = "";
-    // let phone_number_Error= "";
-    // let ID_Error="";
-    // let ProfilePic_Error="";
-    let OK = 0
-    // this.validateName();
-    // this.validateEmail();
-    // this.validatePassword();
-    // this.validatePhone();
-    // this.validateID();
-    if (this.state.ID_Error === "") {
-      this.setState({ IDOK: 1 });
-      OK += 1;
-      // return false;
-    }
-    if (this.state.phone_number_Error === "") {
-      this.setState({ PhoneOK: 1 });
-      // return false;
-      OK += 1;
-    }
-    if (this.state.email_Error === "") {
-      this.setState({ EmailOK: 1 });
-      // return false;
-      OK += 1;
-    }
-    if (this.state.fullName_Error === "") {
-      this.setState({ NameOK: 1 });
-      // return false;
-      OK += 1;
-    }
-    // if(this.state.ProfilePic_Error===""){
-    //   this.setState({ProfilePic_Error});
-    //   return false;
-    // }
-    if (this.state.password_Error === "") {
-      this.setState({ PassWordOK: 1 });
-      // return false;
-      OK += 1;
-    }
-    if (OK === 5) {
       this.setState({ canAddUser: 1 });
       return true;
     }
-    //  if(OK<5){
-    //     OK=0
-    //     this.setState({IDOK:0});
-    //     this.setState({PhoneOK:0});
-    //     this.setState({EmailOK:0});
-    //     this.setState({NameOK:0});
-    //     this.setState({PassWordOK:0});
-    //     return false
-    //   }
 
   }
+  // validate = () => {
+  //   console.log("------------------starting validate")
+
+  //   console.log("after iputs")
+
+  //   let OK = 0
+
+  //   if (this.state.ID_Error === "") {
+  //     this.setState({ IDOK: 1 });
+  //     OK += 1;
+  //     // return false;
+  //   }
+  //   if (this.state.phone_number_Error === "") {
+  //     this.setState({ PhoneOK: 1 });
+  //     // return false;
+  //     OK += 1;
+  //   }
+  //   if (this.state.email_Error === "") {
+  //     this.setState({ EmailOK: 1 });
+  //     // return false;
+  //     OK += 1;
+  //   }
+  //   if (this.state.fullName_Error === "") {
+  //     this.setState({ NameOK: 1 });
+  //     // return false;
+  //     OK += 1;
+  //   }
+
+  //   if (this.state.password_Error === "") {
+  //     this.setState({ PassWordOK: 1 });
+  //     // return false;
+  //     OK += 1;
+  //   }
+  // return OK
+
+  // }
   signUp = async () => {
     const user = { Fullname: this.state.fullName, Password: this.state.password, EmailAddress: this.state.email, PhoneNum: this.state.phone_number, UserId: this.state.ID, ProfilePic: this.state.ProfilePic }
 
     // here place your signup logic
-    const isValid = this.validate();
+    const isValid = this.validateInPuts()
 
 
-    { this.CheckExistUser() }
+    if (isValid === true) {
+      this.CheckExistUser()
+    }
 
   }
   // { this.props.navigation.navigate('Register'); }
@@ -276,9 +275,9 @@ export default class RegisterForm extends Component {
         <View>
 
           <View>
-            <Text style={{ fontSize: 30, textAlign: 'center', fontWeight: 'bold', marginBottom: 30 }}>ברוך הבא ל JESTAPP</Text>
-            <Thumbnail source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl97_NDIiRpKTDKaKSDtnGPZbLMRl-A8EWIw&usqp=CAU' }}
-              style={{ width: 90, height: 90, justifyContent: 'center', alignItems: 'center', alignSelf: 'center' }}
+            <Text style={{ fontSize: 30, textAlign: 'center', fontWeight: 'bold',marginTop:25}}> ברוך הבא ל- JestApp</Text>
+            <Thumbnail source={{ uri: 'https://i.ibb.co/bJwTHqz/images-removebg-preview.png' }}
+              style={{ width: 90, height: 90, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', margin: 30}}
             />
 
           </View>
@@ -381,8 +380,8 @@ export default class RegisterForm extends Component {
         </View> */}
               <View style={{ alignSelf: 'center', marginBottom: 20 }}
               >
-                <Button onPress={this.btnOpenGalery.bind(this)} style={{ alignSelf: 'center', backgroundColor: '#A7D489', borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  תמונת פרופיל </Text>
-                  <Icon name="image" style={{ alignSelf: 'center', }} />
+                <Button onPress={this.btnOpenGalery.bind(this)} style={{ marginTop:25,alignSelf: 'center', backgroundColor: '#A7D489', borderRadius: 10, borderWidth: 1, borderColor: 'black', width:150}}><Text style={{ fontWeight: 'bold',textAlign:'center' }}>  תמונת פרופיל </Text>
+                  <Icon name="image"  />
                 </Button>
 
               </View>
@@ -406,15 +405,16 @@ export default class RegisterForm extends Component {
 const styles = StyleSheet.create({
   input: {
     textAlign: 'center',
-    width: 300,
-    height: 55,
+    width: 325,
+    height: 40,
     backgroundColor: '#A7D489',
     margin: 5,
     padding: 8,
     color: 'white',
-    borderRadius: 14,
+    borderRadius: 5,
     fontSize: 18,
     fontWeight: '500',
+    borderWidth:1
   },
   FormErrorText: {
     fontSize: 12,

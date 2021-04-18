@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, ActivityIndicator, Image, TouchableOpacity, Pressable, Modal } from 'react-native'
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, View,Icon } from 'native-base';
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, View, Icon } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native';
@@ -63,62 +63,90 @@ export default class HomeActivityList extends Component {
 
   render() {
     let Activities = this.state.ActivityList1.map((Activities, key) => {
+      if (Activities.Status === 1) {
+        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/red-circle-emoji.png' }} />
+      }
+      if (Activities.Status === 2) {
+        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
+      }
+      if (Activities.Status === 3) {
+        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/yellow-circle-emoji.png' }} />
+      }
+      if (Activities.Status === 4) {
+        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
+      
+      }
 
-      return (<ListItem avatar key={key} ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/vcgW6dB/Sender-Package.jpg' }} />
+       return (<ListItem avatar key={key} ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/vcgW6dB/Sender-Package.jpg' }} />
       </Right>
         <Body>
-          <Text> </Text>
+
           <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
+          <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
+          {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:85 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }} ><Text> </Text></TouchableOpacity> */}
+
         </Body>
         <Left>
-          <Text style={{ fontWeight: 'bold' }} note> סטטוס : {Activities.Status}    </Text>
+          {status}
         </Left>
       </ListItem>)
     });
 
     let ActivitiesTD = this.state.ActivityList2.map((Activities, key) => {
+      if (Activities.Status === 0) {
+        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
+
+
+      }
+      if (Activities.Status === 1) {
+        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
+   
+      }
+      if (Activities.Status === -1) {
+        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/red-circle-emoji.png' }} />
+      }
+    
       return (<ListItem avatar key={key}  ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/HHjzgtP/Delivery-TD.jpg' }} />
       </Right>
         <Body>
-          <Text> </Text>
           <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
+          <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
+          {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:120 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }}><Text style={{textAlign:'center',fontWeight:'bold'}} >פרטים</Text></TouchableOpacity> */}
+
         </Body>
         <Left>
-          <Text style={{ fontWeight: 'bold' }} note> סטטוס : {Activities.Status}    </Text>
+          {status}
         </Left>
       </ListItem>)
     });
     return (
       <SafeAreaView>
-      <ScrollView style={styles.LastOperations}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            this.setModalVisible(!this.state.modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
+        <ScrollView style={styles.LastOperations}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              this.setModalVisible(!this.state.modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
 
-            <View style={styles.modalView}>
-              <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
-              <Text style={styles.modalText}>{this.state.AlertModal}</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => this.setModalVisible(!this.state.modalVisible)}
-              >
-                <Text style={styles.textStyle}> סגור </Text>
-              </Pressable>
+              <View style={styles.modalView}>
+                <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+                <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                >
+                  <Text style={styles.textStyle}> סגור </Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
-        </Modal>
-
-      
-
+          </Modal>
           <Content>
 
             <List >
@@ -132,8 +160,7 @@ export default class HomeActivityList extends Component {
 
             </List>
           </Content>
-       
-      </ScrollView>
+        </ScrollView>
       </SafeAreaView>
     );
   }
