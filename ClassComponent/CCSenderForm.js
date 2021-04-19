@@ -392,6 +392,7 @@ export default class CCSenderForm extends Component {
 
         this.setState({ AlertModal: 'אין לוקרים פנויים כעת , נא לנסות מאוחר יותר' });
         { this.setModalVisible(true) }
+        
         //       ------------------------------------------------------------------------------------
         // המשך לאפשרות העלאת המשלוח ושליחת הודעה קופצת לשולח בעת שמתפנה לוקר 
         //       -----------------------------------------------------------------------------------
@@ -460,7 +461,6 @@ export default class CCSenderForm extends Component {
             }}
           >
             <View style={styles.centeredView}>
-
               <View style={styles.modalView}>
                 <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
                 <Text style={styles.modalText}>{this.state.AlertModal}</Text>

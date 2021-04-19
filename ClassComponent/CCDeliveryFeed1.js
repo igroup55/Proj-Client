@@ -320,9 +320,6 @@ class CCDeliveryFeed1 extends React.Component {
         this.setState({ Rating10: CategoryRating * 10 })
       }
 
-
-
-
     }
 
 
@@ -335,11 +332,6 @@ class CCDeliveryFeed1 extends React.Component {
     const TDdata = await response.json()
 
     this.setState({ TDUserList: TDdata })
-
-
-
-
-
 
     if (weight === 3)
       this.setState({ TDUserList1: [] });

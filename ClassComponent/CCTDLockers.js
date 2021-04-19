@@ -141,11 +141,6 @@ export default class CCLockers extends Component {
   // let systemPayment =Number(selfCredit)-TDpayment;
   let TDGetPayment =Number(selfCredit)+TDpayment;
 
-  // const UserCredits1={
-  //   UserId:1,
-  //   FullName:"JestApp System",
-  //   Credit:systemPayment
-  // }
   const UserCredits2={
     UserId:UserId,
     FullName:FullName,
@@ -189,7 +184,10 @@ export default class CCLockers extends Component {
 
         this.setState({ AlertModal: 'תודה '+this.state.UserCreditOBJ[0].FullName +' החבילה הופקדה  !' }),
       this.setModalVisible(true),
-        this.props.navigation.navigate('Home')
+        setTimeout(() => {
+          this.props.navigation.navigate('Home');
+        }, 3000),
+    
       )
 
 }
@@ -205,8 +203,6 @@ export default class CCLockers extends Component {
       LockerID: this.state.SLockerID,
       PackageID: -1,
       Busy: 0,
-
-
     }
 
 
@@ -324,7 +320,7 @@ export default class CCLockers extends Component {
     })
   })
   
-  this.setState({ AlertModal: 'החבילה נאספה מהלוקר !!שתמש רשום' });
+  this.setState({ AlertModal: 'החבילה נאספה מהלוקר !!' });
       { this.setModalVisible(true) }
 
  }

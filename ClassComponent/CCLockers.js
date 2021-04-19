@@ -182,10 +182,16 @@ export default class CCLockers extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
-    this.setModalVisible(true) 
-    this.props.navigation.navigate('Home')
+    // this.setModalVisible(true) 
+    // this.props.navigation.navigate('Home')
+    // this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
     this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
-    
+    this.setModalVisible(true)
+    setTimeout(() => {
+      this.props.navigation.navigate('Home');
+    }, 3000);
+
+
     
 
    
@@ -240,8 +246,14 @@ export default class CCLockers extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     }).then(
-      this.props.navigation.navigate('Home')
+      // this.props.navigation.navigate('Home')
+      this.setState({ AlertModal: 'המשלוח בוטל !!' }),
+      this.setModalVisible(true),
+      setTimeout(() => {
+        this.props.navigation.navigate('Home');
+      }, 3000),
     )
+    
 
 
 
