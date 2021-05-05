@@ -30,7 +30,8 @@ export default class CCSenderForm extends Component {
       Address: '',
       UserCreditOBJ: [],
       AlertModal: '',
-      modalVisible: false
+      modalVisible: false,
+      Time : new Date().toISOString()
 
     };
 
@@ -129,6 +130,9 @@ export default class CCSenderForm extends Component {
       })
     })
 
+ 
+ 
+
     const Elocker_update = {
 
       LockerID: this.state.EEmptyLocker[0]["LockerID"],
@@ -136,8 +140,6 @@ export default class CCSenderForm extends Component {
       Busy: 1
 
     }
-
-
 
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers', {
       method: 'PUT',
@@ -148,6 +150,7 @@ export default class CCSenderForm extends Component {
     })
 
 
+   
   }
 
   async getData() {
@@ -338,14 +341,15 @@ export default class CCSenderForm extends Component {
 
       if (this.state.SEmptyLocker.length !== 0 && this.state.SEmptyLocker.length !== 0) {
 
-
+console.log('Empty : '+this.state.EEmptyLocker)
         const package_data = {
 
           StartStation: this.state.selected1,
           EndStation: this.state.selected2,
           Pweight: this.state.selected3,
           UserId: this.state.UserId,
-          Status: 1
+          Status: 1,
+          PackTime: new Date().toLocaleString()
 
         }
 
@@ -371,8 +375,12 @@ export default class CCSenderForm extends Component {
               this.UpdateLocker()
               this.storeData('PackageID', result)
               this.GetStationName()
-              this.storeData('SLockerID', this.state.SEmptyLocker[0]["LockerID"])
-              this.storeData('ELockerID', this.state.EEmptyLocker[0]["LockerID"])
+              if(this.state.SEmptyLocker[0]["LockerID"] !== undefined &&  this.state.EEmptyLocker[0]["LockerID"] !== undefined )
+              {
+                this.storeData('SLockerID', this.state.SEmptyLocker[0]["LockerID"])
+                this.storeData('ELockerID', this.state.EEmptyLocker[0]["LockerID"])
+              }
+              
 
               this.UpdateSenderCredits();
 
@@ -523,7 +531,6 @@ export default class CCSenderForm extends Component {
               <Text style={styles.titles}> פרטי לקוח קצה </Text>
 
 
-
               <Item>
                 <Input style={styles.InputText}
                   placeholderTextColor="grey"
@@ -584,7 +591,7 @@ export default class CCSenderForm extends Component {
                 </Item></View> */}
 
               <Button onPress={() => { this.validate() }} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, marginBottom: 10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  צור כרטיס משלוח  </Text></Button>
-
+              <Text>{this.state.Time}</Text>
             </Form>
           </View>
         </ScrollView>

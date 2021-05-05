@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, ActivityIndicator, Image, TouchableOpacity, Pressable, Modal } from 'react-native'
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, View, Icon } from 'native-base';
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text, View, Icon, Button } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native';
+import { NavigationHelpersContext } from '@react-navigation/core';
 
 export default class HomeActivityList extends Component {
   constructor(props) {
@@ -33,13 +34,20 @@ export default class HomeActivityList extends Component {
     const responseActivityList = await fetch(ActivityListData);
     const data = await responseActivityList.json()
     this.setState({ ActivityList1: data, })
-    console.log(data);
+
 
     const ActivityListDataTD = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ModuleActivity/{ModuleActivityTD}/' + UserId;
     const responseActivityListTD = await fetch(ActivityListDataTD);
     const dataTD = await responseActivityListTD.json()
     this.setState({ ActivityList2: dataTD })
     console.log(dataTD)
+
+   
+  }
+
+  navigate = (key) => {
+    if(key%2 === 0 )
+    console.log(key)
   }
 
   async getData() {
@@ -63,63 +71,117 @@ export default class HomeActivityList extends Component {
 
   render() {
     let Activities = this.state.ActivityList1.map((Activities, key) => {
+      
+
       if (Activities.Status === 1) {
-        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/red-circle-emoji.png' }} />
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/red-circle-emoji.png' }} />
+        var statustitle = <Text> ממתין להפקדה </Text>
       }
       if (Activities.Status === 2) {
-        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
+        var statustitle = <Text> הופקד וממתין לאיסוף </Text>
       }
       if (Activities.Status === 3) {
-        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/yellow-circle-emoji.png' }} />
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/yellow-circle-emoji.png' }} />
+        var statustitle = <Text> בדרך ליעד </Text>
       }
       if (Activities.Status === 4) {
-        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
-      
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
+        var statustitle = <Text> החבילה הופקדה ביעד </Text>
       }
 
-       return (<ListItem avatar key={key} ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/vcgW6dB/Sender-Package.jpg' }} />
-      </Right>
+      return (<TouchableOpacity key={key}><ListItem avatar onPress={() => {
+        this.setState({
+          AlertModal: (
+            <View>
+              <Text style={[styles.Packdetails , {fontSize:20}]}>#{Activities.PackageID}</Text>
+              <Text style={styles.Packdetails}>תחנת מוצא : {Activities.StartStation}</Text>
+              <Text style={styles.Packdetails}>תחנת יעד : {Activities.EndStation}</Text>
+              <Text style={styles.Packdetails} > סטטוס : {statustitle}</Text>
+              <Text></Text>
+    
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}>
+                <Text style={styles.textStyle}> סגור </Text>
+              </Pressable>
+             
+               
+            </View>)
+        });
+        { this.setModalVisible(true) }
+      }} ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/vcgW6dB/Sender-Package.jpg' }} />
+        </Right>
         <Body>
 
           <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
           <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
           {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:85 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }} ><Text> </Text></TouchableOpacity> */}
-
         </Body>
         <Left>
           {status}
         </Left>
-      </ListItem>)
+      </ListItem></TouchableOpacity>)
     });
 
     let ActivitiesTD = this.state.ActivityList2.map((Activities, key) => {
       if (Activities.Status === 0) {
-        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
-
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
+        var statustitle = <Text> ממתין לאיסוף </Text>
 
       }
       if (Activities.Status === 1) {
-        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
-   
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
+        var statustitle = <Text> חבילה נאספה </Text>
       }
       if (Activities.Status === -1) {
-        var status = <Image style={{ width: 30, height: 30 , marginRight:20}} source={{ uri: 'https://img.icons8.com/emoji/50/000000/red-circle-emoji.png' }} />
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/red-circle-emoji.png' }} />
+        var statustitle = <Text> הסתיים </Text>
       }
-    
-      return (<ListItem avatar key={key}  ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/HHjzgtP/Delivery-TD.jpg' }} />
-      </Right>
+      var ArrowIcon = <Icon  type="FontAwesome" color="#000" name="arrow-left"/>
+
+      return (<TouchableOpacity key={key}><ListItem avatar onPress={() => {
+        this.setState({
+          AlertModal: (
+            <View>
+             <Text></Text>
+              <Text style={styles.Packdetails} >{Activities.StartStation}     {ArrowIcon}     {Activities.EndStation}</Text>
+              <Text style={styles.Packdetails} > סטטוס : {statustitle}</Text>
+              <Text></Text>
+              <View>
+               
+              <TouchableOpacity onPress={()=> {this.navigate(key)}} style={[styles.button, styles.buttonClose]}
+                >
+                  <Text style={styles.textStyle} > הפקד </Text>
+                </TouchableOpacity>
+
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                >
+                  <Text style={styles.textStyle}> סגור </Text>
+                </Pressable>
+              </View>
+            </View>)
+        });
+        { this.setModalVisible(true) }
+      }}   ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/HHjzgtP/Delivery-TD.jpg' }} />
+        </Right>
+
         <Body>
           <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
           <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
+
           {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:120 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }}><Text style={{textAlign:'center',fontWeight:'bold'}} >פרטים</Text></TouchableOpacity> */}
 
         </Body>
         <Left>
           {status}
+
         </Left>
-      </ListItem>)
+      </ListItem></TouchableOpacity>)
     });
     return (
       <SafeAreaView>
@@ -129,21 +191,16 @@ export default class HomeActivityList extends Component {
             transparent={true}
             visible={this.state.modalVisible}
             onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
+
               this.setModalVisible(!this.state.modalVisible);
             }}
           >
             <View style={styles.centeredView}>
 
               <View style={styles.modalView}>
-                <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+                <Icon style={{ marginBottom: 10, marginTop: 0 }} name="cube" />
                 <Text style={styles.modalText}>{this.state.AlertModal}</Text>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => this.setModalVisible(!this.state.modalVisible)}
-                >
-                  <Text style={styles.textStyle}> סגור </Text>
-                </Pressable>
+
               </View>
             </View>
           </Modal>
@@ -180,29 +237,38 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#cbe8ba",
     borderRadius: 20,
+    borderColor: 'black',
+    borderWidth: 2 ,
     padding: 35,
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: "black",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 25
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
+    height: 350,
+    width : 300
   },
   button: {
     borderRadius: 10,
+    borderColor: 'black',
+    borderWidth: 1 ,
     padding: 10,
-    elevation: 2
+    margin: 5,
+    height:42,
+    width:200,
+    alignSelf:'center'
   },
   buttonOpen: {
-    backgroundColor: "#cbe8ba",
+    backgroundColor: "white",
   },
   buttonClose: {
-    backgroundColor: "#cbe8ba",
+    backgroundColor: "white",
   },
   textStyle: {
     color: "black",
@@ -210,9 +276,16 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   modalText: {
-    marginBottom: 15,
     textAlign: "center",
     fontWeight: "bold",
+  },
+  Packdetails: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 1,
+    marginBottom:10
+
+
   }
 
 });

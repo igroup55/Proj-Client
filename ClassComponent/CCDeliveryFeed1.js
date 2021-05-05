@@ -1,12 +1,13 @@
 
 import * as React from 'react';
 import { List, Checkbox, Button } from 'react-native-paper';
-import { Modal, SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Pressable } from 'react-native';
+import { Modal, SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Pressable , Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Icon } from 'native-base';
 
 
 class CCDeliveryFeed1 extends React.Component {
+  
   state = {
     expanded: false,
     StartStation: null,
@@ -39,8 +40,10 @@ class CCDeliveryFeed1 extends React.Component {
     AlertModal: '',
     modalVisible: false
 
+    
 
   }
+  
 
   _handlePress = () =>
     this.setState({
@@ -285,37 +288,74 @@ class CCDeliveryFeed1 extends React.Component {
 
   ChanceToPickup() {
 
+    
 
     if (this.state.TDUserList.length !== 0) {
       let RatingSum = 0;
+      let RatingArr = [];
       this.state.TDUserList.map((interest, key) => {
 
-        RatingSum += interest["Rating"];
-
+      RatingArr.push(interest["Rating"]/10)
+      
+      
       })
-
+      
       let TDRating = RatingSum / this.state.TDUserList.length;
-      TDRating = 10 - TDRating;
-
+     TDRating = 10 - TDRating;
 
 
       if (this.state.TDUserList[0]["Pweight"] === 3 && this.state.TDUserList1.length !== 0 && this.state.PackagesList1.length <= this.state.TDUserList1.length) {
+        let SuccessArr = []
+        
+        let Size = this.state.PackagesList1.length - 1
+        SuccessArr = this.k_combinations(RatingArr,Size)
 
+        console.log(SuccessArr)
         let CategoryRating = TDRating * (this.state.PackagesList1.length / this.state.TDUserList1.length)
         console.log(TDRating + '*' + this.state.PackagesList1.length + '/' + this.state.TDUserList1.length)
         this.setState({ Rating3: CategoryRating * 10 })
       }
 
       if (this.state.TDUserList[0]["Pweight"] === 6 && this.state.TDUserList2.length !== 0 && this.state.PackagesList2.length <= this.state.TDUserList2.length) {
+        
+        var SuccessArr = []
+        let Size = this.state.PackagesList2.length
+         SuccessArr = this.k_combinations(RatingArr,Size);
+         console.log(SuccessArr)
+         console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
+         
+        var total = 0;
+        var probability = 1;
+         for (let i = 0; i < SuccessArr.length ; i++) {
+          if(this.state.PackagesList2.length !== 1)
+          var probability = 1;
+          for (let j = 0; j < Size ; j++) {
+            if(this.state.PackagesList2.length !== 1)
+             probability *= SuccessArr[i][j]
+            else
+            probability = SuccessArr[i][j]
+            
+          }
+          console.log(probability);
+          total += probability
+         }
+         console.log(this.state.TDUserList2)
 
-        let CategoryRating = TDRating * (this.state.PackagesList2.length / this.state.TDUserList2.length)
-        console.log(TDRating + '*' + this.state.PackagesList2.length + '/' + this.state.TDUserList2.length)
-        this.setState({ Rating6: CategoryRating * 10 })
-
+        if(this.state.PackagesList2.length === 1 && this.state.TDUserList2.length > 1)
+        total = (total/(this.state.TDUserList2.length)*(1/this.state.TDUserList2.length))
+        else
+         total = 1-(total/this.state.TDUserList2.length)
+         total = total.toFixed(2);
+         console.log('total : '+(total)); 
+        this.setState({ Rating6: total* 100 })
 
       }
 
       if (this.state.TDUserList[0]["Pweight"] === 10 && this.state.TDUserList3.length !== 0 && this.state.PackagesList3.length <= this.state.TDUserList3.length) {
+        let SuccessArr = []
+        let Size = this.state.PackagesList3.length - 1
+         SuccessArr = this.k_combinations(RatingArr,Size);
+         console.log(SuccessArr)
         let CategoryRating = TDRating * (this.state.PackagesList3.length / this.state.TDUserList3.length)
         this.setState({ Rating10: CategoryRating * 10 })
       }
@@ -365,19 +405,54 @@ class CCDeliveryFeed1 extends React.Component {
 
     { this.ChanceToPickup() }
 
-
-
-
-
   }
+
+   k_combinations(set, k) {
+    var i, j, combs, head, tailcombs;
+    
+   
+    // There is no way to take e.g. sets of 5 elements from
+    // a set of 4.
+    if (k > set.length || k <= 0) {
+      return [];
+    }
+    
+    // K-sized set has only one K-sized subset.
+    if (k == set.length) {
+      return [set];
+    }
+    
+    // There is N 1-sized subsets in a N-sized set.
+    if (k == 1) {
+      combs = [];
+      for (i = 0; i < set.length; i++) {
+        combs.push([set[i]]);
+      }
+      return combs;
+    }
+    combs = [];
+	for (i = 0; i < set.length - k + 1; i++) {
+		// head is a list that includes only our current element.
+		head = set.slice(i, i + 1);
+		// We take smaller combinations from the subsequent elements
+		tailcombs = this.k_combinations(set.slice(i + 1), k - 1);
+		// For each (k-1)-combination we join it with the current
+		// and store it to the set of k-combinations.
+		for (j = 0; j < tailcombs.length; j++) {
+			combs.push(head.concat(tailcombs[j]));
+		}
+	}
+	return combs;
+}
+
 
   async getpackages(weight) {
 
     let Pweight = weight
-
+    let express = 'False'
 
     //tar2 - url צריך לשנות אחרי שמעדכנים ל tar 1
-    const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + weight;
+    const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + weight + '&express='+express;
     const response = await fetch(apiUserUrl);
     const data = await response.json()
     this.setState({ PackagesList: data })
@@ -458,8 +533,12 @@ class CCDeliveryFeed1 extends React.Component {
   }
 
   render() {
-
-
+    
+ 
+    var SStation = this.state.SStationName.replace(/"/gi,'')
+    var EStation = this.state.EStationName.replace(/"/gi,'')
+    
+var ArrowIcon = <Icon  type="FontAwesome" color="#000" name="arrow-left"/>
 
     return (
       <ScrollView>
@@ -487,7 +566,8 @@ class CCDeliveryFeed1 extends React.Component {
           </View>
         </Modal>
 
-        <List.Section title={this.state.SStationName + '    ---->   ' + this.state.EStationName} titleStyle={{ fontSize: 15, textAlign: 'center', }}  >
+        <List.Section >
+        <List.Subheader style={{textAlign:'center' , fontSize:20 , color:'black', fontWeight:'bold' , borderColor:'black', borderWidth:1 , backgroundColor: '#cbe8ba' , borderRadius:10 , marginRight:10, marginLeft:10 , marginTop:10}} > {SStation}  {ArrowIcon}  {EStation} </List.Subheader>
           <List.Accordion
             title=' חבילות עד 3 ק"ג'
             left={props => <List.Icon {...props} icon="cube" />}
