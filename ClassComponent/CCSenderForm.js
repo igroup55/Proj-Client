@@ -5,9 +5,9 @@ import CheckBoxes from './CCCheckBox';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ReactDOM from "react-dom";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getDistance, getPreciseDistance } from 'geolib';
 
 //עלות שריון לוקר
-const LockerCost = 25;
 //////////////////////////
 export default class CCSenderForm extends Component {
   constructor(props) {
@@ -31,8 +31,8 @@ export default class CCSenderForm extends Component {
       UserCreditOBJ: [],
       AlertModal: '',
       modalVisible: false,
-      Time : new Date().toISOString()
-
+      Time: new Date().toISOString(),
+      payment: 0,
     };
 
   }
@@ -59,8 +59,6 @@ export default class CCSenderForm extends Component {
     const response2 = await fetch(apiUserCreditsUrl);
     const UCdata = await response2.json()
     this.setState({ UserCreditOBJ: UCdata, })
-
-
 
   }
   onValueChange1 = (value) => {
@@ -130,8 +128,8 @@ export default class CCSenderForm extends Component {
       })
     })
 
- 
- 
+
+
 
     const Elocker_update = {
 
@@ -150,7 +148,7 @@ export default class CCSenderForm extends Component {
     })
 
 
-   
+
   }
 
   async getData() {
@@ -200,7 +198,7 @@ export default class CCSenderForm extends Component {
     let FullName = this.state.UserCreditOBJ[0].FullName;
     let selfCredit = this.state.UserCreditOBJ[0].Credit;
     let UserId = this.state.UserId
-    let afterUpdate = Number(selfCredit) - LockerCost;
+    let afterUpdate = Number(selfCredit) - this.state.payment;
     const UserCredits = {
       UserId: UserId,
       FullName: FullName,
@@ -210,7 +208,7 @@ export default class CCSenderForm extends Component {
     const Transaction = {
       UserID1: this.state.UserId,
       UserID2: 1,
-      CreditAmount: LockerCost,
+      CreditAmount: this.state.payment,
       TransactionDate: date,
     }
     {/*לשים לב שהניתוב הוא ל tar 2 */ }
@@ -242,6 +240,66 @@ export default class CCSenderForm extends Component {
 
     { this.ValidateCust() }
     { this.validatePnum() }
+    this.getCoordsBySelectedStation();
+
+  }
+
+  async getCoordsBySelectedStation() {
+
+
+    const apiCoordsStartStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations?stationID=' + this.state.selected1;
+    const Sresponse = await fetch(apiCoordsStartStationsUrl);
+    const Sdata = await Sresponse.json()
+    this.setState({
+      SLatitude: Sdata[0].Latitude,
+      SLongitude: Sdata[0].Longitude
+    });
+
+    //alert(this.state.SLatitude + ' , ' + this.state.SLongitude);
+
+    const apiCoordsEndStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations?stationID=' + this.state.selected2;
+    const Eresponse = await fetch(apiCoordsEndStationsUrl);
+    const Edata = await Eresponse.json()
+    this.setState({
+      ELatitude: Edata[0].Latitude,
+      ELongitude: Edata[0].Longitude
+    });
+
+    //alert(this.state.ELatitude + ' , ' + this.state.ELongitude);
+
+
+    StartLatitude = this.state.SLatitude;
+    StartLongitude = this.state.SLongitude;
+    EndLatitude = this.state.ELatitude;
+    EndLongitude = this.state.ELongitude;
+
+    // this.computeDistance([this.state.SLatitude, this.state.SLongitude], [this.state.ELatitude, this.state.ELongitude]);
+    // alert(Distance);
+    let Distance = 0;
+
+    Distance = getDistance({ latitude: StartLatitude, longitude: StartLongitude }, { latitude: EndLatitude, longitude: EndLongitude })
+    // alert(`Distance\n\n${Distance} Meter\nOR\n${Distance / 1000} KM`
+    // );
+
+
+    if (Distance / 1000 <= 15) {
+      this.setState({ payment: 15 })
+    }
+    if (Distance / 1000 > 15 && Distance / 1000 <= 25) {
+      this.setState({ payment: 20 })
+    }
+    if (Distance / 1000 > 25 && Distance / 1000 <= 55) {
+      this.setState({ payment: 24.5 })
+    }
+    if (Distance / 1000 > 55 && Distance / 1000 <= 100) {
+      this.setState({ payment: 34.5 })
+    }
+    if (Distance / 1000 > 100 && Distance / 1000 <= 250) {
+      this.setState({ payment: 44 })
+    }
+    if (Distance / 1000 > 250) {
+      this.setState({ payment: 60 })
+    }
 
     this.getCreditById();
 
@@ -286,7 +344,7 @@ export default class CCSenderForm extends Component {
     this.setState({ UserCreditOBJ: data, })
     console.log('Credit :' + data[0].Credit);
     if (this.state.Error_CustName !== "שדה זה הינו חובה" && this.state.Error_CustPNum !== "שדה זה הינו חובה")
-      if (data[0].Credit < 25) {
+      if (data[0].Credit < this.state.payment) {
         this.props.navigation.navigate('payments');
         this.setState({ AlertModal: 'אין לך מספיק קרדיטים' });
         { this.setModalVisible(true) }
@@ -309,10 +367,26 @@ export default class CCSenderForm extends Component {
 
 
   }
+
+
+  UpdatePrice() {
+    const UpdatePrice = {
+      PackageId: this.state.PackageID,
+      Price: this.state.payment
+    }
+
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages/{UpdatePrice}', {
+      method: 'PUT',
+      body: JSON.stringify(UpdatePrice),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8'
+      })
+    })
+  }
+
+
   ////////////////////////////////////////////////////////
   async addPack() {
-
-
 
     // ----------------------------------------------------------------------------------------------------------------
     // Search For empty lockers ( לוקרים פנויים )
@@ -341,7 +415,7 @@ export default class CCSenderForm extends Component {
 
       if (this.state.SEmptyLocker.length !== 0 && this.state.SEmptyLocker.length !== 0) {
 
-console.log('Empty : '+this.state.EEmptyLocker)
+        console.log('Empty : ' + this.state.EEmptyLocker)
         const package_data = {
 
           StartStation: this.state.selected1,
@@ -375,14 +449,14 @@ console.log('Empty : '+this.state.EEmptyLocker)
               this.UpdateLocker()
               this.storeData('PackageID', result)
               this.GetStationName()
-              if(this.state.SEmptyLocker[0]["LockerID"] !== undefined &&  this.state.EEmptyLocker[0]["LockerID"] !== undefined )
-              {
+              if (this.state.SEmptyLocker[0]["LockerID"] !== undefined && this.state.EEmptyLocker[0]["LockerID"] !== undefined) {
                 this.storeData('SLockerID', this.state.SEmptyLocker[0]["LockerID"])
                 this.storeData('ELockerID', this.state.EEmptyLocker[0]["LockerID"])
               }
-              
+
 
               this.UpdateSenderCredits();
+              this.UpdatePrice();
 
             },
             (error) => {
@@ -400,7 +474,7 @@ console.log('Empty : '+this.state.EEmptyLocker)
 
         this.setState({ AlertModal: 'אין לוקרים פנויים כעת , נא לנסות מאוחר יותר' });
         { this.setModalVisible(true) }
-        
+
         //       ------------------------------------------------------------------------------------
         // המשך לאפשרות העלאת המשלוח ושליחת הודעה קופצת לשולח בעת שמתפנה לוקר 
         //       -----------------------------------------------------------------------------------

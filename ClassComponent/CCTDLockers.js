@@ -35,7 +35,7 @@ export default class CCLockers extends Component {
       error:null,
       canOpenLocker:0,
       UserCreditOBJ:[],
-      TDPayment:25,
+      TDPayment:0,
       AlertModal: '',
       modalVisible: false,
       
@@ -59,12 +59,15 @@ export default class CCLockers extends Component {
     const responseweight = await fetch(apiTDUser1Url);
     const TDArrival1data = await responseweight.json()
     console.log(TDArrival1data.Pweight)
+    
     this.setState({
       Pweight: TDArrival1data.Pweight,
       DeliveryID: TDArrival1data.DeliveryID
     })
 
-    const apiTDUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + this.state.Pweight;
+    
+
+    const apiTDUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + this.state.Pweight+'&express= false';
     const response = await fetch(apiTDUserUrl);
     const TDArrivaldata = await response.json()
     this.setState({PackagesList:TDArrivaldata})
@@ -131,15 +134,27 @@ export default class CCLockers extends Component {
     
       }
 
+
+      async getPrice(){
+        const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.PackageID;
+        const response = await fetch(apiPackagePricesUrl);
+        const data = await response.json()
+        this.setState({TDPayment: data[0]["Price"]})
+
+        this.UpdateTDCredits()
+
+      }
       ///////////////עדכון טרנזקציות תשלום//////////////////
 
  UpdateTDCredits(){
+
+
   let FullName = this.state.UserCreditOBJ[0].FullName;
   let selfCredit= this.state.UserCreditOBJ[0].Credit;
   let UserId = this.state.UserId;
-  let TDpayment=this.state.TDPayment;
+  
   // let systemPayment =Number(selfCredit)-TDpayment;
-  let TDGetPayment =Number(selfCredit)+TDpayment;
+  let TDGetPayment =Number(selfCredit)+this.state.TDPayment;
 
   const UserCredits2={
     UserId:UserId,
@@ -150,7 +165,7 @@ export default class CCLockers extends Component {
   const Transaction={
     UserID1:1,
     UserID2:this.state.UserId,
-    CreditAmount:TDpayment,
+    CreditAmount:this.state.TDPayment,
     TransactionDate:date,
   }
   {/*לשים לב שהניתוב הוא ל tar 2 */}
@@ -375,7 +390,7 @@ export default class CCLockers extends Component {
 
     this.setState({ AlertModal: 'החבילה הופקדה בהצלחה' });
       { this.setModalVisible(true) }
-    this.UpdateTDCredits()
+    this.getPrice();
 
   }
 
