@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { CheckBox, Text, StyleSheet, View } from "react-native";
 import { Container, Header, Content, Form, Item, Input, Label, Picker, Footer, Right, Button, Icon } from 'native-base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+storeData = async (key, value) => {
+
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(key, jsonValue);
+    console.log(key + ": " + jsonValue);
+  }
+  catch (e) {
+    console.log(e);
+  }
+};
 
 const CheckBoxes = () => {
 
   const [isSelected, setSelection] = useState(false);
-
+  this.storeData('Express?',isSelected)
   return (
     <View style={styles.section}>
       <Icon style={{ alignSelf: 'center' }} name="home" />
@@ -15,34 +27,21 @@ const CheckBoxes = () => {
         <CheckBox
           value={isSelected}
           onValueChange={setSelection}
-
         />
-
       </View>
 
       <Text>
         {isSelected ? (<View style={styles.section}>
-
-
           <View  >
-
-
             <Item>
               <Label>כתובת</Label>
               <Input style={styles.InputText}
                 placeholderTextColor="grey"
                 placeholder="כתובת"
                 returnKeyType="search"
-
-
               />
             </Item>
-
-
-
-
           </View>
-
         </View>) : null}</Text>
     </View>
   );

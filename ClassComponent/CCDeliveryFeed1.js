@@ -305,15 +305,37 @@ class CCDeliveryFeed1 extends React.Component {
 
 
       if (this.state.TDUserList[0]["Pweight"] === 3 && this.state.TDUserList1.length !== 0 && this.state.PackagesList1.length <= this.state.TDUserList1.length) {
-        let SuccessArr = []
-        
-        let Size = this.state.PackagesList1.length - 1
-        SuccessArr = this.k_combinations(RatingArr,Size)
+        var SuccessArr = []
+        let Size = this.state.PackagesList1.length
+         SuccessArr = this.k_combinations(RatingArr,Size);
+         console.log(SuccessArr)
+         console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
+         
+        var total = 0;
+        var probability = 1;
+         for (let i = 0; i < SuccessArr.length ; i++) {
+          if(this.state.PackagesList1.length !== 1)
+          var probability = 1;
+          for (let j = 0; j < Size ; j++) {
+            if(this.state.PackagesList1.length !== 1)
+             probability *= SuccessArr[i][j]
+            else
+            probability = SuccessArr[i][j]
+            
+          }
+          console.log(probability);
+          total += probability
+         }
+         console.log(this.state.TDUserList1)
 
-        console.log(SuccessArr)
-        let CategoryRating = TDRating * (this.state.PackagesList1.length / this.state.TDUserList1.length)
-        console.log(TDRating + '*' + this.state.PackagesList1.length + '/' + this.state.TDUserList1.length)
-        this.setState({ Rating3: CategoryRating * 10 })
+        if(this.state.PackagesList1.length === 1 && this.state.TDUserList1.length > 1)
+        total = (total/(this.state.TDUserList1.length)*(1/this.state.TDUserList1.length))
+        else
+         total = 1-(total/this.state.TDUserList1.length)
+         total = total.toFixed(2);
+         console.log('total : '+(total)); 
+        this.setState({ Rating3: total* 100 })
+
       }
 
       if (this.state.TDUserList[0]["Pweight"] === 6 && this.state.TDUserList2.length !== 0 && this.state.PackagesList2.length <= this.state.TDUserList2.length) {
@@ -352,12 +374,37 @@ class CCDeliveryFeed1 extends React.Component {
       }
 
       if (this.state.TDUserList[0]["Pweight"] === 10 && this.state.TDUserList3.length !== 0 && this.state.PackagesList3.length <= this.state.TDUserList3.length) {
-        let SuccessArr = []
-        let Size = this.state.PackagesList3.length - 1
+        var SuccessArr = []
+        let Size = this.state.PackagesList3.length
          SuccessArr = this.k_combinations(RatingArr,Size);
          console.log(SuccessArr)
-        let CategoryRating = TDRating * (this.state.PackagesList3.length / this.state.TDUserList3.length)
-        this.setState({ Rating10: CategoryRating * 10 })
+         console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
+         
+        var total = 0;
+        var probability = 1;
+         for (let i = 0; i < SuccessArr.length ; i++) {
+          if(this.state.PackagesList3.length !== 1)
+          var probability = 1;
+          for (let j = 0; j < Size ; j++) {
+            if(this.state.PackagesList3.length !== 1)
+             probability *= SuccessArr[i][j]
+            else
+            probability = SuccessArr[i][j]
+            
+          }
+          console.log(probability);
+          total += probability
+         }
+         console.log(this.state.TDUserList3)
+
+        if(this.state.PackagesList3.length === 1 && this.state.TDUserList3.length > 1)
+        total = (total/(this.state.TDUserList3.length)*(1/this.state.TDUserList3.length))
+        else
+         total = 1-(total/this.state.TDUserList3.length)
+         total = total.toFixed(2);
+         console.log('total : '+(total)); 
+        this.setState({ Rating10: total* 100 })
+
       }
 
     }

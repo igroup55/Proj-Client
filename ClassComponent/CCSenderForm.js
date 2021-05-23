@@ -33,6 +33,7 @@ export default class CCSenderForm extends Component {
       modalVisible: false,
       Time: new Date().toISOString(),
       payment: 0,
+      ExpressP : false
     };
 
   }
@@ -147,6 +148,22 @@ export default class CCSenderForm extends Component {
       })
     })
 
+    const UpdatePackLockers = {
+
+      PackageId: this.state.PackageID,
+      SLockerID: this.state.SEmptyLocker[0]["LockerID"],
+      ELockerID: this.state.EEmptyLocker[0]["LockerID"]
+    }
+
+
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages/{UpdatePackLocker}/{Locker}', {
+      method: 'PUT',
+      body: JSON.stringify(UpdatePackLockers),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
+
 
 
   }
@@ -194,7 +211,7 @@ export default class CCSenderForm extends Component {
   }
   ///////////////עדכון טרנזקציות תשלום//////////////////
 
-  UpdateSenderCredits() {
+  async UpdateSenderCredits() {
     let FullName = this.state.UserCreditOBJ[0].FullName;
     let selfCredit = this.state.UserCreditOBJ[0].Credit;
     let UserId = this.state.UserId
@@ -205,6 +222,8 @@ export default class CCSenderForm extends Component {
       Credit: afterUpdate
     }
     const date = new Date();
+
+
     const Transaction = {
       UserID1: this.state.UserId,
       UserID2: 1,
@@ -413,8 +432,12 @@ export default class CCSenderForm extends Component {
 
     if (this.state.selected1 !== this.state.selected2) {
 
-      if (this.state.SEmptyLocker.length !== 0 && this.state.SEmptyLocker.length !== 0) {
+      if (this.state.SEmptyLocker.length !== 0 && this.state.EEmptyLocker.length !== 0) {
 
+        jsonValue = await AsyncStorage.getItem('Express?')
+        jsonValue != null ? IfExpress = JSON.parse(jsonValue) : null;
+        this.setState({ ExpressP: IfExpress })
+console.log('Express Package : '+ this.state.ExpressP)
         console.log('Empty : ' + this.state.EEmptyLocker)
         const package_data = {
 
@@ -423,7 +446,10 @@ export default class CCSenderForm extends Component {
           Pweight: this.state.selected3,
           UserId: this.state.UserId,
           Status: 1,
-          PackTime: new Date().toLocaleString()
+          PackTime: new Date().toLocaleString(),
+          ExpressP: this.state.ExpressP
+
+
 
         }
 

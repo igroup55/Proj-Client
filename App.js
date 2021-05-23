@@ -18,6 +18,8 @@ import CCTrainRouteSelection from './ClassComponent/CCTrainRouteSelection';
 import CCExpressRouteSelection from './ClassComponent/CCExpressRouteSelection';
 import CCTrainSelection from './ClassComponent/CCTrainSelection';
 import CreditPay from './ClassComponent/CreditPay';
+import CCExpressFeed from './ClassComponent/CCExpressFeed';
+
 
 const Stack = createStackNavigator();
 
@@ -139,6 +141,18 @@ export default function App() {
 
           }
         }} />
+  <Stack.Screen name="ExpressFeed" component={CCExpressFeed} options={{
+          title: 'ExpressFeed',
+          headerStyle: {
+            backgroundColor: 'green',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center'
+
+          }
+        }} />        
 
       </Stack.Navigator>
 

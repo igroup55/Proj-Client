@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View, Image, TouchableOpacity, Dimensions, Pressable, Modal } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Button,Icon } from 'native-base';
+import { Button, Icon } from 'native-base';
 import CCSenderForm from './CCSenderForm';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps'
@@ -26,6 +26,9 @@ export default class CCLockers extends Component {
       canOpenLocker: 0,
       AlertModal: '',
       modalVisible: false,
+      UserId: null,
+      UserCreditOBJ: [],
+      Credit: 0,
     }
   }
 
@@ -57,7 +60,10 @@ export default class CCLockers extends Component {
       jsonValue = await AsyncStorage.getItem('UserId')
 
       jsonValue != null ? UserDetails = JSON.parse(jsonValue) : null;
-      this.setState({ UserName: UserDetails.FullName })
+      this.setState({
+        UserName: UserDetails.FullName,
+        UserId: UserDetails.UserId,
+      })
 
     } catch (e) {
       this.setState({ AlertModal: 'Error get Item' });
@@ -66,8 +72,9 @@ export default class CCLockers extends Component {
     }
   }
 
-  async getMultiple() {
 
+
+  async getMultiple() {
 
     try {
 
@@ -192,12 +199,50 @@ export default class CCLockers extends Component {
     }, 3000);
 
 
-    
 
-   
+
+
+  }
+
+  async getUSerCredit() {
+
+    const apiUserCreditsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?UserID=' + this.state.UserId;
+    const response2 = await fetch(apiUserCreditsUrl);
+    const UCdata = await response2.json()
+    this.setState({ UserCreditOBJ: UCdata, })
+
+    const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.PackageID;
+    const response = await fetch(apiPackagePricesUrl);
+    const data = await response.json()
+    this.setState({ Credit: data[0]["Price"] })
+
+
+
+    this.CancelPackage();
   }
 
   CancelPackage() {
+
+
+    alert(this.state.Credit);
+
+    let TDGetPayment = Number(this.state.UserCreditOBJ[0].Credit) + this.state.Credit;
+
+
+    const UserCredits = {
+      UserId: this.state.UserId,
+      FullName: this.state.FullName,
+      Credit: TDGetPayment
+    }
+
+
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits', {
+      method: 'PUT',
+      body: JSON.stringify(UserCredits),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
 
     const Package_cancel = {
 
@@ -253,7 +298,7 @@ export default class CCLockers extends Component {
         this.props.navigation.navigate('Home');
       }, 3000),
     )
-    
+
 
 
 
@@ -321,7 +366,7 @@ export default class CCLockers extends Component {
           <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
         </Button> */}
 
-        <Button onPress={() => { this.CancelPackage() }} block danger style={{ marginRight: 40, marginLeft: 40, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+        <Button onPress={() => { this.getUSerCredit() }} block danger style={{ marginRight: 40, marginLeft: 40, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
           <Text style={{ fontWeight: 'bold' }}>ביטול משלוח</Text>
         </Button>
 
