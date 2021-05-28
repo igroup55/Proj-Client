@@ -40,17 +40,16 @@ export default class CCDeliveryExpressFeed extends Component {
       if (data.PackageId === pack.PackageId) {
 
         data.selected = (data.selected == null) ? true : !data.selected;
-        
-        console.log('selected ' + data.selected)
+
       
       }
 
       this.setState({ renderData });
     })
     
-    this.setState({SelectedArr : renderData})
-    //this.storeData('SelectedPacks : ', renderData)
-this.AddSelectedPacks()
+    this.setState({SelectedArr : [...renderData]})
+  
+
   }
 
   async getData (activity) {
@@ -105,21 +104,38 @@ this.AddSelectedPacks()
 
   AddSelectedPacks = () => {
 
-    // let activity = 'selectedpacks'
-    // this.getData(activity)
-console.log('SelectedArr : ' +this.state.SelectedArr)
+let selected = []
     this.state.SelectedArr.map((pack, key) => {
     if(pack.selected === true){
-      this.setState({ selectedItem: [...this.state.selectedItem, pack] })
+      console.log('SelectedArr : ' +pack.selected)
+      // this.setState({ selectedItem: [...this.state.selectedItem, pack] }, () => {console.log(this.state.selectedItem)})
+   selected.push(pack)
+   
     }
+   
     
     })
+    console.log(selected)
+    this.setState({selectedItem: selected},()=>{console.log(this.state.selectedItem)
+    
+    
+      fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ExpressUser', {
+        method: 'POST',
+        body: JSON.stringify(customer_data),
+        headers: new Headers({
+          'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+        })
+      })
+
+    })
+
     // alert(this.state.SelectedArr);
     //   this.setState({ SelectedArr: [...this.state.SelectedArr, pack] })
     //   else
     //  this.setState = items.filter(item => item !== valueToRemove)
     // this.setState({ SelectedArr: [...this.state.SelectedArr, pack] })
-   console.log(this.state.selectedItem)
+
+   
   }
 
 
@@ -163,7 +179,7 @@ console.log('SelectedArr : ' +this.state.SelectedArr)
           )}
         />
 
-          <TouchableOpacity onPress={this.AddSelectedPacks}><Text>שריין חבילה</Text></TouchableOpacity>
+          <TouchableOpacity  style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 50,padding:10, borderWidth: 1, borderColor: 'black' }} onPress={this.AddSelectedPacks}><Text style={{textAlign:'center' , fontWeight:'bold' , fontSize:15}}>שריין חבילה</Text></TouchableOpacity>
         </View>)
 
     }

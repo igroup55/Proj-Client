@@ -38,6 +38,9 @@ export default class CCLockers extends Component {
       TDPayment:0,
       AlertModal: '',
       modalVisible: false,
+      SenderId:0,
+      senderToken:''
+
       
     }
   }
@@ -100,7 +103,30 @@ export default class CCLockers extends Component {
   error => this.setState({error:error.message}),
   {enableHighAccuracy:true,timeout:20000,maximumAge:2000}
   );
+
+  this.getSenderDetails()
+
   }
+//קבלת איידי +טוקן שולח
+async getSenderDetails(){
+
+  console.log(this.state.PackageID)
+const apiSenderId = 'http://proj.ruppin.ac.il/igroup55/test2/tar2/api/Packages/{MYPackageID}?PackageId='+this.state.PackageID;
+ const responseSenderId = await fetch(apiSenderId);
+ const senderId = await responseSenderId.json();
+ console.log("the senderId is: "+senderId.UserId);
+ this.setState({SenderId:senderId.UserId});
+
+const apiSenderToken = 'http://proj.ruppin.ac.il/igroup55/test2/tar2/api/Users/{GetSenderToken}?UserId='+senderId.UserId+'&PackageID='+this.state.PackageID;
+const responseSenderToken = await fetch(apiSenderToken);
+const senderToken = await responseSenderToken.json();
+this.setState({senderToken:senderToken.Token});
+console.log("the sender token is: "+this.state.senderToken)
+
+ }
+ 
+
+//
 
 
   async getData() {
@@ -249,6 +275,7 @@ export default class CCLockers extends Component {
 
     { this.UpdatePackageStatus() }
 
+    this.PickedUpNotification();
 
 
   }
@@ -390,10 +417,83 @@ export default class CCLockers extends Component {
 
     this.setState({ AlertModal: 'החבילה הופקדה בהצלחה' });
       { this.setModalVisible(true) }
+    this.UpdateTDStatus();
+
+    this.PackageArrivedNotification();
+
+  }
+
+  async UpdateTDStatus() {
+
+
+    const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDeliveryId}?UserId=' + this.state.UserId;
+    const responseweight = await fetch(apiTDUser1Url);
+    const TDArrival1data = await responseweight.json()
+    this.setState({
+      DeliveryID: TDArrival1data[0].DeliveryID
+    })
+
+
+    const TD1Package_update = {
+      PackageID: this.state.PackageID,
+      DeliveryID: this.state.DeliveryID,
+      Status: 2
+    }
+
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser', {
+      method: 'PUT',
+      body: JSON.stringify(TD1Package_update),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8'
+      })
+    })
+
+
     this.getPrice();
 
   }
 
+  PackageArrivedNotification =async()=> {
+    let message = {
+      to: this.state.senderToken,
+      sound: 'default',
+      title: ' חבילה '+this.state.PackageID+' הופקדה ',
+      body: 'שליח הרכבת העביר את החבילה לתחנת היעד',
+      data: { someData: {DeliveryID:this.state.DeliveryID,UserID: this.state.UserId} },
+    };
+  
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    console.log(message.data)
+  }
+
+  PickedUpNotification =async()=> {
+    let message = {
+      to: this.state.senderToken,
+      sound: 'default',
+      title: ' חבילה '+this.state.PackageID+' נאספה ',
+      body: 'שליח רכבת אסף את החבילה שלך מתחנת המוצא',
+      data: { someData: {DeliveryID:this.state.DeliveryID,UserID: this.state.UserId} },
+    };
+  
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    console.log(message.data)
+  }
 
 
 

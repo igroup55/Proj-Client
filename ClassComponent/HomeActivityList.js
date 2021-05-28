@@ -631,7 +631,6 @@ export default class HomeActivityList extends Component {
 
 
   async getPrice() {
-    console.log('hii')
 
     const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.PackageID;
     const response = await fetch(apiPackagePricesUrl);
