@@ -17,8 +17,11 @@ storeData = async (key, value) => {
 
 const CheckBoxes = () => {
 
+  var Address = ''
+
   const [isSelected, setSelection] = useState(false);
   this.storeData('Express?',isSelected)
+  
   return (
     <View style={styles.section}>
       <Icon style={{ alignSelf: 'center' }} name="home" />
@@ -39,8 +42,11 @@ const CheckBoxes = () => {
                 placeholderTextColor="grey"
                 placeholder="כתובת"
                 returnKeyType="search"
+                onChangeText={val => {Address= val }}
+                onBlur = {(e) => this.storeData('Address',Address)}
               />
-            </Item>
+              </Item>
+              <Text style={{color:'grey'}}> עיר , שם רחוב , מספר בית*</Text>
           </View>
         </View>) : null}</Text>
     </View>

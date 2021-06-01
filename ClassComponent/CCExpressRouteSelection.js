@@ -78,7 +78,7 @@ export default class CCExpressRouteSelection extends Component {
           this.storeData('XSStationName', station.StationName)
           this.storeData('XSstationLat', station.Latitude)
           this.storeData('XSstationLong', station.Longitude)
-
+          this.storeData('XSstationID', station.StationID)
         }
 
       }

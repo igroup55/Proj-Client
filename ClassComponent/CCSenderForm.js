@@ -84,19 +84,17 @@ export default class CCSenderForm extends Component {
 
   }
 
-  async AddCust() {
+  async AddCust () {
 
 
     const customer_data = {
-
       Address: this.state.Address,
       PackageID: this.state.PackageID,
       FullName: this.state.CustName,
       PhoneNum: this.state.CustPNum,
-
-
     }
 
+    console.log('customer address : '+customer_data.Address + ' customer PackageID :' + customer_data.PackageID + ' customer name : '+ customer_data.FullName + ' customer number : '+ customer_data.PhoneNum)
 
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Customers', {
       method: 'POST',
@@ -105,6 +103,7 @@ export default class CCSenderForm extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
+    
 
 
   }
@@ -325,7 +324,7 @@ export default class CCSenderForm extends Component {
   }
 
   ValidateCust() {
-    let rjx = /^[A-Za-z\u0590-\u05fe]+$/;
+    let rjx = /^[A-Za-z\u0590-\u05fe\s]+$/;
     let isNameValid = rjx.test(this.state.CustName);
     console.log("name is valid?: " + isNameValid);
     if (!isNameValid) {
@@ -437,6 +436,12 @@ export default class CCSenderForm extends Component {
         jsonValue = await AsyncStorage.getItem('Express?')
         jsonValue != null ? IfExpress = JSON.parse(jsonValue) : null;
         this.setState({ ExpressP: IfExpress })
+
+        addressValue = await AsyncStorage.getItem('Address')
+        addressValue != null ? Address = JSON.parse(addressValue) : null;
+        this.setState({ Address: Address })
+        console.log('Address : '+ this.state.Address)
+
 console.log('Express Package : '+ this.state.ExpressP)
         console.log('Empty : ' + this.state.EEmptyLocker)
         const package_data = {
@@ -447,7 +452,8 @@ console.log('Express Package : '+ this.state.ExpressP)
           UserId: this.state.UserId,
           Status: 1,
           PackTime: new Date().toLocaleString(),
-          ExpressP: this.state.ExpressP
+          ExpressP: this.state.ExpressP,
+         
 
 
 

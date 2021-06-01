@@ -126,7 +126,7 @@ export default class RegisterForm extends Component {
     this.setState({ [key]: val })
   }
   validateName() {
-    let rjx = /^[a-z\u0590-\u05fe]+$/i;
+    let rjx = /^[a-z\u0590-\u05fe\s]+$/i;
     let isNameValid = rjx.test(this.state.fullName);
     console.log("name is valid?: " + isNameValid);
     if (!isNameValid) {

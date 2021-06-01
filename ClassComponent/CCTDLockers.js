@@ -111,13 +111,13 @@ export default class CCLockers extends Component {
 async getSenderDetails(){
 
   console.log(this.state.PackageID)
-const apiSenderId = 'http://proj.ruppin.ac.il/igroup55/test2/tar2/api/Packages/{MYPackageID}?PackageId='+this.state.PackageID;
+const apiSenderId = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages/{MYPackageID}?PackageId='+this.state.PackageID;
  const responseSenderId = await fetch(apiSenderId);
  const senderId = await responseSenderId.json();
  console.log("the senderId is: "+senderId.UserId);
  this.setState({SenderId:senderId.UserId});
 
-const apiSenderToken = 'http://proj.ruppin.ac.il/igroup55/test2/tar2/api/Users/{GetSenderToken}?UserId='+senderId.UserId+'&PackageID='+this.state.PackageID;
+const apiSenderToken = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users/{GetSenderToken}?UserId='+senderId.UserId+'&PackageID='+this.state.PackageID;
 const responseSenderToken = await fetch(apiSenderToken);
 const senderToken = await responseSenderToken.json();
 this.setState({senderToken:senderToken.Token});

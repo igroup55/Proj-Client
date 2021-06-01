@@ -14,7 +14,7 @@ export default class Home extends Component {
       modalVisible: false,
       notification: {},
       token:'',
-      UserId:null,
+      UserId:1,
 
     };
   }
@@ -89,7 +89,7 @@ UpdateUserToken=async()=>{
     userId:userId,
     token:token,
   }
-  let api = "http://proj.ruppin.ac.il/igroup55/test2/tar2/api/Users/{UpdateUserToken}?userId="+userId+"&token="+token
+  let api = "http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users/{UpdateUserToken}?userId="+userId+"&token="+token
 await    fetch(api, {
   method: 'PUT',
   body: JSON.stringify(userToken),
