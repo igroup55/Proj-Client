@@ -87,7 +87,7 @@ export default class CCExpressRouteSelection extends Component {
 
       this.storeData('XStartStation', this.state.StartStation)
         
-      this.props.navigation.navigate('DeliveryExpress')
+      this.props.navigation.navigate('ExpressPackages')
     }
     else
     {

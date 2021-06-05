@@ -16,6 +16,7 @@ export default class HomeActivityList extends Component {
       ActivityList1: [],
       UserID: 0,
       ActivityList2: [],
+      ActivityList3: [],
       AlertModal: '',
       modalVisible: false,
       Slatitude: 0,
@@ -102,7 +103,12 @@ export default class HomeActivityList extends Component {
     const responseActivityListTD = await fetch(ActivityListDataTD);
     const dataTD = await responseActivityListTD.json()
     this.setState({ ActivityList2: dataTD })
-
+console.log(this.state.ActivityList2)
+    const ActivityListDataEx = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ModuleActivity/{ModuleActivity}/{Express}/' + this.state.UserID;
+    const responseActivityListEx = await fetch(ActivityListDataEx);
+    const dataEx = await responseActivityListEx.json()
+    this.setState({ ActivityList3: dataEx })
+console.log('Express'+responseActivityListEx)
 
 
 
@@ -746,6 +752,11 @@ export default class HomeActivityList extends Component {
         var statustitle = <Text> החבילה הופקדה ביעד </Text>
       }
 
+      if (Activities.Status === 5) {
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://i.ibb.co/MRcYq76/green-circle-emoji.png' }} />
+        var statustitle = <Text> ממתין לאיסוף שליח אקספרס </Text>
+      }
+
       return (<TouchableOpacity key={key}><ListItem avatar onPress={() => {
         this.setState({
           AlertModal: (
@@ -846,6 +857,72 @@ export default class HomeActivityList extends Component {
         </Left>
       </ListItem></TouchableOpacity>)
     });
+
+    let ActivitiesEx = this.state.ActivityList3.map((Activities, key) => {
+      if (Activities.Status === 1) {
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
+        var statustitle = <Text> ממתין לאיסוף </Text>
+        var Button = <TouchableOpacity onPress={() => { this.getStationsList(key) }} style={[styles.button, styles.buttonClose]}
+        >
+          <Text style={styles.textStyle} > איסוף </Text>
+        </TouchableOpacity>
+      }
+      if (Activities.Status === 2) {
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/yellow-circle-emoji.png' }} />
+        var statustitle = <Text>החבילה בדרך ללקוח </Text>
+        var Button = <TouchableOpacity onPress={() => { this.TDDeposit(key) }} style={[styles.button, styles.buttonClose]}
+        >
+          <Text style={styles.textStyle} > מסירה </Text>
+        </TouchableOpacity>
+      }
+      if (Activities.Status === 3) {
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
+        var statustitle = <Text> נמסר ללקוח </Text>
+      }
+      
+      var ArrowIcon = <Icon type="FontAwesome" color="#000" name="arrow-left" />
+
+      return (<TouchableOpacity key={key}><ListItem avatar onPress={() => {
+        this.setState({
+          AlertModal: (
+            <View>
+              <Text style={styles.Packdetails} >{Activities.StartStation}     {ArrowIcon}     {Activities.EndStation}</Text>
+              <Text style={styles.Packdetails} > סטטוס : {statustitle}</Text>
+              <Text></Text>
+              <View>
+
+                {Button}
+
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                >
+                  <Text style={styles.textStyle}> סגור </Text>
+                </Pressable>
+              </View>
+            </View>)
+        });
+        { this.setModalVisible(true) }
+      }}   ><Right>
+<Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/412FP2r/Delivery-Ex.jpg' }} />
+
+        </Right>
+
+        <Body>
+          <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
+          <Text  style={{ fontWeight: 'bold' }} note >מחיר : </Text>
+          <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
+
+          {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:120 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }}><Text style={{textAlign:'center',fontWeight:'bold'}} >פרטים</Text></TouchableOpacity> */}
+
+        </Body>
+        <Left>
+          {status}
+
+        </Left>
+      </ListItem></TouchableOpacity>)
+    });
+
     return (
       <SafeAreaView>
         <ScrollView style={styles.LastOperations}>
@@ -873,7 +950,7 @@ export default class HomeActivityList extends Component {
               {/* <ActivityIndicator style={{marginTop:150}} size="large" color="#A7D489" /> */}
               <View >
 
-                {this.state.ActivityList1.length > 0 || this.state.ActivityList2.length > 0 ? (<View >{ActivitiesTD}{Activities}</View>) : <Image style={{ width: 200, height: 150, alignSelf: 'center', marginTop: 40 }} source={{ uri: 'https://i.gifer.com/FpSr.gif' }} />}
+                {this.state.ActivityList1.length > 0 || this.state.ActivityList2.length > 0 || this.state.ActivityList3.length > 0 ? (<View >{ActivitiesTD}{Activities}{ActivitiesEx}</View>) : <Image style={{ width: 200, height: 150, alignSelf: 'center', marginTop: 40 }} source={{ uri: 'https://i.gifer.com/FpSr.gif' }} />}
 
                 {/* {Activities} */}
               </View>

@@ -153,19 +153,40 @@ console.log(PackageId)
       
       // this.state.PackagesList[key].AddressLat = reverseGC[0].latitude
       // this.state.PackagesList[key].AddressLong = reverseGC[0].longitude
+      
       this.state.PackagesList[key].Address = CustDetails.Address
-      this.setState({ custArray: [...this.state.custArray,CustDetails] })
-     console.log('Address Latitude :'+ this.state.PackagesList[key].AddressLat )
-     console.log('Address Longitude :'+ this.state.PackagesList[key].AddressLong )
-      console.log('CustomerDetails : '+this.state.PackagesList[key].Address)
-      console.log(this.state.PackagesList[key])
-
+      console.log('Address : '+this.state.PackagesList[key].Address)
       let reverseGC = await Location.geocodeAsync(CustDetails.Address);
-      Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
-      this.setState({XDistance : Distance})
-     console.log('reverse : ------------' +reverseGC[0])
+      let Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
+      this.state.PackagesList[key].Distance = Distance
+      console.log('Distance :'+ this.state.PackagesList[key].Distance )
+     
+    //  console.log('lon lat :' + reverseGC[0].latitude +','+ reverseGC[0].longitude )
+      this.setState({ custArray: [...this.state.custArray,CustDetails] })
+           
+   
+      
+      
+      
+   
+     
      
    
+  }
+
+  async getaddresslocation (Address,key) {
+console.log('in getaddress function -'+Address+' key : '+key)
+
+   // console.log(reverseGC)
+  //  const Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
+    
+   // this.state.PackagesList[key].Distance = reverseGC
+   // console.log(this.state.PackagesList[key].Distance)
+
+  //   this.setState({XDistance : Distance},()=> {  console.log('reverse : ------------' +reverseGC[0].latitude+','+reverseGC[0].longitude)
+  //   console.log(this.state.XDistance)
+  // })
+
   }
 
   AddSelectedPacks = () => {
@@ -192,6 +213,7 @@ let selected = []
         UserID : this.state.UserID.UserId,
         FullName :this.state.UserID.FullName, 
         //CustID:this.state.custArray
+        
         }
           fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ExpressUser', {
             method: 'POST',
@@ -227,7 +249,8 @@ let selected = []
     //   else
     //  this.setState = items.filter(item => item !== valueToRemove)
     // this.setState({ SelectedArr: [...this.state.SelectedArr, pack] })
-
+ 
+    
    
   }
 
@@ -269,7 +292,7 @@ let selected = []
                       marginBottom:10,
                       borderRadius: 5,
                       margin: 2,
-                      backgroundColor: 'green',
+                      backgroundColor: '#ffed4b',
                       borderWidth:1.5,
                       borderColor:'black'
                     }
@@ -290,7 +313,7 @@ let selected = []
                 <View style={{alignItems:'center' , margin:10}} >
              
                   <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- מס חבילה : </Text>{item.PackageId}</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- מחיר משלוח : </Text>{(this.state.XDistance/1000+item.Pweight*2).toFixed(1) + ' ₪ ' }</Text>
+                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- מחיר משלוח : </Text>{(item.Distance/1000+item.Pweight*2).toFixed(1) + ' ₪ ' }</Text>
                   <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>משקל : </Text>עד {item.Pweight +' ק"ג'}</Text>
                   <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>תחנת איסוף : </Text>{this.state.StationName.replace(/"/gi,'')}</Text>
                   <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>כתובת יעד : </Text>{item.Address}</Text>

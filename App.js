@@ -19,6 +19,7 @@ import CCExpressRouteSelection from './ClassComponent/CCExpressRouteSelection';
 import CCTrainSelection from './ClassComponent/CCTrainSelection';
 import CreditPay from './ClassComponent/CreditPay';
 import CCExpressFeed from './ClassComponent/CCExpressFeed';
+import CCExpressLockers from './ClassComponent/CCExpressLockers';
 
 
 const Stack = createStackNavigator();
@@ -154,7 +155,24 @@ export default function App() {
           }
         }} />        
 
+<Stack.Screen name="ExpressPackages" component={CCExpressLockers} options={{
+          title: 'משלוחים בתהליך',
+          headerStyle: {
+            backgroundColor: '#ffed4b',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center'
+
+          }
+        }} />        
+
       </Stack.Navigator>
+
+     
+
+    
 
     </NavigationContainer>
 
