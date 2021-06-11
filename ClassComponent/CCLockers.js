@@ -196,7 +196,7 @@ export default class CCLockers extends Component {
     this.setModalVisible(true)
     setTimeout(() => {
       this.props.navigation.navigate('Home');
-    }, 3000);
+    }, 2000);
 
 
 

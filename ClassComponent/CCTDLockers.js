@@ -6,6 +6,7 @@ import CCSenderForm from './CCSenderForm';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps'
 import * as Location from 'expo-location';
+import moment from 'moment';
 
 
 export default class CCLockers extends Component {
@@ -39,7 +40,8 @@ export default class CCLockers extends Component {
       AlertModal: '',
       modalVisible: false,
       SenderId:0,
-      senderToken:''
+      senderToken:'',
+      PickUpDT : moment().format('YYYY-MM-DD hh:mm:ss a'),
 
       
     }
@@ -303,14 +305,18 @@ console.log("the sender token is: "+this.state.senderToken)
 
   UpdateTDUserPack() {
 
-
+    this.setState({PickUpDT: moment()
+      .utcOffset('+05:30')
+      .format('YYYY-MM-DD hh:mm:ss a')})
+    alert(this.state.PickUpDT);
 
     const TDPackage_update = {
 
 
       PackageID: this.state.PackageID,
       DeliveryID: this.state.DeliveryID,
-      Status:1
+      Status:1,
+      PickUpDT: this.state.PickUpDT
   
     }
 

@@ -238,6 +238,9 @@ let selected = []
       
           this.setState({ AlertModal: 'החבילה שוריינה בהצלחה' });
             { this.setModalVisible(true) }
+            setTimeout(() => {
+              this.props.navigation.navigate('Home');
+            }, 2000);
             //navigation to next component or home
     })
    
@@ -269,7 +272,7 @@ let selected = []
         <View style={styles.container}>
           <View style={{height:70 , borderColor:'black',borderWidth:1,borderRadius:12, margin:10,backgroundColor:'#ffed4b'}}><Text style={{textAlign:'center',padding:15,fontSize:25,fontWeight:'bold'}}> Express </Text></View>
           {/* <Text style={{textAlign:'center'}}>משלוחים מתחנת {this.state.StationName.replace(/"/gi,'')} </Text> */}
-          <View style={{backgroundColor:'white',borderWidth:2,borderColor:'black',height:500,borderRadius:10,margin:10}}>
+          <View style={{backgroundColor:'white',borderWidth:1,borderColor:'black',height:500,borderRadius:10,margin:10}}>
           <FlatList
           // horizontal={true}
           style={{maxheight:550}}
@@ -311,12 +314,12 @@ let selected = []
                     }
                 }>
                 <View style={{alignItems:'center' , margin:10}} >
-             
+                {/* item.Distance/1000+ */}
                   <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- מס חבילה : </Text>{item.PackageId}</Text>
                   <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- מחיר משלוח : </Text>{(item.Distance/1000+item.Pweight*2).toFixed(1) + ' ₪ ' }</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>משקל : </Text>עד {item.Pweight +' ק"ג'}</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>תחנת איסוף : </Text>{this.state.StationName.replace(/"/gi,'')}</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>כתובת יעד : </Text>{item.Address}</Text>
+                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- משקל : </Text>עד {item.Pweight +' ק"ג'}</Text>
+                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- תחנת איסוף : </Text>{this.state.StationName.replace(/"/gi,'')}</Text>
+                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- כתובת יעד : </Text>{item.Address}</Text>
                 </View>
               </Card>
             </TouchableOpacity>
@@ -341,7 +344,7 @@ let selected = []
               <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
               <Text style={styles.modalText}>{this.state.AlertModal}</Text>
               <Pressable
-               // style={[styles.button, styles.buttonClose]}
+                style={[styles.button, styles.buttonClose]}
                 onPress={() => this.setModalVisible(!this.state.modalVisible)}
               >
                 <Text style={styles.textStyle}> סגור </Text>
@@ -354,7 +357,7 @@ let selected = []
     }
 
     else
-      return (<Text> No Packages Found </Text>)
+      return (<View style={styles.container}><Text style={{textAlign:'center',fontSize:20,fontWeight:'bold',marginTop:20}}> אין חבילות </Text></View>)
 
 
   }
@@ -364,7 +367,8 @@ const styles = ({
   container: {
     flex: 1,
     backgroundColor: 'lightyellow',
-    
+    borderTopColor: 'black',
+     borderTopWidth: 2 ,
     justifyContent: 'center',
 
   },
@@ -427,7 +431,9 @@ const styles = ({
     backgroundColor: "#cbe8ba",
   },
   buttonClose: {
-    backgroundColor: "#cbe8ba",
+    backgroundColor: "#ffed4b",
+    borderColor:'black',
+    borderWidth:1
   },
   textStyle: {
     color: "black",

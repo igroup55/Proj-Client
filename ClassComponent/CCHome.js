@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ScrollView } from 'react-native';
 import { View, Text, SafeAreaView, StyleSheet, Pressable, Modal } from 'react-native';
 import { Button, Header, Image, Icon } from 'react-native-elements';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeActivityList from './HomeActivityList';
 import { Notifications } from 'expo';
 import registerForPushNotificationsAsync from './registerForPushNotificationsAsync';
@@ -14,28 +14,25 @@ export default class Home extends Component {
       modalVisible: false,
       notification: {},
       token:'',
-      UserId:1,
+      UserId:null,
 
     };
   }
   async componentDidMount() {
-
-  //  this.getData()
     registerForPushNotificationsAsync()
     .then((token) => {
     this.setState({ token:token });
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
     console.log("my token is: "+ this.state.token)
-    
     this.UpdateUserToken();
-    
     });
-    
+    this.getData();
     
     
   }
     _handleNotification = (notification) => {
     this.setState({ notification: notification });
+    alert(notification);
     };
 
   
@@ -62,7 +59,6 @@ export default class Home extends Component {
     }
       
     async getData () {
-      alert('in getdata')
       try {
         jsonValue = await AsyncStorage.getItem('UserId')
         jsonValue != null ? UserDetails = JSON.parse(jsonValue) : null;
@@ -92,7 +88,7 @@ UpdateUserToken=async()=>{
   let api = "http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users/{UpdateUserToken}?userId="+userId+"&token="+token
 await    fetch(api, {
   method: 'PUT',
-  body: JSON.stringify(userToken),
+  // body: JSON.stringify(userToken),
   headers: new Headers({
     'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
   })
@@ -170,12 +166,12 @@ console.log("token have been updated!!!!!!!!!");
 
           />
 
-<Button
+{/* <Button
           title='ניסיון פוש נוט'
           onPress={()=>{this.sendPushNotification()}}
           buttonStyle={styles.title}
 
-        />
+        /> */}
 
 
         </View>
@@ -250,4 +246,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   }
-});
+}); 

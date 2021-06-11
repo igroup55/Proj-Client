@@ -105,10 +105,10 @@ export default class CCExpressRouteSelection extends Component {
     });
 
     return (
-      <SafeAreaView>
-        <ScrollView>
-          <View >
-            <Header style={{ backgroundColor: 'green', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: 'green' }}> JestApp</Text></Header>
+     
+ 
+          <View style={{backgroundColor:'lightyellow',flex:1, borderTopColor: 'black', borderTopWidth: 2 }}>
+            {/* <Header style={{ backgroundColor: '#ffed4b', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: '#ffed4b' }}> JestApp</Text></Header> */}
             {/* <Modal
               animationType="slide"
               transparent={true}
@@ -133,7 +133,7 @@ export default class CCExpressRouteSelection extends Component {
               </View>
             </Modal> */}
 
-            <Form style={{ width: 390 }}>
+            <Form >
               <View >
                 
                 <Icon name="location" style={{ alignSelf: 'center', marginTop: 10 }} />
@@ -165,7 +165,7 @@ export default class CCExpressRouteSelection extends Component {
 
               </View>
 
-              <View style={styles.container}>
+              <View>
                 <MapView region={{ latitude: this.state.latitude, longitude: this.state.longitude, longitudeDelta: 0.0121, latitudeDelta: 0.015 }} style={{ width: Dimensions.get('window').width, height: 250 }}
                 >
                   <Marker
@@ -178,7 +178,7 @@ export default class CCExpressRouteSelection extends Component {
               </View>
 
 
-              <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש חבילות </Text></Button>
+              <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: '#ffed4b', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש חבילות </Text></Button>
 
 
             </Form>
@@ -186,8 +186,8 @@ export default class CCExpressRouteSelection extends Component {
 
 
           </View>
-        </ScrollView>
-      </SafeAreaView>
+    
+
     );
   }
 }
@@ -197,16 +197,17 @@ export default class CCExpressRouteSelection extends Component {
 const styles = ({
   container: {
     flex: 1,
-    backgroundColor: '#cbe8ba',
+ 
     alignItems: 'center',
     justifyContent: 'center',
 
   },
   InputText: {
     textAlign: 'right',
-    borderColor: 'green',
+    borderWidth:1,
+    borderColor: 'black',
     borderStyle: 'solid',
-    backgroundColor: '#cbe8ba',
+    backgroundColor: '#ffed4b',
     borderRadius: 10,
     marginRight: 10,
     marginLeft: 10

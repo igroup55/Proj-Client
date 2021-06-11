@@ -99,7 +99,8 @@ export default class CCLogin extends Component {
             width: 80,
             height: 80,
             alignSelf: 'center',
-            marginBottom: 20
+            marginBottom: 20,
+            marginTop:25
           }}
         />
         <Text style={{ fontSize: 30, textAlign: 'center', fontWeight: 'bold', marginBottom: 30 }}> JestApp  </Text>
@@ -125,7 +126,7 @@ export default class CCLogin extends Component {
         <Button onPress={() => { this.login(this.state.email, this.state.password) }} style={styles.submitButton}><Text style={styles.submitButtonText}>Sign In          </Text></Button>
 
         <View style={{ flexDirection: 'row-reverse' }}>
-          <Text style={{ color: 'blue' }}
+          <Text style={{ color: 'blue' , margin:20}}
             onPress={() => { this.props.navigation.navigate('Register'); }} >
             Not a member? Sign Up  {'\u00A0'}
           </Text>
@@ -140,8 +141,9 @@ export default class CCLogin extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
-    margin: 25
+    borderTopColor: 'black', borderTopWidth: 2,
+  
+   
 
 
   },

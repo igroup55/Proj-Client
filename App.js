@@ -103,9 +103,32 @@ export default function App() {
 
           }
         }} />
-        <Stack.Screen name="DeliveryExpress" component={CCDeliveryExpressFeed} />
+        <Stack.Screen name="DeliveryExpress" component={CCDeliveryExpressFeed} 
+         options={{
+          title: 'חבילות זמינות',
+          headerStyle: {
+            backgroundColor: '#ffed4b',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center'
+
+          }
+        }}/>
         <Stack.Screen name="NewTrainRoute" component={CCTrainRouteSelection} />
-        <Stack.Screen name="NewExpressRoute" component={CCExpressRouteSelection} />
+        <Stack.Screen name="NewExpressRoute" component={CCExpressRouteSelection}  options={{
+          title: 'בחר מסלול          ',
+          headerStyle: {
+            backgroundColor: '#ffed4b',
+          },
+          
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center'
+
+          }
+        }}  />
         <Stack.Screen name="TrainSelection" component={CCTrainSelection} options={{
           title: 'בחר מסלול',
           headerStyle: {
