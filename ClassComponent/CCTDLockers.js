@@ -14,7 +14,6 @@ export default class CCLockers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
       UserName: null,
       SLockerID: null,
       ELockerID: null,
@@ -42,8 +41,7 @@ export default class CCLockers extends Component {
       SenderId:0,
       senderToken:'',
       PickUpDT : moment().format('YYYY-MM-DD hh:mm:ss a'),
-
-      
+      FutureDT: moment().format('YYYY-MM-DD hh:mm:ss a'),
     }
   }
 
@@ -230,10 +228,58 @@ console.log("the sender token is: "+this.state.senderToken)
         setTimeout(() => {
           this.props.navigation.navigate('Home');
         }, 3000),
-    
       )
+      this.getFutureDT();
+}
+
+
+async getFutureDT(){
+
+  const apiPackaegs = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation='+this.state.StartStation+'&endStation='+this.state.EndStation;
+  const response = await fetch(apiPackaegs);
+  const PackagesList = await response.json()
+  this.setState({
+    ExistPackages: PackagesList
+  },()=> console.log(PackagesList))
+
+
+
+    const api1 = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDate}?startStation='+this.state.StartStation+'&endStation='+this.state.EndStation+'&UserId='+this.state.UserId+'&PickUpDT='+this.state.PickUpDT;
+    const response1 = await fetch(api1);
+    const data = await response1.json();
+    //console.log(data+' last : '+data[data.length-1]["PickUpDT"]+' last 1 : '+data[data.length-1].PickUpDT );
+    console.log(data)
+    this.setState({
+      FutureDT: data[data.length-1].PickUpDT,
+    },()=>console.log(this.state.FutureDT));
+
+  if(PackagesList.length !=0 && data !=null){
+    this.UpdateDTUser()
+  }
+    
+}
+
+
+UpdateDTUser(){
+let PushDT = moment(this.state.FutureDT).subtract(5,'hour').format('YYYY-MM-DD hh:mm:ss a')
+
+const UpdateDT = {
+  dTtoken:PushDT,
+  UserId: this.state.UserId ,
+  
+      }            
+      fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users', {
+        method: 'PUT',
+        body: JSON.stringify(UpdateDT),
+        headers: new Headers({
+          'Content-type': 'application/json; charset=UTF-8'       
+        })
+      })
 
 }
+
+
+
 
 ////////////////////////////////////////////////////////
 
@@ -308,20 +354,16 @@ console.log("the sender token is: "+this.state.senderToken)
     this.setState({PickUpDT: moment()
       .utcOffset('+05:30')
       .format('YYYY-MM-DD hh:mm:ss a')})
-    alert(this.state.PickUpDT);
+   
 
     const TDPackage_update = {
-
 
       PackageID: this.state.PackageID,
       DeliveryID: this.state.DeliveryID,
       Status:1,
       PickUpDT: this.state.PickUpDT
-  
     }
 
- 
-  
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser', {
       method: 'PUT',
       body: JSON.stringify(TDPackage_update),

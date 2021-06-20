@@ -195,6 +195,7 @@ export default class CCLockers extends Component {
     this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
     this.setModalVisible(true)
     setTimeout(() => {
+      
       this.props.navigation.navigate('Home');
     }, 2000);
 
@@ -224,7 +225,7 @@ export default class CCLockers extends Component {
   CancelPackage() {
 
 
-    alert(this.state.Credit);
+  
 
     let TDGetPayment = Number(this.state.UserCreditOBJ[0].Credit) + this.state.Credit;
 

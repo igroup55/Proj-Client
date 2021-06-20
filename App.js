@@ -20,6 +20,8 @@ import CCTrainSelection from './ClassComponent/CCTrainSelection';
 import CreditPay from './ClassComponent/CreditPay';
 import CCExpressFeed from './ClassComponent/CCExpressFeed';
 import CCExpressLockers from './ClassComponent/CCExpressLockers';
+//המלצה למסלול פיזור
+import CCExpressRecomendations from './ClassComponent/CCExpressRecomendations';
 
 
 const Stack = createStackNavigator();
@@ -55,7 +57,7 @@ export default function App() {
           }
         }} />
         <Stack.Screen name="NewDelivery" component={CCSenderForm} options={{
-          title: 'משלוח חדש',
+          title: 'משלוח חדש       ',
           headerStyle: {
             backgroundColor: 'green',
           },
@@ -79,14 +81,15 @@ export default function App() {
           }
         }} />
         <Stack.Screen name="Home" component={CCHome} options={{
-          title: 'מסך בית     ',
+          title: '         JestApp',
           headerStyle: {
             backgroundColor: 'green',
           },
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: 'center'
+            textAlign: 'center',
+            fontSize:25
 
           }
         }} />
@@ -176,10 +179,22 @@ export default function App() {
             textAlign: 'center'
 
           }
-        }} />        
+        }} />  
+        <Stack.Screen name="ExpressRecomendation" component={CCExpressRecomendations} options={{
+          title: 'המסלול המומלץ          ',
+          headerStyle: {
+            backgroundColor: '#ffed4b',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center'
+
+          }
+        }}  />           
 
 <Stack.Screen name="ExpressPackages" component={CCExpressLockers} options={{
-          title: 'משלוחים בתהליך',
+          title: 'משלוחים בתהליך    ',
           headerStyle: {
             backgroundColor: '#ffed4b',
           },

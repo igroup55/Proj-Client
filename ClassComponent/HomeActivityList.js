@@ -39,18 +39,25 @@ export default class HomeActivityList extends Component {
       PackagesList: [],
       TDPayment: 0,
       UserCreditOBJ: [],
-      PickUpDT: moment().format('YYYY-MM-DD hh:mm:ss a'),
+      PickUpDT : moment().format('YYYY-MM-DD hh:mm:ss a'),
+      activityList: false,
+      FutureDT: moment().format('YYYY-MM-DD hh:mm:ss a')
     };
   }
 
   setModalVisible = (visible) => {
-    this.setState({ modalVisible: visible });
+    this.setState({ modalVisible: visible }, () => this.setState({ activityList: true }, () => this.setState({ activityList: false })));
   }
 
   async componentDidMount() {
     ////tar2 - url צריך לשנות אחרי שמעדכנים ל tar 1
-
     { this.getData() }
+
+
+    // setInterval(()=>{
+    //   this.getData()
+    //       },10000)
+    // 
 
 
 
@@ -65,6 +72,17 @@ export default class HomeActivityList extends Component {
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
   };
+
+  UNSAFE_componentWillUpdate(props) {
+
+
+    if (this.state.activityList == true)
+      this.getData()
+
+  }
+
+
+
 
 
   async getData() {
@@ -164,8 +182,6 @@ export default class HomeActivityList extends Component {
 
   UpdatePackageStatus(key) {
 
-
-
     const Package_update = {
 
       PackageID: this.state.ActivityList1[key].PackageID,
@@ -204,7 +220,7 @@ export default class HomeActivityList extends Component {
 
   async Deposit(key) {
 
-    alert('packageID : ' + this.state.ActivityList1[key].PackageID + ' startstation : ' + this.state.ActivityList1[key].StartStation + ' EndStation : ' + this.state.ActivityList1[key].EndStation);
+    //alert('packageID : ' + this.state.ActivityList1[key].PackageID + ' startstation : ' + this.state.ActivityList1[key].StartStation + ' EndStation : ' + this.state.ActivityList1[key].EndStation);
 
 
     // const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.ActivityList1[key].PackageID;
@@ -418,6 +434,7 @@ export default class HomeActivityList extends Component {
       this.setState({ AlertModal: "אין חבילות במסלול שנבחר" });
       { this.setModalVisible(true) }
     }
+
   }
 
   isNearLocker() {
@@ -494,12 +511,10 @@ export default class HomeActivityList extends Component {
   UpdateTDUserPack() {
 
 
-    this.setState({
-      PickUpDT: moment()
-        .utcOffset('+05:30')
-        .format('YYYY-MM-DD hh:mm:ss a')
-    })
-    alert(this.state.PickUpDT);
+    this.setState({PickUpDT: moment()
+      .utcOffset('+05:30')
+      .format('YYYY-MM-DD hh:mm:ss a')})
+   
 
     const TDPackage_update = {
       PackageID: this.state.PackageID,
@@ -558,7 +573,11 @@ export default class HomeActivityList extends Component {
           </Pressable>
         </View>
     });
+
+
     { this.setModalVisible(true) }
+
+
   }
 
 
@@ -566,7 +585,6 @@ export default class HomeActivityList extends Component {
 
     // alert('packageID : ' + this.state.ActivityList2[key].PackageID + ' startstation : ' + this.state.ActivityList2[key].StartStation + ' EndStation : ' + this.state.ActivityList2[Key].EndStation);
 
-    alert('in TDDeposit')
     const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.ActivityList2[0].PackageID;
     const response = await fetch(apiPackagePricesUrl);
     const data = await response.json()
@@ -613,7 +631,6 @@ export default class HomeActivityList extends Component {
     //{ this.setModalVisible(true) }
 
     { this.UpdateTDStatus() }
-
   }
 
   async UpdateTDStatus() {
@@ -624,7 +641,7 @@ export default class HomeActivityList extends Component {
     const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDeliveryId}?UserId=' + this.state.ActivityList2[0].UserID1;
     const responseweight = await fetch(apiTDUser1Url);
     const TDArrival1data = await responseweight.json()
-    console.log(TDArrival1data)
+    console.log(' ----' + TDArrival1data)
     this.setState({
       DeliveryID: TDArrival1data[0].DeliveryID
     })
@@ -738,7 +755,47 @@ export default class HomeActivityList extends Component {
         //   this.props.navigation.navigate('Home');
         // }, 3000),
       )
+    this.getFutureDT();
+  }
 
+
+  async getFutureDT() {
+
+    const apiPackaegs = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStationId + '&endStation=' + this.state.EndStationId;
+    const response = await fetch(apiPackaegs);
+    const PackagesList = await response.json()
+    this.setState({
+      ExistPackages: PackagesList
+    }, () => console.log(PackagesList))
+
+
+
+    const api1 = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDate}?startStation=' + this.state.StartStationId + '&endStation=' + this.state.EndStationId + '&UserId=' + this.state.UserID + '&PickUpDT=' + this.state.PickUpDT;
+    const response1 = await fetch(api1);
+    const data = await response1.json();
+    //console.log(data+' last : '+data[data.length-1]["PickUpDT"]+' last 1 : '+data[data.length-1].PickUpDT );
+    console.log(data)
+    this.setState({
+      FutureDT: data[data.length - 1].PickUpDT,
+    }, () => console.log(this.state.FutureDT));
+
+    if (PackagesList.length != 0 && data != null) {
+      this.UpdateDTUser()
+    }
+
+  }
+
+
+
+
+
+
+
+
+  UNSAFE_componentWillReceiveProps(props) {
+
+    if (props.activityList == true)
+      this.getData()
   }
 
   async getLocker(Key) {
@@ -785,11 +842,19 @@ export default class HomeActivityList extends Component {
       var statustitle = <Text> ממתין לאיסוף שליח אקספרס </Text>
       var Locker = <Text style={styles.Packdetails}>מספר לוקר יעד : {this.state.ELockerID}</Text>
     }
+    if (this.state.ActivityList1[Key].Status === 6) {
+      var statustitle = <Text> החבילה בדרך ללקוח </Text>
+      var Locker = <Text style={styles.Packdetails}>מספר לוקר יעד : {this.state.ELockerID}</Text>
+    }
+    if (this.state.ActivityList1[Key].Status === 7) {
+      var statustitle = <Text> החבילה נמסרה ללקוח </Text>
+      var Locker = <Text style={styles.Packdetails}>מספר לוקר יעד : {this.state.ELockerID}</Text>
+    }
 
     this.setState({
       AlertModal: (
         <View>
-          <Text style={[styles.Packdetails, { fontSize: 20 }]}>#{this.state.ActivityList1[Key].PackageID}</Text>
+          <Text style={styles.Packdetails}>מספר חבילה : {this.state.ActivityList1[Key].PackageID}</Text>
           <Text style={styles.Packdetails}>תחנת מוצא : {this.state.ActivityList1[Key].StartStation}</Text>
           <Text style={styles.Packdetails}>תחנת יעד : {this.state.ActivityList1[Key].EndStation}</Text>
           {Locker}
@@ -812,8 +877,7 @@ export default class HomeActivityList extends Component {
 
   async getTDLocker(key) {
 
-
-    if (this.state.ActivityList2[key].Status != 0) {
+    if (this.state.ActivityList2[key].Status != 0 && this.state.ActivityList2[key].Status != -1) {
       console.log(this.state.ActivityList2[key])
       const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.ActivityList2[key].PackageID;
       const response = await fetch(apiPackagePricesUrl);
@@ -828,60 +892,64 @@ export default class HomeActivityList extends Component {
       }, () => this.ShowTDModal(key))
     }
     else {
-      const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
-      const response1 = await fetch(apiStationsUrl);
-      const data1 = await response1.json()
-      //this.setState({ StationsList: data }) 
-      data1.map(StartS => {
-        if (this.state.ActivityList2[0].StartStation === StartS.StationName)
-          this.setState({ StartStationId: StartS.StationID })
-      });
-      data1.map(EndS => {
-        if (this.state.ActivityList2[0].EndStation === EndS.StationName)
-          this.setState({ EndStationId: EndS.StationID })
-      });
+      if (this.state.ActivityList2[key].Status != -1) {
+        const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
+        const response1 = await fetch(apiStationsUrl);
+        const data1 = await response1.json()
+        //this.setState({ StationsList: data }) 
+        data1.map(StartS => {
+          if (this.state.ActivityList2[0].StartStation === StartS.StationName)
+            this.setState({ StartStationId: StartS.StationID })
+        });
+        data1.map(EndS => {
+          if (this.state.ActivityList2[0].EndStation === EndS.StationName)
+            this.setState({ EndStationId: EndS.StationID })
+        });
 
-      const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser?UserID=' + this.state.UserID;
-      const responseweight = await fetch(apiTDUser1Url);
-      const TDArrival1data = await responseweight.json()
+        const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser?UserID=' + this.state.UserID;
+        const responseweight = await fetch(apiTDUser1Url);
+        const TDArrival1data = await responseweight.json()
 
-      this.setState({
-        Pweight: TDArrival1data.Pweight,
-        DeliveryID: TDArrival1data.DeliveryID
-      })
-
-      const apiTDUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStationId + '&endStation=' + this.state.EndStationId + '&Pweight=' + this.state.Pweight + '&express= false';
-      const response = await fetch(apiTDUserUrl);
-      const TDArrivaldata = await response.json()
-
-      this.setState({ PackagesList: TDArrivaldata })
-      this.setState({ PackageID: TDArrivaldata[0]["PackageId"], StartStationId: TDArrivaldata[0]["StartStation"], EndStationId: TDArrivaldata[0]["EndStation"] })
-
-
-      const apiGetLocker = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers/{PackageID}?PackageID=' + this.state.PackageID;
-      const responseLocker = await fetch(apiGetLocker);
-      const TDLocker = await responseLocker.json()
-
-      console.log(TDLocker[0]["StationID"]);
-      if (TDLocker[0]["StationID"] === this.state.StartStationId) {
-        console.log('Slocker')
         this.setState({
-          SLockerID: TDLocker[0]["LockerID"],
-          ELockerID: TDLocker[1]["LockerID"]
-        }, () => this.ShowTDModal(key));
+          Pweight: TDArrival1data.Pweight,
+          DeliveryID: TDArrival1data.DeliveryID
+        })
+
+        const apiTDUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStationId + '&endStation=' + this.state.EndStationId + '&Pweight=' + this.state.Pweight + '&express= false';
+        const response = await fetch(apiTDUserUrl);
+        const TDArrivaldata = await response.json()
+
+        this.setState({ PackagesList: TDArrivaldata })
+        this.setState({ PackageID: TDArrivaldata[0]["PackageId"], StartStationId: TDArrivaldata[0]["StartStation"], EndStationId: TDArrivaldata[0]["EndStation"] })
+
+
+        const apiGetLocker = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers/{PackageID}?PackageID=' + this.state.PackageID;
+        const responseLocker = await fetch(apiGetLocker);
+        const TDLocker = await responseLocker.json()
+
+        console.log(TDLocker[0]["StationID"]);
+        if (TDLocker[0]["StationID"] === this.state.StartStationId) {
+          console.log('Slocker')
+          this.setState({
+            SLockerID: TDLocker[0]["LockerID"],
+            ELockerID: TDLocker[1]["LockerID"]
+          }, () => this.ShowTDModal(key));
+        }
+        else {
+          this.setState({
+            SLockerID: TDLocker[1]["LockerID"],
+            ELockerID: TDLocker[0]["LockerID"]
+          }, () => this.ShowTDModal(key));
+        }
       }
       else {
-        this.setState({
-          SLockerID: TDLocker[1]["LockerID"],
-          ELockerID: TDLocker[0]["LockerID"]
-        }, () => this.ShowTDModal(key));
+        this.ShowTDModal(key)
       }
+
     }
   }
 
   ShowTDModal(key) {
-
-
 
     if (this.state.ActivityList2[key].Status === 0) {
       var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/orange-circle-emoji.png' }} />
@@ -934,7 +1002,7 @@ export default class HomeActivityList extends Component {
             </Pressable>
           </View>
         </View>)
-    }, () => console.log('td status : '+this.state.ActivityList2[key].Status)
+    }, () => console.log('td status : ' + this.state.ActivityList2[key].Status)
     );
     { this.setModalVisible(true) }
 
@@ -960,6 +1028,10 @@ export default class HomeActivityList extends Component {
       }
 
       if (Activities.Status === 5) {
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://i.ibb.co/MRcYq76/green-circle-emoji.png' }} />
+      }
+
+      if (Activities.Status === 6) {
         var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://i.ibb.co/MRcYq76/green-circle-emoji.png' }} />
       }
 

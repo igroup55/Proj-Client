@@ -38,7 +38,10 @@ class CCDeliveryFeed1 extends React.Component {
     canOpenLocker: 0,
     error: null,
     AlertModal: '',
-    modalVisible: false
+    modalVisible: false,
+    refresh3:false,
+    refresh6:false,
+    refresh10:false
 
     
 
@@ -196,8 +199,22 @@ class CCDeliveryFeed1 extends React.Component {
         (error) => {
           console.log("err post=", error);
         }).then(
-
-
+()=>{
+  
+          if(weight === 3)
+          {
+            this.setState({refresh3:true},()=>this.setState({refresh3:false}))
+          }
+          
+          if(weight === 6){
+            this.setState({refresh6:true},()=>this.setState({refresh6:false}))
+          }
+         
+          if(weight === 10){
+            this.setState({refresh10:true},()=>this.setState({refresh10:false}))
+      
+          }
+        }
 
         );
 
@@ -210,6 +227,8 @@ class CCDeliveryFeed1 extends React.Component {
 
 
   async Interested(weight) {
+
+
 
     this.setState({ Pweight: weight })
     const apiTDUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser?UserId=' + this.state.UserDetail;
@@ -246,7 +265,10 @@ class CCDeliveryFeed1 extends React.Component {
           this.setState({ AlertModal: "No Packages Found" });
           { this.setModalVisible(true) }
         }
-        else { this.AddTDUser(weight) }
+        else {
+           this.AddTDUser(weight) 
+         
+          }
       if (weight === 6)
         if (this.state.PackagesList2.length === 0) {
           this.setState({ AlertModal: "No Packages Found" });
@@ -254,14 +276,25 @@ class CCDeliveryFeed1 extends React.Component {
 
         }
 
-        else { this.AddTDUser(weight) }
+        else { 
+          this.AddTDUser(weight)
+     
+      }
       if (weight === 10)
         if (this.state.PackagesList3.length === 0) {
           this.setState({ AlertModal: "No Packages Found" });
           { this.setModalVisible(true) }
         }
 
-        else { this.AddTDUser(weight) }
+        else { 
+         
+          this.AddTDUser(weight)
+        
+
+        }
+
+        
+  
 
 
     }
@@ -411,6 +444,26 @@ class CCDeliveryFeed1 extends React.Component {
     }
 
 
+  }
+
+  UNSAFE_componentWillUpdate(){
+   
+    if(this.state.refresh3 === true)
+    {
+     
+      this.GetTDUser(3)
+    }
+    
+    if(this.state.refresh6 === true){
+     
+      this.GetTDUser(6)
+    }
+   
+    if(this.state.refresh10 === true){
+     
+      this.GetTDUser(10)
+
+    }
   }
 
   async GetTDUser(weight) {
@@ -585,8 +638,56 @@ class CCDeliveryFeed1 extends React.Component {
  
     var SStation = this.state.SStationName.replace(/"/gi,'')
     var EStation = this.state.EStationName.replace(/"/gi,'')
-    
-var ArrowIcon = <Icon  type="FontAwesome" color="#000" name="arrow-left"/>
+   
+   //חבילות עד 3 ק"ג
+    if(this.state.PackagesList1.length != 0)
+    {
+      var PackagesNum1 = 'חבילות זמינות :' + this.state.PackagesList1.length
+      if(this.state.TDUserList1.length !=0)
+      var InterestedUsers1 = 'מתעניינים : ' + this.state.TDUserList1.length
+      else
+      var InterestedUsers1 = 'אין מתעניינים בקטגוריה זו'
+
+    }
+ 
+    else{
+      var PackagesNum1 = 'אין חבילות זמינות כרגע'
+      var InterestedUsers1 = ''
+    }
+
+    //חבילות עד 6 ק"ג
+    if(this.state.PackagesList2.length != 0)
+    {
+      var PackagesNum2 = 'חבילות זמינות :' + this.state.PackagesList2.length
+      if(this.state.TDUserList2.length !=0)
+      var InterestedUsers2 = 'מתעניינים : ' + this.state.TDUserList2.length
+      else
+      var InterestedUsers2 = 'אין מתעניינים בקטגוריה זו'
+
+    }
+ 
+    else{
+      var PackagesNum2 = 'אין חבילות זמינות כרגע'
+      var InterestedUsers2 = ''
+    }
+
+    //חבילות עד 10 ק"ג
+    if(this.state.PackagesList3.length != 0)
+    {
+      var PackagesNum3 = 'חבילות זמינות :' + this.state.PackagesList3.length
+      if(this.state.TDUserList3.length !=0)
+      var InterestedUsers3 = 'מתעניינים : ' + this.state.TDUserList3.length
+      else
+      var InterestedUsers3 = 'אין מתעניינים בקטגוריה זו'
+
+    }
+ 
+    else{
+      var PackagesNum3 = 'אין חבילות זמינות כרגע'
+      var InterestedUsers3 = ''
+    }
+
+    var ArrowIcon = <Icon  type="FontAwesome" color="#000" name="arrow-left"/>
 
     return (
       <ScrollView>
@@ -615,9 +716,9 @@ var ArrowIcon = <Icon  type="FontAwesome" color="#000" name="arrow-left"/>
         </Modal>
 
         <List.Section >
-        <List.Subheader style={{textAlign:'center' , fontSize:20 , color:'black', fontWeight:'bold' , borderColor:'black', borderWidth:1 , backgroundColor: '#cbe8ba' , borderRadius:10 , marginRight:10, marginLeft:10 , marginTop:10}} > {SStation}  {ArrowIcon}  {EStation} </List.Subheader>
+        <List.Subheader style={{textAlign:'center' , fontSize:20 , color:'black', fontWeight:'bold' , borderColor:'black', borderWidth:1 , backgroundColor: '#cbe8ba' , borderRadius:10 , marginRight:10, marginLeft:10 , marginTop:20,marginBottom:30}} > {SStation}  {ArrowIcon}  {EStation} </List.Subheader>
           <List.Accordion
-            title=' חבילות עד 3 ק"ג'
+            title={' חבילות עד 3 ק"ג ' + ' - ( ' + this.state.PackagesList1.length + ' )' }
             left={props => <List.Icon {...props} icon="cube" />}
             titleStyle={styles.AccordionTitle}
             onPress={() => { this.getpackages(3.0) }}
@@ -625,35 +726,35 @@ var ArrowIcon = <Icon  type="FontAwesome" color="#000" name="arrow-left"/>
 
           >
 
-            <List.Item titleStyle={styles.ItemTitle} title={'חבילות זמינות :' + this.state.PackagesList1.length} />
-            <List.Item titleStyle={styles.ItemTitle} title={'מתעניינים : ' + this.state.TDUserList1.length} />
+            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum1} />
+            <List.Item titleStyle={styles.ItemTitle} title={InterestedUsers1} />
             <List.Item titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating3} />
 
-            <Button onPress={() => { this.Interested(3) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה</Text></Button>
+            <Button onPress={() => { this.Interested(3) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה </Text></Button>
           </List.Accordion>
 
           <List.Accordion
-            title=' חבילות בין 3 ל 6 ק"ג'
+            title={' חבילות 3 עד 6 ק"ג ' + ' - ( ' + this.state.PackagesList2.length + ' )' }
             left={props => <List.Icon {...props} icon="cube" />}
             style={styles.AccordionList}
             onPress={() => { this.getpackages(6.0) }}
             titleStyle={styles.AccordionTitle}
           >
-            <List.Item titleStyle={styles.ItemTitle} title={'חבילות זמינות :' + this.state.PackagesList2.length} />
-            <List.Item titleStyle={styles.ItemTitle} title={'מתעניינים : ' + this.state.TDUserList2.length} />
+            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum2} />
+            <List.Item titleStyle={styles.ItemTitle} title={InterestedUsers2} />
             <List.Item titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating6} />
             <Button onPress={() => { this.Interested(6) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה</Text></Button>
           </List.Accordion>
           <List.Accordion
-            title=' חבילות בין 6 ל 10 ק"ג'
+            title={' חבילות 6 עד 10 ק"ג ' + ' - ( ' + this.state.PackagesList3.length + ' )' }
             left={props => <List.Icon {...props} icon="cube" />}
             onPress={() => { this.getpackages(10.0) }}
             titleStyle={styles.AccordionTitle}
             style={styles.AccordionList}
 
           >
-            <List.Item titleStyle={styles.ItemTitle} title={'חבילות זמינות :' + this.state.PackagesList3.length} />
-            <List.Item titleStyle={styles.ItemTitle} title={'מתעניינים : ' + this.state.TDUserList3.length} />
+            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum3}  />
+            <List.Item titleStyle={styles.ItemTitle} title={InterestedUsers3} />
             <List.Item titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating10} />
             <Button onPress={() => { this.Interested(10) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה</Text></Button>
           </List.Accordion>
@@ -673,29 +774,36 @@ const styles = ({
   AccordionTitle: {
     textAlign: 'center',
     fontWeight: 'bold',
-    color: 'green'
+    color: 'green',
+    marginTop:10,
+    
+   
 
 
   },
   AccordionButton: {
-    backgroundColor: '#cbe8ba',
-    textAlign: 'center'
+    backgroundColor: 'green',
+color:'black',
+fontWeight:'bold',
+borderRadius:0
+
 
   },
   ItemTitle: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign:'center',
+    margin : 0
+    
   },
   AccordionList: {
-    marginBottom: 8,
-
-
+    margin: 10,
+    backgroundColor:'#cbe8ba',
+    borderRadius: 10,
   },
   ButtonText: {
     color: 'black',
     fontWeight: 'bold',
-
-
-
+ 
   },
   centeredView: {
     flex: 1,

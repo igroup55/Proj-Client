@@ -70,8 +70,6 @@ export default class CCTrainRouteSelection extends Component {
       <SafeAreaView>
         <ScrollView>
           <View >
-            <Header style={{ backgroundColor: 'green', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: 'green' }}> JestApp</Text></Header>
-
 
             <Form style={{ width: 390 }}>
               <View >

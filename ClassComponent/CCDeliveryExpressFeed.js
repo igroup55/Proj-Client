@@ -164,9 +164,7 @@ console.log(PackageId)
     //  console.log('lon lat :' + reverseGC[0].latitude +','+ reverseGC[0].longitude )
       this.setState({ custArray: [...this.state.custArray,CustDetails] })
            
-   
-      
-      
+    
       
    
      
@@ -239,7 +237,7 @@ let selected = []
           this.setState({ AlertModal: 'החבילה שוריינה בהצלחה' });
             { this.setModalVisible(true) }
             setTimeout(() => {
-              this.props.navigation.navigate('Home');
+              this.props.navigation.navigate('ExpressPackages');
             }, 2000);
             //navigation to next component or home
     })

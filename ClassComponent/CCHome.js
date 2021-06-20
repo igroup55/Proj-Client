@@ -15,19 +15,23 @@ export default class Home extends Component {
       notification: {},
       token:'',
       UserId:null,
-
+activityList:false
     };
   }
   async componentDidMount() {
+
+
     registerForPushNotificationsAsync()
     .then((token) => {
     this.setState({ token:token });
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
     console.log("my token is: "+ this.state.token)
     this.UpdateUserToken();
+    this.props.navigation.addListener('focus',()=> this.setState({activityList:true}),()=> this.setState({activityList:false}))
+
     });
     this.getData();
-    
+
     
   }
     _handleNotification = (notification) => {
@@ -72,9 +76,7 @@ export default class Home extends Component {
       }
     }
     
-    checkIfTokenValidToday =()=>{
-
-    }
+    
 UpdateUserToken=async()=>{
   let userId= this.state.UserId;
   let token = this.state.token;
@@ -133,7 +135,7 @@ console.log("token have been updated!!!!!!!!!");
           <View ><Text style={styles.ActivityHeader}> פעולות אחרונות </Text></View>
         
             <View style={{ maxHeight: 250 }}>
-              <HomeActivityList />
+              <HomeActivityList activityList={this.state.activityList} />
             </View>
        
           <Button

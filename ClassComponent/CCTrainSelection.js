@@ -128,8 +128,7 @@ export default class CCTrainSelection extends Component {
     return (
       <SafeAreaView>
         <ScrollView>
-          <View >
-            <Header style={{ backgroundColor: 'green', borderBottomWidth: 2, borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: 'green' }}> JestApp</Text></Header>
+          <View  style={{ borderTopColor: 'black', borderTopWidth: 2 }} >
             <Modal
               animationType="slide"
               transparent={true}
@@ -157,7 +156,7 @@ export default class CCTrainSelection extends Component {
 
             <Form style={{ width: 390 }}>
               <View >
-                <Icon name="location" style={{ alignSelf: 'center', marginTop: 10 }} />
+                <Icon name="location" style={{ alignSelf: 'center', marginTop: 20 }} />
                 <Text style={styles.titles} >תחנת מוצא</Text>
                 <Item picker style={styles.InputText}>
                   <Picker

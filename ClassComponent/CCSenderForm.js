@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import ReactDOM from "react-dom";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDistance, getPreciseDistance } from 'geolib';
+import * as Location from 'expo-location';
 
 //עלות שריון לוקר
 //////////////////////////
@@ -33,7 +34,9 @@ export default class CCSenderForm extends Component {
       modalVisible: false,
       Time: new Date().toISOString(),
       payment: 0,
-      ExpressP : false
+      ExpressP : false,
+      latitude: 0,
+      longitude: 0,
     };
 
   }
@@ -83,6 +86,21 @@ export default class CCSenderForm extends Component {
     this.setState({ [key]: value })
 
   }
+  //להוסיף בעדכון- פונקציית שהופכת כתובת לקואורדינטות
+  btnReverseGC = async () => {
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== 'granted') {
+    this.setState({ errorMessage: 'Permission to access location was denied', });
+    }
+   
+   
+    let reverseGC = await Location.geocodeAsync(this.state.Address);
+    console.log({ reverseGC });
+    
+    this.setState({latitude:reverseGC[0].latitude,longitude:reverseGC[0].longitude},()=>console.log('the coords: '+reverseGC[0].latitude + ', '+ reverseGC[0].longitude))
+    
+ 
+    };
 
   async AddCust () {
 
@@ -92,10 +110,11 @@ export default class CCSenderForm extends Component {
       PackageID: this.state.PackageID,
       FullName: this.state.CustName,
       PhoneNum: this.state.CustPNum,
+      latitude: this.state.latitude,
+      longitude:this.state.longitude,
     }
 
-    console.log('customer address : '+customer_data.Address + ' customer PackageID :' + customer_data.PackageID + ' customer name : '+ customer_data.FullName + ' customer number : '+ customer_data.PhoneNum)
-
+    console.log('customer address : '+customer_data.Address + ' latutude: '+customer_data.latitude+' longitude: '+customer_data.longitude + ' customer PackageID :' + customer_data.PackageID + ' customer name : '+ customer_data.FullName + ' customer number : '+ customer_data.PhoneNum)
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Customers', {
       method: 'POST',
       body: JSON.stringify(customer_data),
@@ -441,7 +460,25 @@ export default class CCSenderForm extends Component {
         addressValue != null ? Address = JSON.parse(addressValue) : null;
         this.setState({ Address: Address })
         console.log('Address : '+ this.state.Address)
+//
 
+
+let { status } = await Location.requestPermissionsAsync();
+    if (status !== 'granted') {
+    this.setState({ errorMessage: 'Permission to access location was denied', });
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    if (location) {
+    let reverseGC = await Location.geocodeAsync(addressValue);
+    console.log({ reverseGC });
+    console.log('the coords: '+reverseGC[0].latitude + ', '+ reverseGC[0].longitude);
+    this.setState({latitude:reverseGC[0].latitude,longitude:reverseGC[0].longitude});
+    }else{
+    alert('You must push the Location button first in order to get the location before you can get the reverse geocode for the latitude and longitude!');
+    }
+
+
+//
 console.log('Express Package : '+ this.state.ExpressP)
         console.log('Empty : ' + this.state.EEmptyLocker)
         const package_data = {
@@ -587,8 +624,7 @@ console.log('Express Package : '+ this.state.ExpressP)
               </View>
             </View>
           </Modal>
-          <View>
-            <Header style={{ backgroundColor: 'green', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: 'green' }}> JestApp</Text></Header>
+          <View  style={{ borderTopColor: 'black', borderTopWidth: 2 }}>
 
             <Form style={{ width: 390 }}>
               <View >
@@ -697,7 +733,7 @@ console.log('Express Package : '+ this.state.ExpressP)
                 </Item></View> */}
 
               <Button onPress={() => { this.validate() }} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, marginBottom: 10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  צור כרטיס משלוח  </Text></Button>
-              <Text>{this.state.Time}</Text>
+            
             </Form>
           </View>
         </ScrollView>
