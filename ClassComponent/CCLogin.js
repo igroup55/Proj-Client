@@ -31,7 +31,7 @@ export default class CCLogin extends Component {
 
 
   loginuser() {
-    console.log(this.state.Users);
+  
     this.state.Users.map((user) => {
       console.log(user);
 
@@ -61,9 +61,9 @@ export default class CCLogin extends Component {
     const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users?email=' + email + '&pass=' + password;
     const response = await fetch(apiUserUrl);
     const data = await response.json()
-    this.setState({ Users: data, });
-    console.log(email, password)
-    { this.loginuser() }
+    this.setState({ Users: data }, ()=>  this.loginuser() );
+  
+    
   }
 
   
