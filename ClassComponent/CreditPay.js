@@ -322,7 +322,7 @@ export default class CreditPay extends Component {
               <Text style={styles.titles1} > סך הכל לתשלום: {this.state.FormCreditAmount} ש"ח</Text>
             </View>
             <View>
-              <Button onPress={() => { this.validatePayment() }} block success style={{ paddingHorizontal: 30, paddingVertical: 30, marginRight: 20, marginTop: 10, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+              <Button onPress={() => { this.validatePayment() }} block success style={{ paddingHorizontal: 30, paddingVertical: 30, marginTop: 10, borderColor: 'black', borderWidth: 2, borderRadius: 8, justifyContent:'center',marginLeft:25, marginRight:25 }} >
                 <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>אישור תשלום</Text>
               </Button>
             </View>

@@ -641,11 +641,11 @@ export default class HomeActivityList extends Component {
     const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDeliveryId}?UserId=' + this.state.ActivityList2[0].UserID1;
     const responseweight = await fetch(apiTDUser1Url);
     const TDArrival1data = await responseweight.json()
-    console.log(' ----' + TDArrival1data)
+    
     this.setState({
       DeliveryID: TDArrival1data[0].DeliveryID
     })
-    console.log(TDArrival1data[0].DeliveryID)
+ 
 
     console.log(this.state.PackageID)
 

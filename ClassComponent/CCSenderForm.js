@@ -7,6 +7,7 @@ import ReactDOM from "react-dom";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDistance, getPreciseDistance } from 'geolib';
 import * as Location from 'expo-location';
+import moment from 'moment';
 
 //עלות שריון לוקר
 //////////////////////////
@@ -481,6 +482,9 @@ let { status } = await Location.requestPermissionsAsync();
 //
 console.log('Express Package : '+ this.state.ExpressP)
         console.log('Empty : ' + this.state.EEmptyLocker)
+
+        const datetime = moment().add(30,'minutes').format()
+  
         const package_data = {
 
           StartStation: this.state.selected1,
@@ -488,7 +492,7 @@ console.log('Express Package : '+ this.state.ExpressP)
           Pweight: this.state.selected3,
           UserId: this.state.UserId,
           Status: 1,
-          PackTime: new Date().toLocaleString(),
+          PackTime: datetime,
           ExpressP: this.state.ExpressP,
          
 
@@ -496,6 +500,7 @@ console.log('Express Package : '+ this.state.ExpressP)
 
         }
 
+ 
 
         fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
           method: 'POST',

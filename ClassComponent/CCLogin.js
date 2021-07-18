@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Modal, Pressable, Image, Linking, Text, TouchableOpacity, TextInput, StyleSheet, View, navigate, navigation } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, Icon } from 'native-base';
+import moment from 'moment';
 
 export default class CCLogin extends Component {
   state = {
@@ -55,8 +56,6 @@ export default class CCLogin extends Component {
 
 
   async login(email, password) {
-
-
 
     const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users?email=' + email + '&pass=' + password;
     const response = await fetch(apiUserUrl);
