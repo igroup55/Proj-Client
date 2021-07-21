@@ -23,7 +23,8 @@ export default class CCExpressLockers extends Component {
       stationLong: 0,
       AlertModal: '',
       modalVisible: false,
-      refresh: false
+      refresh: false,
+      LockerId: 0
 
     }
   }
@@ -35,7 +36,7 @@ export default class CCExpressLockers extends Component {
     this.props.navigation.addListener('focus', () => this.setState({ refresh: true }, () => this.setState({ refresh: false })))
 
 
-    }
+  }
   UNSAFE_componentWillUpdate() {
     if (this.state.refresh == true)
       this.getData()
@@ -130,7 +131,7 @@ export default class CCExpressLockers extends Component {
     this.setState({ modalVisible: visible });
   }
 
-  PickUp() {
+   PickUp() {
 
     this.state.Packages.map((pack, key) => {
       if (pack.StartStation === this.state.SelectedStation) {
@@ -149,13 +150,50 @@ export default class CCExpressLockers extends Component {
             })
           })
         }
+
+        this.getLocker(pack.PackageID)
       }
 
     })
     // ניווט לפיזור חבילות-הוא תותח הוא תותח הוא תותחחחחח
     // this.props.navigation.navigate('')
-    this.props.navigation.navigate('ExpressRecomendation');
   }
+
+
+  async getLocker(pack) {
+
+    //let PackageId = this.state.Packages[this.state.Packages.length - 1].PackageID;
+    const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + pack;
+    const response = await fetch(apiPackagePricesUrl);
+    const data = await response.json()
+    this.setState({ LockerId: data[0]["ELockerID"] }, () => console.log('LockerId: ' + this.state.LockerId))
+
+
+    this.UpdateLocker();
+  }
+
+  async UpdateLocker() {
+
+    const Slocker_update = {
+
+      LockerID: this.state.LockerId,
+      PackageID: -1,
+      Busy: 0,
+    }
+
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers', {
+      method: 'PUT',
+      body: JSON.stringify(Slocker_update),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
+
+    this.props.navigation.navigate('ExpressRecomendation');
+
+  }
+
+
 
   render() {
 
@@ -166,7 +204,7 @@ export default class CCExpressLockers extends Component {
 
       if (pack.StartStation === this.state.SelectedStation) {
 
-        if (pack.Status == 1) {
+        if (pack.Status === 1) {
 
           return (<View style={{ margin: 20, borderColor: 'black', borderWidth: 1, borderRadius: 10, backgroundColor: 'white' }} key={key}>
 
@@ -181,7 +219,7 @@ export default class CCExpressLockers extends Component {
           </View>)
 
         }
-        if (pack.Status == 2) {
+        if (pack.Status === 2) {
 
 
           return (<View style={{ margin: 20, borderColor: 'black', borderWidth: 1, borderRadius: 10, backgroundColor: 'white' }} key={key}>
@@ -194,6 +232,23 @@ export default class CCExpressLockers extends Component {
             </View>
             <View style={{ backgroundColor: 'grey', borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
               <Button disabled={true} labelStyle={{ color: 'black', fontWeight: 'bold' }}> נאספה </Button>
+            </View>
+          </View>)
+
+        }
+        if (pack.Status === 3) {
+
+
+          return (<View style={{ margin: 20, borderColor: 'black', borderWidth: 1, borderRadius: 10, backgroundColor: 'white' }} key={key}>
+
+            <View style={{ padding: 15, borderBottomColor: 'black', borderBottomWidth: 1, marginRight: 0, marginLeft: 0 }}>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> מס' חבילה : </Text>{pack.PackageID}</Text>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> תחנת איסוף : </Text>{pack.StartStation}</Text>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> לוקר איסוף : </Text>{pack.UserID2}</Text>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> כתובת יעד : </Text>{pack.EndStation}</Text>
+            </View>
+            <View style={{ backgroundColor: 'grey', borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+              <Button disabled={true} labelStyle={{ color: 'black', fontWeight: 'bold' }}> נמסר </Button>
             </View>
           </View>)
 

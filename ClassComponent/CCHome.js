@@ -24,7 +24,7 @@ activityList:false
     registerForPushNotificationsAsync()
     .then((token) => {
     this.setState({ token:token });
-    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    //this._notificationSubscription = Notifications.addListener(this._handleNotification);
     console.log("my token is: "+ this.state.token)
     this.UpdateUserToken();
     this.props.navigation.addListener('focus',()=> this.setState({activityList:true}),()=> this.setState({activityList:false}))

@@ -41,7 +41,7 @@ const CheckBoxes = () => {
               <Input style={styles.InputText}
                 placeholderTextColor="grey"
                 placeholder="כתובת"
-                returnKeyType="search"
+                returnKeyType="next"
                 onChangeText={val => {Address= val }}
                 onBlur = {(e) => this.storeData('Address',Address)}
               />

@@ -5,7 +5,7 @@ import { ScrollView, TouchableHighlight, TouchableOpacity } from 'react-native-g
 import { Button, Icon, Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native';
-
+import moment from 'moment';
 
 export default class CreditPay extends Component {
   constructor(props) {
@@ -207,7 +207,7 @@ export default class CreditPay extends Component {
           <Body style={{ direction: 'rtl', textAlign: 'left' }}>
             <Text >מספר עסקה: {Transaction.TranstactionID}</Text>
             <Text style={{ marginTop: 5 }} note >סכום עסקה: {Transaction.CreditAmount} קרדיטים</Text>
-            <Text style={{ marginTop: 5 }} note >תאריך עסקה: {Transaction.TransactionDate} </Text>
+            <Text style={{ marginTop: 5 }} note >תאריך עסקה: {moment(Transaction.TransactionDate).format('YYYY-MM-DD')} </Text>
 
           </Body>
 
@@ -261,9 +261,9 @@ export default class CreditPay extends Component {
         </View>
         {this.state.BuycreditsForm === 1 ? (
           <View >
-            <TouchableOpacity style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 30, backgroundColor: 'green', borderRadius: 20, borderWidth: 1 }} onPress={() => { this.setState({ BuycreditsForm: 0 }) }}><Icon name="close" /></TouchableOpacity>
-            <View style={{ alignItems: 'center' , backgroundColor:'white' , borderRadius:20 , borderWidth:1 , margin:20 , height:250}}>
-           
+            <TouchableOpacity style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 30, backgroundColor: 'green', borderRadius: 20, borderWidth: 1 }} onPress={() => { this.setState({ BuycreditsForm: 0,FormCreditAmount:0 }) }}><Icon name="close" /></TouchableOpacity>
+            <View style={{ alignItems: 'center', backgroundColor: 'white', borderRadius: 20, borderWidth: 1, margin: 20, height: 250 }}>
+
               <TextInput style={styles.input}
                 underlineColorAndroid="transparent"
                 placeholder="כמות קרדיטים"
@@ -322,7 +322,7 @@ export default class CreditPay extends Component {
               <Text style={styles.titles1} > סך הכל לתשלום: {this.state.FormCreditAmount} ש"ח</Text>
             </View>
             <View>
-              <Button onPress={() => { this.validatePayment() }} block success style={{ paddingHorizontal: 30, paddingVertical: 30, marginRight: 20, marginTop: 10, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+              <Button onPress={() => { this.validatePayment() }} block success style={{ paddingHorizontal: 30, paddingVertical: 30, marginTop: 10, borderColor: 'black', borderWidth: 2, borderRadius: 8, justifyContent: 'center', marginLeft: 25, marginRight: 25 }} >
                 <Text style={{ fontWeight: 'bold', color: '#fff', textAlign: 'center' }}>אישור תשלום</Text>
               </Button>
             </View>

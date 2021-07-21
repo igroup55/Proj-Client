@@ -1,13 +1,13 @@
 
 import * as React from 'react';
 import { List, Checkbox, Button } from 'react-native-paper';
-import { Modal, SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Pressable , Image} from 'react-native';
+import { Modal, SafeAreaView, ScrollView, StyleSheet, TextInput, Text, View, Pressable, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Icon } from 'native-base';
 
 
 class CCDeliveryFeed1 extends React.Component {
-  
+
   state = {
     expanded: false,
     StartStation: null,
@@ -39,14 +39,14 @@ class CCDeliveryFeed1 extends React.Component {
     error: null,
     AlertModal: '',
     modalVisible: false,
-    refresh3:false,
-    refresh6:false,
-    refresh10:false
+    refresh3: false,
+    refresh6: false,
+    refresh10: false
 
-    
+
 
   }
-  
+
 
   _handlePress = () =>
     this.setState({
@@ -76,6 +76,11 @@ class CCDeliveryFeed1 extends React.Component {
       error => this.setState({ error: error.message }),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
+
+    this.getpackages(3.0);
+    this.getpackages(6.0);
+    this.getpackages(10.0);
+
 
   }
 
@@ -161,7 +166,7 @@ class CCDeliveryFeed1 extends React.Component {
 
   AddTDUser(weight) {
 
-    this.setState({ AlertModal: 'קטגוריה סומנה בהצלחה !! '  + "\n" + ' לחץ - אני כאן - בעת ההגעה לתחנת רכבת' }, ()=> { this.setModalVisible(true) });
+    this.setState({ AlertModal: 'קטגוריה סומנה בהצלחה !! ' + "\n" + ' לחץ - אני כאן - בעת ההגעה לתחנת רכבת' }, () => { this.setModalVisible(true) });
 
     // setTimeout(() => {
     //   this.props.navigation.navigate('Home');
@@ -199,22 +204,21 @@ class CCDeliveryFeed1 extends React.Component {
         (error) => {
           console.log("err post=", error);
         }).then(
-()=>{
-  
-          if(weight === 3)
-          {
-            this.setState({refresh3:true},()=>this.setState({refresh3:false}))
+          () => {
+
+            if (weight === 3) {
+              this.setState({ refresh3: true }, () => this.setState({ refresh3: false }))
+            }
+
+            if (weight === 6) {
+              this.setState({ refresh6: true }, () => this.setState({ refresh6: false }))
+            }
+
+            if (weight === 10) {
+              this.setState({ refresh10: true }, () => this.setState({ refresh10: false }))
+
+            }
           }
-          
-          if(weight === 6){
-            this.setState({refresh6:true},()=>this.setState({refresh6:false}))
-          }
-         
-          if(weight === 10){
-            this.setState({refresh10:true},()=>this.setState({refresh10:false}))
-      
-          }
-        }
 
         );
 
@@ -266,9 +270,9 @@ class CCDeliveryFeed1 extends React.Component {
           { this.setModalVisible(true) }
         }
         else {
-           this.AddTDUser(weight) 
-         
-          }
+          this.AddTDUser(weight)
+
+        }
       if (weight === 6)
         if (this.state.PackagesList2.length === 0) {
           this.setState({ AlertModal: "No Packages Found" });
@@ -276,25 +280,25 @@ class CCDeliveryFeed1 extends React.Component {
 
         }
 
-        else { 
+        else {
           this.AddTDUser(weight)
-     
-      }
+
+        }
       if (weight === 10)
         if (this.state.PackagesList3.length === 0) {
           this.setState({ AlertModal: "No Packages Found" });
           { this.setModalVisible(true) }
         }
 
-        else { 
-         
+        else {
+
           this.AddTDUser(weight)
-        
+
 
         }
 
-        
-  
+
+
 
 
     }
@@ -322,122 +326,122 @@ class CCDeliveryFeed1 extends React.Component {
 
   ChanceToPickup() {
 
-    
+
 
     if (this.state.TDUserList.length !== 0) {
       let RatingSum = 0;
       let RatingArr = [];
       this.state.TDUserList.map((interest, key) => {
 
-      RatingArr.push(interest["Rating"]/10)
-      
-      
+        RatingArr.push(interest["Rating"] / 10)
+
+
       })
-      
+
       let TDRating = RatingSum / this.state.TDUserList.length;
-     TDRating = 10 - TDRating;
+      TDRating = 10 - TDRating;
 
 
       if (this.state.TDUserList[0]["Pweight"] === 3 && this.state.TDUserList1.length !== 0 && this.state.PackagesList1.length <= this.state.TDUserList1.length) {
         var SuccessArr = []
         let Size = this.state.PackagesList1.length
-         SuccessArr = this.k_combinations(RatingArr,Size);
-         console.log(SuccessArr)
-         console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
-         
+        SuccessArr = this.k_combinations(RatingArr, Size);
+        console.log(SuccessArr)
+        console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
+
         var total = 0;
         var probability = 1;
-         for (let i = 0; i < SuccessArr.length ; i++) {
-          if(this.state.PackagesList1.length !== 1)
-          var probability = 1;
-          for (let j = 0; j < Size ; j++) {
-            if(this.state.PackagesList1.length !== 1)
-             probability *= SuccessArr[i][j]
+        for (let i = 0; i < SuccessArr.length; i++) {
+          if (this.state.PackagesList1.length !== 1)
+            var probability = 1;
+          for (let j = 0; j < Size; j++) {
+            if (this.state.PackagesList1.length !== 1)
+              probability *= SuccessArr[i][j]
             else
-            probability = SuccessArr[i][j]
-            
+              probability = SuccessArr[i][j]
+
           }
           console.log(probability);
           total += probability
-         }
-         console.log(this.state.TDUserList1)
+        }
+        console.log(this.state.TDUserList1)
 
-        if(this.state.PackagesList1.length === 1 && this.state.TDUserList1.length > 1)
-        total = (total/(this.state.TDUserList1.length)*(1/this.state.TDUserList1.length))
+        if (this.state.PackagesList1.length === 1 && this.state.TDUserList1.length > 1)
+          total = (total / (this.state.TDUserList1.length) * (1 / this.state.TDUserList1.length))
         else
-         total = 1-(total/this.state.TDUserList1.length)
-         total = total.toFixed(2);
-         console.log('total : '+(total)); 
-        this.setState({ Rating3: total* 100 })
+          total = 1 - (total / this.state.TDUserList1.length)
+        total = total.toFixed(2);
+        console.log('total : ' + (total));
+        this.setState({ Rating3: total * 100 })
 
       }
 
       if (this.state.TDUserList[0]["Pweight"] === 6 && this.state.TDUserList2.length !== 0 && this.state.PackagesList2.length <= this.state.TDUserList2.length) {
-        
+
         var SuccessArr = []
         let Size = this.state.PackagesList2.length
-         SuccessArr = this.k_combinations(RatingArr,Size);
-         console.log(SuccessArr)
-         console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
-         
+        SuccessArr = this.k_combinations(RatingArr, Size);
+        console.log(SuccessArr)
+        console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
+
         var total = 0;
         var probability = 1;
-         for (let i = 0; i < SuccessArr.length ; i++) {
-          if(this.state.PackagesList2.length !== 1)
-          var probability = 1;
-          for (let j = 0; j < Size ; j++) {
-            if(this.state.PackagesList2.length !== 1)
-             probability *= SuccessArr[i][j]
+        for (let i = 0; i < SuccessArr.length; i++) {
+          if (this.state.PackagesList2.length !== 1)
+            var probability = 1;
+          for (let j = 0; j < Size; j++) {
+            if (this.state.PackagesList2.length !== 1)
+              probability *= SuccessArr[i][j]
             else
-            probability = SuccessArr[i][j]
-            
+              probability = SuccessArr[i][j]
+
           }
           console.log(probability);
           total += probability
-         }
-         console.log(this.state.TDUserList2)
+        }
+        console.log(this.state.TDUserList2)
 
-        if(this.state.PackagesList2.length === 1 && this.state.TDUserList2.length > 1)
-        total = (total/(this.state.TDUserList2.length)*(1/this.state.TDUserList2.length))
+        if (this.state.PackagesList2.length === 1 && this.state.TDUserList2.length > 1)
+          total = (total / (this.state.TDUserList2.length) * (1 / this.state.TDUserList2.length))
         else
-         total = 1-(total/this.state.TDUserList2.length)
-         total = total.toFixed(2);
-         console.log('total : '+(total)); 
-        this.setState({ Rating6: total* 100 })
+          total = 1 - (total / this.state.TDUserList2.length)
+        total = total.toFixed(2);
+        console.log('total : ' + (total));
+        this.setState({ Rating6: total * 100 })
 
       }
 
       if (this.state.TDUserList[0]["Pweight"] === 10 && this.state.TDUserList3.length !== 0 && this.state.PackagesList3.length <= this.state.TDUserList3.length) {
         var SuccessArr = []
         let Size = this.state.PackagesList3.length
-         SuccessArr = this.k_combinations(RatingArr,Size);
-         console.log(SuccessArr)
-         console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
-         
+        SuccessArr = this.k_combinations(RatingArr, Size);
+        console.log(SuccessArr)
+        console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
+
         var total = 0;
         var probability = 1;
-         for (let i = 0; i < SuccessArr.length ; i++) {
-          if(this.state.PackagesList3.length !== 1)
-          var probability = 1;
-          for (let j = 0; j < Size ; j++) {
-            if(this.state.PackagesList3.length !== 1)
-             probability *= SuccessArr[i][j]
+        for (let i = 0; i < SuccessArr.length; i++) {
+          if (this.state.PackagesList3.length !== 1)
+            var probability = 1;
+          for (let j = 0; j < Size; j++) {
+            if (this.state.PackagesList3.length !== 1)
+              probability *= SuccessArr[i][j]
             else
-            probability = SuccessArr[i][j]
-            
+              probability = SuccessArr[i][j]
+
           }
           console.log(probability);
           total += probability
-         }
-         console.log(this.state.TDUserList3)
+        }
+        console.log(this.state.TDUserList3)
 
-        if(this.state.PackagesList3.length === 1 && this.state.TDUserList3.length > 1)
-        total = (total/(this.state.TDUserList3.length)*(1/this.state.TDUserList3.length))
+        if (this.state.PackagesList3.length === 1 && this.state.TDUserList3.length > 1)
+          total = (total / (this.state.TDUserList3.length) * (1 / this.state.TDUserList3.length))
         else
-         total = 1-(total/this.state.TDUserList3.length)
-         total = total.toFixed(2);
-         console.log('total : '+(total)); 
-        this.setState({ Rating10: total* 100 })
+          total = 1 - (total / this.state.TDUserList3.length)
+        total = total.toFixed(2);
+        console.log('total : ' + (total));
+        this.setState({ Rating10: total * 100 })
 
       }
 
@@ -446,21 +450,20 @@ class CCDeliveryFeed1 extends React.Component {
 
   }
 
-  UNSAFE_componentWillUpdate(){
-   
-    if(this.state.refresh3 === true)
-    {
-     
+  UNSAFE_componentWillUpdate() {
+
+    if (this.state.refresh3 === true) {
+
       this.GetTDUser(3)
     }
-    
-    if(this.state.refresh6 === true){
-     
+
+    if (this.state.refresh6 === true) {
+
       this.GetTDUser(6)
     }
-   
-    if(this.state.refresh10 === true){
-     
+
+    if (this.state.refresh10 === true) {
+
       this.GetTDUser(10)
 
     }
@@ -508,21 +511,21 @@ class CCDeliveryFeed1 extends React.Component {
 
   }
 
-   k_combinations(set, k) {
+  k_combinations(set, k) {
     var i, j, combs, head, tailcombs;
-    
-   
+
+
     // There is no way to take e.g. sets of 5 elements from
     // a set of 4.
     if (k > set.length || k <= 0) {
       return [];
     }
-    
+
     // K-sized set has only one K-sized subset.
     if (k == set.length) {
       return [set];
     }
-    
+
     // There is N 1-sized subsets in a N-sized set.
     if (k == 1) {
       combs = [];
@@ -532,19 +535,19 @@ class CCDeliveryFeed1 extends React.Component {
       return combs;
     }
     combs = [];
-	for (i = 0; i < set.length - k + 1; i++) {
-		// head is a list that includes only our current element.
-		head = set.slice(i, i + 1);
-		// We take smaller combinations from the subsequent elements
-		tailcombs = this.k_combinations(set.slice(i + 1), k - 1);
-		// For each (k-1)-combination we join it with the current
-		// and store it to the set of k-combinations.
-		for (j = 0; j < tailcombs.length; j++) {
-			combs.push(head.concat(tailcombs[j]));
-		}
-	}
-	return combs;
-}
+    for (i = 0; i < set.length - k + 1; i++) {
+      // head is a list that includes only our current element.
+      head = set.slice(i, i + 1);
+      // We take smaller combinations from the subsequent elements
+      tailcombs = this.k_combinations(set.slice(i + 1), k - 1);
+      // For each (k-1)-combination we join it with the current
+      // and store it to the set of k-combinations.
+      for (j = 0; j < tailcombs.length; j++) {
+        combs.push(head.concat(tailcombs[j]));
+      }
+    }
+    return combs;
+  }
 
 
   async getpackages(weight) {
@@ -553,7 +556,7 @@ class CCDeliveryFeed1 extends React.Component {
     let express = 'False'
 
     //tar2 - url צריך לשנות אחרי שמעדכנים ל tar 1
-    const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + weight + '&express='+express;
+    const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + weight + '&express=' + express;
     const response = await fetch(apiUserUrl);
     const data = await response.json()
     this.setState({ PackagesList: data })
@@ -634,60 +637,57 @@ class CCDeliveryFeed1 extends React.Component {
   }
 
   render() {
-    
- 
-    var SStation = this.state.SStationName.replace(/"/gi,'')
-    var EStation = this.state.EStationName.replace(/"/gi,'')
-   
-   //חבילות עד 3 ק"ג
-    if(this.state.PackagesList1.length != 0)
-    {
+
+
+    var SStation = this.state.SStationName.replace(/"/gi, '')
+    var EStation = this.state.EStationName.replace(/"/gi, '')
+
+    //חבילות עד 3 ק"ג
+    if (this.state.PackagesList1.length != 0) {
       var PackagesNum1 = 'חבילות זמינות :' + this.state.PackagesList1.length
-      if(this.state.TDUserList1.length !=0)
-      var InterestedUsers1 = 'מתעניינים : ' + this.state.TDUserList1.length
+      if (this.state.TDUserList1.length != 0)
+        var InterestedUsers1 = 'מתעניינים : ' + this.state.TDUserList1.length
       else
-      var InterestedUsers1 = 'אין מתעניינים בקטגוריה זו'
+        var InterestedUsers1 = 'אין מתעניינים בקטגוריה זו'
 
     }
- 
-    else{
+
+    else {
       var PackagesNum1 = 'אין חבילות זמינות כרגע'
       var InterestedUsers1 = ''
     }
 
     //חבילות עד 6 ק"ג
-    if(this.state.PackagesList2.length != 0)
-    {
+    if (this.state.PackagesList2.length != 0) {
       var PackagesNum2 = 'חבילות זמינות :' + this.state.PackagesList2.length
-      if(this.state.TDUserList2.length !=0)
-      var InterestedUsers2 = 'מתעניינים : ' + this.state.TDUserList2.length
+      if (this.state.TDUserList2.length != 0)
+        var InterestedUsers2 = 'מתעניינים : ' + this.state.TDUserList2.length
       else
-      var InterestedUsers2 = 'אין מתעניינים בקטגוריה זו'
+        var InterestedUsers2 = 'אין מתעניינים בקטגוריה זו'
 
     }
- 
-    else{
+
+    else {
       var PackagesNum2 = 'אין חבילות זמינות כרגע'
       var InterestedUsers2 = ''
     }
 
     //חבילות עד 10 ק"ג
-    if(this.state.PackagesList3.length != 0)
-    {
+    if (this.state.PackagesList3.length != 0) {
       var PackagesNum3 = 'חבילות זמינות :' + this.state.PackagesList3.length
-      if(this.state.TDUserList3.length !=0)
-      var InterestedUsers3 = 'מתעניינים : ' + this.state.TDUserList3.length
+      if (this.state.TDUserList3.length != 0)
+        var InterestedUsers3 = 'מתעניינים : ' + this.state.TDUserList3.length
       else
-      var InterestedUsers3 = 'אין מתעניינים בקטגוריה זו'
+        var InterestedUsers3 = 'אין מתעניינים בקטגוריה זו'
 
     }
- 
-    else{
+
+    else {
       var PackagesNum3 = 'אין חבילות זמינות כרגע'
       var InterestedUsers3 = ''
     }
 
-    var ArrowIcon = <Icon  type="FontAwesome" color="#000" name="arrow-left"/>
+    var ArrowIcon = <Icon type="FontAwesome" color="#000" name="arrow-left" />
 
     return (
       <ScrollView>
@@ -716,9 +716,9 @@ class CCDeliveryFeed1 extends React.Component {
         </Modal>
 
         <List.Section >
-        <List.Subheader style={{textAlign:'center' , fontSize:20 , color:'black', fontWeight:'bold' , borderColor:'black', borderWidth:1 , backgroundColor: '#cbe8ba' , borderRadius:10 , marginRight:10, marginLeft:10 , marginTop:20,marginBottom:30}} > {SStation}  {ArrowIcon}  {EStation} </List.Subheader>
+          <List.Subheader style={{ textAlign: 'center', fontSize: 20, color: 'black', fontWeight: 'bold', borderColor: 'black', borderWidth: 1, backgroundColor: '#cbe8ba', borderRadius: 10, marginRight: 10, marginLeft: 10, marginTop: 20, marginBottom: 30 }} > {SStation}  {ArrowIcon}  {EStation} </List.Subheader>
           <List.Accordion
-            title={' חבילות עד 3 ק"ג ' + ' - ( ' + this.state.PackagesList1.length + ' )' }
+            title={' חבילות עד 3 ק"ג ' + ' - ( ' + this.state.PackagesList1.length + ' )'}
             left={props => <List.Icon {...props} icon="cube" />}
             titleStyle={styles.AccordionTitle}
             onPress={() => { this.getpackages(3.0) }}
@@ -734,7 +734,7 @@ class CCDeliveryFeed1 extends React.Component {
           </List.Accordion>
 
           <List.Accordion
-            title={' חבילות 3 עד 6 ק"ג ' + ' - ( ' + this.state.PackagesList2.length + ' )' }
+            title={' חבילות 3 עד 6 ק"ג ' + ' - ( ' + this.state.PackagesList2.length + ' )'}
             left={props => <List.Icon {...props} icon="cube" />}
             style={styles.AccordionList}
             onPress={() => { this.getpackages(6.0) }}
@@ -746,14 +746,14 @@ class CCDeliveryFeed1 extends React.Component {
             <Button onPress={() => { this.Interested(6) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה</Text></Button>
           </List.Accordion>
           <List.Accordion
-            title={' חבילות 6 עד 10 ק"ג ' + ' - ( ' + this.state.PackagesList3.length + ' )' }
+            title={' חבילות 6 עד 10 ק"ג ' + ' - ( ' + this.state.PackagesList3.length + ' )'}
             left={props => <List.Icon {...props} icon="cube" />}
             onPress={() => { this.getpackages(10.0) }}
             titleStyle={styles.AccordionTitle}
             style={styles.AccordionList}
 
           >
-            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum3}  />
+            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum3} />
             <List.Item titleStyle={styles.ItemTitle} title={InterestedUsers3} />
             <List.Item titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating10} />
             <Button onPress={() => { this.Interested(10) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה</Text></Button>
@@ -775,35 +775,35 @@ const styles = ({
     textAlign: 'center',
     fontWeight: 'bold',
     color: 'green',
-    marginTop:10,
-    
-   
+    marginTop: 10,
+
+
 
 
   },
   AccordionButton: {
     backgroundColor: 'green',
-color:'black',
-fontWeight:'bold',
-borderRadius:0
+    color: 'black',
+    fontWeight: 'bold',
+    borderRadius: 0
 
 
   },
   ItemTitle: {
     fontWeight: 'bold',
-    textAlign:'center',
-    margin : 0
-    
+    justifyContent: 'center',
+    margin: 0
+
   },
   AccordionList: {
     margin: 10,
-    backgroundColor:'#cbe8ba',
+    backgroundColor: '#cbe8ba',
     borderRadius: 10,
   },
   ButtonText: {
     color: 'black',
     fontWeight: 'bold',
- 
+
   },
   centeredView: {
     flex: 1,

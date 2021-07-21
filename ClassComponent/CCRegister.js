@@ -56,8 +56,8 @@ export default class RegisterForm extends Component {
 
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
-    if(visible === false)
-    this.props.navigation.navigate('Login')
+    if (visible === false)
+      this.props.navigation.navigate('Login')
 
   }
 
@@ -275,9 +275,9 @@ export default class RegisterForm extends Component {
         <View>
 
           <View>
-            <Text style={{ fontSize: 30, textAlign: 'center', fontWeight: 'bold',marginTop:25}}> ברוך הבא ל- JestApp</Text>
+            <Text style={{ fontSize: 30, textAlign: 'center', fontWeight: 'bold', marginTop: 25 }}> ברוך הבא ל- JestApp</Text>
             <Thumbnail source={{ uri: 'https://i.ibb.co/bJwTHqz/images-removebg-preview.png' }}
-              style={{ width: 90, height: 90, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', margin: 30}}
+              style={{ width: 90, height: 90, justifyContent: 'center', alignItems: 'center', alignSelf: 'center', margin: 30 }}
             />
 
           </View>
@@ -312,7 +312,7 @@ export default class RegisterForm extends Component {
                 style={styles.input}
                 placeholder='שם מלא'
                 autoCapitalize="none"
-                placeholderTextColor='white'
+                placeholderTextColor='black'
                 onChangeText={val => this.onChangeText('fullName', val)}
               />
               <View><Text style={styles.FormErrorText}>{this.state.fullName_Error}</Text></View>
@@ -320,7 +320,7 @@ export default class RegisterForm extends Component {
                 style={styles.input}
                 placeholder='אימייל'
                 autoCapitalize="none"
-                placeholderTextColor='white'
+                placeholderTextColor='black'
                 onChangeText={val => this.onChangeText('email', val)}
               />
               <View><Text style={styles.FormErrorText}>{this.state.email_Error}</Text></View>
@@ -329,7 +329,7 @@ export default class RegisterForm extends Component {
                 placeholder='סיסמא'
                 secureTextEntry={true}
                 autoCapitalize="none"
-                placeholderTextColor='white'
+                placeholderTextColor='black'
                 onChangeText={val => this.onChangeText('password', val)}
               />
               <View><Text style={styles.FormErrorText}>{this.state.password_Error}</Text></View>
@@ -339,7 +339,7 @@ export default class RegisterForm extends Component {
                 keyboardType="numeric"
                 maxLength={10}
                 autoCapitalize="none"
-                placeholderTextColor='white'
+                placeholderTextColor='black'
                 onChangeText={val => this.onChangeText('phone_number', val)}
               />
               <View><Text style={styles.FormErrorText}>{this.state.phone_number_Error}</Text></View>
@@ -349,7 +349,7 @@ export default class RegisterForm extends Component {
                 maxLength={9}
                 keyboardType="numeric"
                 autoCapitalize="none"
-                placeholderTextColor='white'
+                placeholderTextColor='black'
                 onChangeText={val => { this.onChangeText('ID', val); this.setState({ ID_Error: '' }) }}
               /><View><Text style={styles.FormErrorText}>{this.state.ID_Error}</Text></View>
               {/* <View>
@@ -380,13 +380,13 @@ export default class RegisterForm extends Component {
         </View> */}
               <View style={{ alignSelf: 'center', marginBottom: 20 }}
               >
-                <Button onPress={this.btnOpenGalery.bind(this)} style={{ marginTop:25,alignSelf: 'center', backgroundColor: '#A7D489', borderRadius: 10, borderWidth: 1, borderColor: 'black', width:150}}><Text style={{ fontWeight: 'bold',textAlign:'center' }}>  תמונת פרופיל </Text>
-                  <Icon name="image"  />
+                <Button onPress={this.btnOpenGalery.bind(this)} style={{ marginTop: 25, alignSelf: 'center', backgroundColor: '#cbe8ba', borderRadius: 10, borderWidth: 1, borderColor: 'black', width: 150 }}><Text style={{ fontWeight: 'bold', textAlign: 'center' }}>  תמונת פרופיל </Text>
+                  <Icon name="image" />
                 </Button>
 
               </View>
               <View>
-                <Button onPress={this.signUp} style={{ alignSelf: 'center', backgroundColor: '#A7D489', marginBottom: 10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}> הרשם עכשיו </Text>
+                <Button onPress={this.signUp} style={{ alignSelf: 'center', backgroundColor: '#cbe8ba', marginBottom: 10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}> הרשם עכשיו </Text>
                   <Icon name="train" style={{ alignSelf: 'center', }} />
                 </Button>
 
@@ -407,14 +407,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: 325,
     height: 40,
-    backgroundColor: '#A7D489',
+    backgroundColor: '#cbe8ba',
     margin: 5,
     padding: 8,
     color: 'white',
     borderRadius: 5,
     fontSize: 18,
     fontWeight: '500',
-    borderWidth:1
+    borderWidth: 1
   },
   FormErrorText: {
     fontSize: 12,

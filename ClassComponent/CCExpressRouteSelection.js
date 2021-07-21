@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { CheckBox, Container, Header, Content, Form, Item, Input, Label, Picker, Footer, Right, Button, Icon, DatePicker } from 'native-base';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions } from 'react-native';
 import CheckBoxes from './CCCheckBox';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ReactDOM from "react-dom";
@@ -16,12 +16,13 @@ export default class CCExpressRouteSelection extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    
+
       StartStation: null,
       StationsList: [],
       latitude: 0,
       longitude: 0,
-      error: null
+      error: null,
+      modalVisible: false
     };
 
   }
@@ -34,7 +35,7 @@ export default class CCExpressRouteSelection extends Component {
     this.setState({
       StartStation: value
     });
-    
+
   }
 
 
@@ -71,7 +72,7 @@ export default class CCExpressRouteSelection extends Component {
   };
 
   navigate = () => {
-    if (this.state.StartStation !== '') {
+    if (this.state.StartStation !== null) {
       this.state.StationsList.map((station, key) => {
         if (station.StationID === this.state.StartStation) {
 
@@ -82,20 +83,25 @@ export default class CCExpressRouteSelection extends Component {
         }
 
       }
-      
+
       )
 
       this.storeData('XStartStation', this.state.StartStation)
-        
+
       this.props.navigation.navigate('ExpressPackages')
     }
-    else
-    {
-      // this.setState({ AlertModal: 'לא ניתן לחפש משלוחים במסלול הנבחר' });
-      // { this.setModalVisible(true) }
-      alert('בחר תחנה');
+    else {
+      this.setState({ AlertModal: 'בחר תחנה' });
+      { this.setModalVisible(true) }
+      //alert('בחר תחנה');
 
     }
+  }
+
+
+
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
   }
 
   render() {
@@ -103,13 +109,43 @@ export default class CCExpressRouteSelection extends Component {
     let stations = this.state.StationsList.map((stations, key) => {
       return (<Picker.Item key={key} label={stations.StationName} value={stations.StationID} />)
     });
+    let locations = this.state.StationsList.map((stations, key) => {
+      return (<Marker key={key} coordinate={{ latitude: stations.Latitude, longitude: stations.Longitude }}
+        title={stations.StationName}
+        description=""
+        image={require('../assets/trainStation.png')} />)
+    });
+
 
     return (
-     
- 
-          <View style={{backgroundColor:'lightyellow',flex:1, borderTopColor: 'black', borderTopWidth: 2 }}>
-            {/* <Header style={{ backgroundColor: '#ffed4b', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: '#ffed4b' }}> JestApp</Text></Header> */}
-            {/* <Modal
+
+
+      <View style={{ backgroundColor: 'lightyellow', flex: 1, borderTopColor: 'black', borderTopWidth: 2 }}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            this.setModalVisible(!this.state.modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+
+            <View style={styles.modalView}>
+              <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+              <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              >
+                <Text style={styles.textStyle}> סגור </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+        {/* <Header style={{ backgroundColor: '#ffed4b', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: '#ffed4b' }}> JestApp</Text></Header> */}
+        {/* <Modal
               animationType="slide"
               transparent={true}
               visible={this.state.modalVisible}
@@ -133,60 +169,61 @@ export default class CCExpressRouteSelection extends Component {
               </View>
             </Modal> */}
 
-            <Form >
-              <View >
-                
-                <Icon name="location" style={{ alignSelf: 'center', marginTop: 10 }} />
-                <Text style={styles.titles} >תחנת מוצא</Text>
-                <Item picker style={styles.InputText}>
-                  <Picker
-                    mode="dropdown"
-                    style={{ textAlign: 'right' }}
-                    placeholder="בחר תחנת מוצא"
-                    placeholderStyle={{ color: "#bfc6ea" }}
-                    placeholderIconColor="#007aff"
-                    selectedValue={this.state.StartStation}
-                    onValueChange={this.onValueChange1.bind(this)}
-                  >
+        <Form >
+          <View >
 
-                    <Picker.Item label='בחר תחנת מוצא' value='None' />
+            <Icon name="location" style={{ alignSelf: 'center', marginTop: 10 }} />
+            <Text style={styles.titles} >תחנת מוצא</Text>
+            <Item picker style={styles.InputText}>
+              <Picker
+                mode="dropdown"
+                style={{ textAlign: 'right' }}
+                placeholder="בחר תחנת מוצא"
+                placeholderStyle={{ color: "#bfc6ea" }}
+                placeholderIconColor="#007aff"
+                selectedValue={this.state.StartStation}
+                onValueChange={this.onValueChange1.bind(this)}
+              >
 
-                    {stations}
+                <Picker.Item label='בחר תחנת מוצא' value='None' />
 
-
-                  </Picker>
-                </Item>
-              </View>
-
-              <View style={styles.section}>
-                <Icon name="map" style={{ alignSelf: 'center', marginTop: 10 }} />
-                <Text style={styles.titles}>התחנה הקרובה</Text>
+                {stations}
 
 
-              </View>
+              </Picker>
+            </Item>
+          </View>
 
-              <View>
-                <MapView region={{ latitude: this.state.latitude, longitude: this.state.longitude, longitudeDelta: 0.0121, latitudeDelta: 0.015 }} style={{ width: Dimensions.get('window').width, height: 250 }}
-                >
-                  <Marker
-                    coordinate={{ latitude: this.state.latitude, longitude: this.state.longitude }}
-                    title='my place:)'
-                    description='here i am'
-                  //image={require('../assets/icon.png')}
-                  />
-                </MapView>
-              </View>
-
-
-              <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: '#ffed4b', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש חבילות </Text></Button>
-
-
-            </Form>
-
+          <View style={styles.section}>
+            <Icon name="map" style={{ alignSelf: 'center', marginTop: 10 }} />
+            <Text style={styles.titles}>התחנה הקרובה</Text>
 
 
           </View>
-    
+
+          <View>
+            <MapView region={{ latitude: this.state.latitude, longitude: this.state.longitude, longitudeDelta: 0.0121, latitudeDelta: 0.015 }} style={{ width: Dimensions.get('window').width, height: 250 }}
+            >
+              <Marker
+                coordinate={{ latitude: this.state.latitude, longitude: this.state.longitude }}
+                title='my place:)'
+                description='here i am'
+              //image={require('../assets/icon.png')}
+              />
+              {locations}
+            </MapView>
+          </View>
+
+
+          <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: '#ffed4b', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש חבילות </Text></Button>
+
+
+        </Form>
+
+
+
+      </View>
+
 
     );
   }
@@ -197,14 +234,14 @@ export default class CCExpressRouteSelection extends Component {
 const styles = ({
   container: {
     flex: 1,
- 
+
     alignItems: 'center',
     justifyContent: 'center',
 
   },
   InputText: {
     textAlign: 'right',
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: 'black',
     borderStyle: 'solid',
     backgroundColor: '#ffed4b',
@@ -222,6 +259,49 @@ const styles = ({
   section: {
     marginTop: 15,
     marginBottom: 5
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#ffed4b",
+  },
+  buttonClose: {
+    backgroundColor: "#ffed4b",
+  },
+  textStyle: {
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontWeight: "bold",
   }
 
 });

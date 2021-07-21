@@ -31,13 +31,13 @@ export default class CCLogin extends Component {
 
 
   loginuser() {
-  
+
     this.state.Users.map((user) => {
       console.log(user);
 
       if (this.state.email == user.EmailAddress && this.state.password == user.Password) {
         { this.storeData('UserId', user) }
-        
+
         this.props.navigation.navigate('Home');
       }
       else {
@@ -61,12 +61,12 @@ export default class CCLogin extends Component {
     const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users?email=' + email + '&pass=' + password;
     const response = await fetch(apiUserUrl);
     const data = await response.json()
-    this.setState({ Users: data }, ()=>  this.loginuser() );
-  
-    
+    this.setState({ Users: data }, () => this.loginuser());
+
+
   }
 
-  
+
 
   render() {
     return (
@@ -100,12 +100,12 @@ export default class CCLogin extends Component {
             height: 80,
             alignSelf: 'center',
             marginBottom: 20,
-            marginTop:25
+            marginTop: 25
           }}
         />
         <Text style={{ fontSize: 30, textAlign: 'center', fontWeight: 'bold', marginBottom: 30 }}> JestApp  </Text>
-        <Text style={{ fontSize: 22, textAlign: 'center' }}>Sign In </Text>
-        <Text style={{ color: 'grey', textAlign: 'center', margin: 10 }}>Hey there! nice to see you again</Text>
+        <Text style={{ fontSize: 22, textAlign: 'center', fontWeight: 'bold' }}>התחברות</Text>
+        <Text style={{ color: 'grey', textAlign: 'center', margin: 10 }}>שלום! טוב לראות אותך שוב</Text>
         <TextInput style={styles.input}
           underlineColorAndroid="transparent"
           placeholder="Email"
@@ -123,14 +123,14 @@ export default class CCLogin extends Component {
           onChangeText={val => this.setState({ password: val })}
 
         />
-        <Button onPress={() => { this.login(this.state.email, this.state.password) }} style={styles.submitButton}><Text style={styles.submitButtonText}>Sign In          </Text></Button>
+        <Button onPress={() => { this.login(this.state.email, this.state.password) }} style={styles.submitButton}><Text style={styles.submitButtonText}>התחבר</Text></Button>
 
-        <View style={{ flexDirection: 'row-reverse' }}>
-          <Text style={{ color: 'blue' , margin:20}}
+        <View>
+          <Text style={{ color: 'blue', margin: 20 }}
             onPress={() => { this.props.navigation.navigate('Register'); }} >
-            Not a member? Sign Up  {'\u00A0'}
+            צור/צרי חשבון חדש  {'\u00A0'}
           </Text>
-          
+
         </View>
       </View>
     )
@@ -142,8 +142,8 @@ export default class CCLogin extends Component {
 const styles = StyleSheet.create({
   container: {
     borderTopColor: 'black', borderTopWidth: 2,
-  
-   
+
+
 
 
   },
@@ -159,13 +159,13 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: 'green',
-    textAlign: 'center',
     height: 55,
     width: 150,
     borderRadius: 10,
     alignSelf: 'center',
     marginBottom: 30,
-    marginTop: 20
+    marginTop: 20,
+    justifyContent: 'center'
 
 
 
