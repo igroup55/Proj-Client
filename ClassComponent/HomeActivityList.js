@@ -787,6 +787,24 @@ export default class HomeActivityList extends Component {
 
   }
 
+  UpdateDTUser() {
+    let PushDT = moment(this.state.FutureDT).subtract(5, 'hour').format('YYYY-MM-DD hh:mm:ss a')
+
+    const UpdateDT = {
+      dTtoken: PushDT,
+      UserId: this.state.UserId,
+
+    }
+    fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users', {
+      method: 'PUT',
+      body: JSON.stringify(UpdateDT),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8'
+      })
+    })
+
+  }
+
 
 
 
@@ -1100,7 +1118,7 @@ export default class HomeActivityList extends Component {
         var statustitle = <Text> הסתיים </Text>
       }
       if (Activities.Status === 2) {
-        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
+        var status = <Image style={{ width: 25, height: 25, marginRight: 20 }} source={{ uri: 'https://icon-library.com/images/icon-checked/icon-checked-8.jpg' }} />
         var statustitle = <Text> החבילה הופקדה ביעד </Text>
       }
       var ArrowIcon = <Icon type="FontAwesome" color="#000" name="arrow-left" />
@@ -1163,8 +1181,12 @@ export default class HomeActivityList extends Component {
         </TouchableOpacity>
       }
       if (Activities.Status === 3) {
-        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/green-circle-emoji.png' }} />
+        var status = <Image style={{ width: 25, height: 25, marginRight: 20 }} source={{ uri: 'https://icon-library.com/images/icon-checked/icon-checked-8.jpg' }} />
         var statustitle = <Text> נמסר ללקוח </Text>
+      }
+      if (Activities.Status === -1) {
+        var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://img.icons8.com/emoji/50/000000/red-circle-emoji.png' }} />
+        var statustitle = <Text> בוטל </Text>
       }
 
       var ArrowIcon = <Icon type="FontAwesome" color="#000" name="arrow-left" />

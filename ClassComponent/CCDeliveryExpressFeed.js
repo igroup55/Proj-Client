@@ -214,7 +214,7 @@ export default class CCDeliveryExpressFeed extends Component {
           Status: 1,
           UserID: this.state.UserID.UserId,
           FullName: this.state.UserID.FullName,
-          //PackTime:datetime
+          PackTime:datetime
 
         }
         fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ExpressUser', {

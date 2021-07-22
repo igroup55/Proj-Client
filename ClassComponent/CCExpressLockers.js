@@ -265,7 +265,7 @@ export default class CCExpressLockers extends Component {
               <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> כתובת יעד : </Text>{pack.EndStation}</Text>
             </View>
             <View style={{ backgroundColor: 'grey', borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
-              <Button disabled={true} labelStyle={{ color: 'black', fontWeight: 'bold' }}>  </Button>
+              <Button disabled={true} labelStyle={{ color: 'black', fontWeight: 'bold' }}> בוטל </Button>
             </View>
           </View>)
 
