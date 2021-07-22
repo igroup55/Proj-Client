@@ -39,7 +39,7 @@ export default class HomeActivityList extends Component {
       PackagesList: [],
       TDPayment: 0,
       UserCreditOBJ: [],
-      PickUpDT : moment().format('YYYY-MM-DD hh:mm:ss a'),
+      PickUpDT: moment().format('YYYY-MM-DD hh:mm:ss a'),
       activityList: false,
       FutureDT: moment().format('YYYY-MM-DD hh:mm:ss a')
     };
@@ -201,7 +201,7 @@ export default class HomeActivityList extends Component {
     this.setState({
       AlertModal:
         <View>
-          <Text style={{ textAlign: 'center', margin: 25 }}>
+          <Text style={{ textAlign: 'center', margin: 25, fontWeight: 'bold' }}>
             המשלוח הופקד בהצלחה
           </Text>
           <Pressable
@@ -256,9 +256,9 @@ export default class HomeActivityList extends Component {
         AlertModal:
 
           <View>
-            <Text style={{ textAlign: 'center', margin: 25 }}>
+            <Text style={{ textAlign: 'center', margin: 25, fontWeight: 'bold' }}>
               אתה נמצא בקרבת הלוקר !!
-          </Text>
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => this.setModalVisible(!this.state.modalVisible)}>
@@ -275,9 +275,9 @@ export default class HomeActivityList extends Component {
       this.setState({
         AlertModal:
           <View>
-            <Text style={{ textAlign: 'center', margin: 25 }}>
+            <Text style={{ textAlign: 'center', margin: 25, fontWeight: 'bold' }}>
               אינך נמצא בקרבת הלוקר !!
-          </Text>
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => this.setModalVisible(!this.state.modalVisible)}>
@@ -454,9 +454,9 @@ export default class HomeActivityList extends Component {
       this.setState({
         AlertModal:
           <View>
-            <Text style={{ textAlign: 'center', margin: 25 }}>
+            <Text style={{ textAlign: 'center', margin: 25, fontWeight: 'bold' }}>
               אינך נמצא בקרבת הלוקר !!
-          </Text>
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => this.setModalVisible(!this.state.modalVisible)}>
@@ -511,10 +511,12 @@ export default class HomeActivityList extends Component {
   UpdateTDUserPack() {
 
 
-    this.setState({PickUpDT: moment()
-      .utcOffset('+05:30')
-      .format('YYYY-MM-DD hh:mm:ss a')})
-   
+    this.setState({
+      PickUpDT: moment()
+        .utcOffset('+05:30')
+        .format('YYYY-MM-DD hh:mm:ss a')
+    })
+
 
     const TDPackage_update = {
       PackageID: this.state.PackageID,
@@ -563,9 +565,9 @@ export default class HomeActivityList extends Component {
     this.setState({
       AlertModal:
         <View>
-          <Text style={{ textAlign: 'center', margin: 25 }}>
+          <Text style={{ textAlign: 'center', margin: 25, fontWeight: 'bold' }}>
             החבילה נאספה מהלוקר !!
-        </Text>
+          </Text>
           <Pressable
             style={[styles.button, styles.buttonClose]}
             onPress={() => this.setModalVisible(!this.state.modalVisible)}>
@@ -740,9 +742,9 @@ export default class HomeActivityList extends Component {
         this.setState({
           AlertModal:
             <View>
-              <Text style={{ textAlign: 'center', margin: 25 }}>
+              <Text style={{ textAlign: 'center', margin: 25, fontWeight: 'bold' }}>
                 תודה {this.state.UserCreditOBJ[0].FullName} החבילה הופקדה !
-          </Text>
+              </Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => this.setModalVisible(!this.state.modalVisible)}>
@@ -853,7 +855,7 @@ export default class HomeActivityList extends Component {
 
     this.setState({
       AlertModal: (
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.Packdetails}>מספר חבילה : {this.state.ActivityList1[Key].PackageID}</Text>
           <Text style={styles.Packdetails}>תחנת מוצא : {this.state.ActivityList1[Key].StartStation}</Text>
           <Text style={styles.Packdetails}>תחנת יעד : {this.state.ActivityList1[Key].EndStation}</Text>
@@ -1033,6 +1035,10 @@ export default class HomeActivityList extends Component {
 
       if (Activities.Status === 6) {
         var status = <Image style={{ width: 30, height: 30, marginRight: 20 }} source={{ uri: 'https://i.ibb.co/MRcYq76/green-circle-emoji.png' }} />
+      }
+
+      if (Activities.Status === 7) {
+        var status = <Image style={{ width: 25, height: 25, marginRight: 20 }} source={{ uri: 'https://icon-library.com/images/icon-checked/icon-checked-8.jpg' }} />
       }
 
       return (<TouchableOpacity key={key}><ListItem avatar onPress={() => {
@@ -1261,6 +1267,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     padding: 35,
     alignItems: "center",
+    justifyContent: 'center',
+
     shadowColor: "black",
     shadowOffset: {
       width: 0,
@@ -1269,8 +1277,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    height: 350,
-    width: 300
+    height: 'auto',
+    width: 'auto'
   },
   button: {
     borderRadius: 10,
@@ -1302,6 +1310,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 1,
     marginBottom: 10
+
 
 
   }

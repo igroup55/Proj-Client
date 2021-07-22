@@ -690,7 +690,9 @@ class CCDeliveryFeed1 extends React.Component {
     var ArrowIcon = <Icon type="FontAwesome" color="#000" name="arrow-left" />
 
     return (
-      <ScrollView>
+      <ScrollView >
+        <SafeAreaView>
+        <View style={styles.container}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -726,11 +728,11 @@ class CCDeliveryFeed1 extends React.Component {
 
           >
 
-            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum1} />
-            <List.Item titleStyle={styles.ItemTitle} title={InterestedUsers1} />
-            <List.Item titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating3} />
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={PackagesNum1} />
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={InterestedUsers1} />
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating3} />
 
-            <Button onPress={() => { this.Interested(3) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה </Text></Button>
+            <Button onPress={() => { this.Interested(3) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה               </Text></Button>
           </List.Accordion>
 
           <List.Accordion
@@ -740,10 +742,10 @@ class CCDeliveryFeed1 extends React.Component {
             onPress={() => { this.getpackages(6.0) }}
             titleStyle={styles.AccordionTitle}
           >
-            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum2} />
-            <List.Item titleStyle={styles.ItemTitle} title={InterestedUsers2} />
-            <List.Item titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating6} />
-            <Button onPress={() => { this.Interested(6) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה</Text></Button>
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={PackagesNum2} />
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={InterestedUsers2} />
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating6} />
+            <Button onPress={() => { this.Interested(6) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה               </Text></Button>
           </List.Accordion>
           <List.Accordion
             title={' חבילות 6 עד 10 ק"ג ' + ' - ( ' + this.state.PackagesList3.length + ' )'}
@@ -753,15 +755,17 @@ class CCDeliveryFeed1 extends React.Component {
             style={styles.AccordionList}
 
           >
-            <List.Item titleStyle={styles.ItemTitle} title={PackagesNum3} />
-            <List.Item titleStyle={styles.ItemTitle} title={InterestedUsers3} />
-            <List.Item titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating10} />
-            <Button onPress={() => { this.Interested(10) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה</Text></Button>
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={PackagesNum3} />
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={InterestedUsers3} />
+            <List.Item style={styles.AccordionBody} titleStyle={styles.ItemTitle} title={'הסיכוי לאסוף חבילה : ' + ' % ' + this.state.Rating10} />
+            <Button onPress={() => { this.Interested(10) }} style={styles.AccordionButton}><Text style={styles.ButtonText}>סמן קטגוריה               </Text></Button>
           </List.Accordion>
 
           <Button onPress={() => { this.CheckInserests() }} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 50, borderRadius: 7, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold', color: 'black' }}>  אני כאן  </Text></Button>
 
         </List.Section>
+        </View>
+        </SafeAreaView>
       </ScrollView>
 
     );
@@ -771,6 +775,9 @@ class CCDeliveryFeed1 extends React.Component {
 }
 
 const styles = ({
+  container:{
+
+  },
   AccordionTitle: {
     textAlign: 'center',
     fontWeight: 'bold',
@@ -785,31 +792,46 @@ const styles = ({
     backgroundColor: 'green',
     color: 'black',
     fontWeight: 'bold',
-    borderRadius: 0
+    marginRight: 10,
+    marginLeft: 10,
+    borderBottomEndRadius: 15,
+    borderBottomStartRadius: 15,
+    borderTopStartRadius: 0,
+    borderTopEndRadius: 0,
+ 
 
 
   },
   ItemTitle: {
     fontWeight: 'bold',
     justifyContent: 'center',
-    margin: 0
+    margin: 0,
+
 
   },
   AccordionList: {
-    margin: 10,
+    marginTop: 20,
+    marginRight: 10,
+    marginLeft: 10,
     backgroundColor: '#cbe8ba',
-    borderRadius: 10,
+    borderTopEndRadius: 10,
+    borderTopStartRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+
   },
   ButtonText: {
     color: 'black',
     fontWeight: 'bold',
 
+
   },
   centeredView: {
-    flex: 1,
+
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
+
   },
   modalView: {
     margin: 20,
@@ -846,6 +868,16 @@ const styles = ({
     marginBottom: 15,
     textAlign: "center",
     fontWeight: "bold",
+  },
+  AccordionBody: {
+    backgroundColor: 'white',
+    marginTop: 0,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRightColor: 'black',
+    borderRightWidth: 1,
+    borderLeftColor: 'black',
+    borderLeftWidth: 1
   }
 
 

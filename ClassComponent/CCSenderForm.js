@@ -44,10 +44,11 @@ export default class CCSenderForm extends Component {
   async componentDidMount() {
 
     { this.getData() }
+    this.storeData('Address', this.state.Address)
 
   };
   async getStationsList() {
-    //tar 2 stations צריך להחליף בסוף******************************
+
     const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
     const response = await fetch(apiStationsUrl);
     const data = await response.json()
@@ -95,7 +96,7 @@ export default class CCSenderForm extends Component {
 
 
     let reverseGC = await Location.geocodeAsync(this.state.Address);
-    
+
     console.log({ reverseGC });
 
     this.setState({ latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude }, () => console.log('the coords: ' + reverseGC[0].latitude + ', ' + reverseGC[0].longitude))
@@ -278,7 +279,13 @@ export default class CCSenderForm extends Component {
 
     { this.ValidateCust() }
     { this.validatePnum() }
-    this.getCoordsBySelectedStation();
+    if (this.state.selected1 !== null && this.state.selected2 !== null)
+      this.getCoordsBySelectedStation();
+    else {
+
+      this.setState({ AlertModal: 'נא למלא את כל השדות' });
+      { this.setModalVisible(true) }
+    }
 
   }
 
@@ -381,7 +388,7 @@ export default class CCSenderForm extends Component {
     const data = await response.json()
     this.setState({ UserCreditOBJ: data, })
     console.log('Credit :' + data[0].Credit);
-    if (this.state.Error_CustName !== "שדה זה הינו חובה" && this.state.Error_CustPNum !== "שדה זה הינו חובה")
+    if (this.state.selected1 !== null && this.state.selected2 !== null) {
       if (data[0].Credit < this.state.payment) {
         this.props.navigation.navigate('payments');
         this.setState({ AlertModal: 'אין לך מספיק קרדיטים' });
@@ -389,17 +396,25 @@ export default class CCSenderForm extends Component {
       }
       else {
 
-        if (this.state.selected1 !== null && this.state.selected2 !== null) {
+        if (this.state.Error_CustName !== "שדה זה הינו חובה" && this.state.Error_CustPNum !== "שדה זה הינו חובה") {
 
           this.addPack()
         }
         else {
 
-          this.setState({ AlertModal: 'תחנת מוצא או יעד אינה תקינה' });
+          this.setState({ AlertModal: 'נא למלא את כל השדות' });
           { this.setModalVisible(true) }
         }
 
       }
+
+    }
+    else {
+      this.setState({ AlertModal: 'בחר מסלול' });
+      { this.setModalVisible(true) }
+
+    }
+
 
 
 
@@ -449,150 +464,161 @@ export default class CCSenderForm extends Component {
     console.log('End :' + End)
 
 
-    if (this.state.selected1 !== this.state.selected2) {
+    if (this.state.selected1 !== this.state.selected2 && this.state.selected1 !== null && this.state.selected2 !== null) {
 
-      if (this.state.SEmptyLocker.length !== 0 && this.state.EEmptyLocker.length !== 0) {
+      if (this.state.selected3 !== null) {
+        if (this.state.SEmptyLocker.length !== 0 && this.state.EEmptyLocker.length !== 0) {
 
-        jsonValue = await AsyncStorage.getItem('Express?')
-        jsonValue != null ? IfExpress = JSON.parse(jsonValue) : null;
-        this.setState({ ExpressP: IfExpress })
+          jsonValue = await AsyncStorage.getItem('Express?')
+          jsonValue != null ? IfExpress = JSON.parse(jsonValue) : null;
+          this.setState({ ExpressP: IfExpress })
 
-        addressValue = await AsyncStorage.getItem('Address')
-        
-        addressValue != null ? Address = JSON.parse(addressValue) : null;
-        this.setState({ Address: Address })
-      
-
-        let { status } = await Location.requestPermissionsAsync();
-        if (status !== 'granted') {
-          this.setState({ errorMessage: 'Permission to access location was denied', });
-        }
-        let location = await Location.getCurrentPositionAsync({});
-        if (location) {
-          let reverseGC = await Location.geocodeAsync(addressValue);
-          console.log('reverseGC : '+reverseGC[0])
-          if(reverseGC[0] !== undefined){
-
-            console.log('the coords: ' + reverseGC[0].latitude + ', ' + reverseGC[0].longitude);
-            this.setState({ latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude });
-          }
-          else{
-            this.setState({ AlertModal: 'כתובת יעד לא תקינה' });
-            { this.setModalVisible(true) }
-            return;
-          }
-         
-        } else {
-          alert('You must push the Location button first in order to get the location before you can get the reverse geocode for the latitude and longitude!');
-        }
+          addressValue = await AsyncStorage.getItem('Address')
+          if (this.state.ExpressP === true) {
+            addressValue != "" ? Address = JSON.parse(addressValue) : null;
+            console.log('address string : ' + addressValue)
+            this.setState({ Address: Address })
 
 
-        //
-        console.log('Express Package : ' + this.state.ExpressP)
-        console.log('Empty : ' + this.state.EEmptyLocker)
+            let { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+              this.setState({ errorMessage: 'Permission to access location was denied', });
+            }
+            let location = await Location.getCurrentPositionAsync({});
+            if (location) {
+              let reverseGC = await Location.geocodeAsync(addressValue);
+              console.log('reverseGC : ' + reverseGC[0])
+              if (reverseGC[0] !== undefined) {
 
-        const datetime = moment().add(30, 'minutes').format()
-        const package_data = {
-
-          StartStation: this.state.selected1,
-          EndStation: this.state.selected2,
-          Pweight: this.state.selected3,
-          UserId: this.state.UserId,
-          Status: 1,
-          PackTime: datetime,
-          ExpressP: this.state.ExpressP,
-
-
-
-
-        }
-
-
-        fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
-          method: 'POST',
-          body: JSON.stringify(package_data),
-          headers: new Headers({
-            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-          })
-        })
-          .then(res => {
-
-
-            return res.json()
-          })
-          .then(
-            (result) => {
-
-              this.setState({ PackageID: result })
-
-              this.AddCust()
-              this.UpdateLocker()
-              this.storeData('PackageID', result)
-              this.GetStationName()
-              if (this.state.SEmptyLocker[0]["LockerID"] !== undefined && this.state.EEmptyLocker[0]["LockerID"] !== undefined) {
-                this.storeData('SLockerID', this.state.SEmptyLocker[0]["LockerID"])
-                this.storeData('ELockerID', this.state.EEmptyLocker[0]["LockerID"])
+                console.log('the coords: ' + reverseGC[0].latitude + ', ' + reverseGC[0].longitude);
+                this.setState({ latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude });
+              }
+              else {
+                this.setState({ AlertModal: 'כתובת יעד לא תקינה' });
+                { this.setModalVisible(true) }
+                return;
               }
 
+            } else {
+              alert('You must push the Location button first in order to get the location before you can get the reverse geocode for the latitude and longitude!');
+            }
 
-              this.UpdateSenderCredits();
-              this.UpdatePrice();
-
-            },
-            (error) => {
-              console.log("err post=", error);
-            }).then(
+          }
 
 
 
-            );
+          //
+          console.log('Express Package : ' + this.state.ExpressP)
+          console.log('Empty : ' + this.state.EEmptyLocker)
+
+          const datetime = moment().add(30, 'minutes').format()
+          const package_data = {
+
+            StartStation: this.state.selected1,
+            EndStation: this.state.selected2,
+            Pweight: this.state.selected3,
+            UserId: this.state.UserId,
+            Status: 1,
+            PackTime: datetime,
+            ExpressP: this.state.ExpressP,
 
 
+
+
+          }
+
+
+          fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
+            method: 'POST',
+            body: JSON.stringify(package_data),
+            headers: new Headers({
+              'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+            })
+          })
+            .then(res => {
+
+
+              return res.json()
+            })
+            .then(
+              (result) => {
+
+                this.setState({ PackageID: result })
+
+                this.AddCust()
+                this.UpdateLocker()
+                this.storeData('PackageID', result)
+                this.GetStationName()
+                if (this.state.SEmptyLocker[0]["LockerID"] !== undefined && this.state.EEmptyLocker[0]["LockerID"] !== undefined) {
+                  this.storeData('SLockerID', this.state.SEmptyLocker[0]["LockerID"])
+                  this.storeData('ELockerID', this.state.EEmptyLocker[0]["LockerID"])
+                }
+
+
+                this.UpdateSenderCredits();
+                this.UpdatePrice();
+
+              },
+              (error) => {
+                console.log("err post=", error);
+              }).then(
+
+
+
+              );
+
+
+        }
+
+        else {
+
+          this.setState({ AlertModal: 'אין לוקרים פנויים כעת , נא לנסות מאוחר יותר' });
+          { this.setModalVisible(true) }
+
+          //       ------------------------------------------------------------------------------------
+          // המשך לאפשרות העלאת המשלוח ושליחת הודעה קופצת לשולח בעת שמתפנה לוקר 
+          //       -----------------------------------------------------------------------------------
+          // const package_data = {
+
+          //   StartStation: this.state.selected1,
+          //   EndStation: this.state.selected2,
+          //   Pweight: this.state.selected3,
+          //   UserId: this.state.UserId,
+          //   Status: 0
+          // }
+
+          // fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
+          //   method: 'POST',
+          //   body: JSON.stringify(package_data),
+          //   headers: new Headers({
+          //     'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+          //   })
+          // })
+          //   .then(res => {
+
+          //     return res.json()
+          //   })
+          //   .then(
+          //     (result) => {
+
+          //       this.setState({ PackageID: result })
+
+          //       this.AddCust()
+          //       this.props.navigation.navigate('CCLockers');
+
+          //     },
+          //     (error) => {
+          //       console.log("err post=", error);
+          //     }).then(
+          //      );
+        }
       }
-
       else {
-
-        this.setState({ AlertModal: 'אין לוקרים פנויים כעת , נא לנסות מאוחר יותר' });
+        this.setState({ AlertModal: 'נא לבחור משקל' });
         { this.setModalVisible(true) }
-
-        //       ------------------------------------------------------------------------------------
-        // המשך לאפשרות העלאת המשלוח ושליחת הודעה קופצת לשולח בעת שמתפנה לוקר 
-        //       -----------------------------------------------------------------------------------
-        // const package_data = {
-
-        //   StartStation: this.state.selected1,
-        //   EndStation: this.state.selected2,
-        //   Pweight: this.state.selected3,
-        //   UserId: this.state.UserId,
-        //   Status: 0
-        // }
-
-        // fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
-        //   method: 'POST',
-        //   body: JSON.stringify(package_data),
-        //   headers: new Headers({
-        //     'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-        //   })
-        // })
-        //   .then(res => {
-
-        //     return res.json()
-        //   })
-        //   .then(
-        //     (result) => {
-
-        //       this.setState({ PackageID: result })
-
-        //       this.AddCust()
-        //       this.props.navigation.navigate('CCLockers');
-
-        //     },
-        //     (error) => {
-        //       console.log("err post=", error);
-        //     }).then(
-        //      );
       }
     }
+
 
     else {
       this.setState({ AlertModal: 'אי אפשר לבצע משלוח מתחנת מוצא ליעד זהים' });
@@ -728,7 +754,7 @@ export default class CCSenderForm extends Component {
                     selectedValue={this.state.selected3}
                     onValueChange={this.onValueChange3.bind(this)}
                   >
-                    <Picker.Item label=" בחר משקל חבילה" value="10" />
+                    <Picker.Item label=" בחר משקל חבילה" value={null} />
                     <Picker.Item label=" מ 0 עד 3 קג " value="3" />
                     <Picker.Item label=" מ 3 עד 6 קג" value="6" />
                     <Picker.Item label="מ 6 עד 10 קג" value="10" />

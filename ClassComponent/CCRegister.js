@@ -410,11 +410,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#cbe8ba',
     margin: 5,
     padding: 8,
-    color: 'white',
+    color: 'black',
     borderRadius: 5,
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '500',
-    borderWidth: 1
+    borderWidth: 1,
+    fontWeight: 'bold'
   },
   FormErrorText: {
     fontSize: 12,

@@ -40,6 +40,7 @@ const CheckBoxes = () => {
               <Label>כתובת</Label>
               <Input style={styles.InputText}
                 placeholderTextColor="grey"
+                defaultValue={null}
                 placeholder="כתובת"
                 returnKeyType="next"
                 onChangeText={val => {Address= val }}

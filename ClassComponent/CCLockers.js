@@ -105,8 +105,7 @@ export default class CCLockers extends Component {
     CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
     console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
-      this.setState({ AlertModal: 'אתה נמצא בקרבת הלוקר !!' });
-      { this.setModalVisible(true) }
+     
       this.setState({ canOpenLocker: 1 })
 
     }

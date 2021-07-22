@@ -253,6 +253,23 @@ export default class CCExpressLockers extends Component {
           </View>)
 
         }
+        if (pack.Status === -1) {
+
+
+          return (<View style={{ margin: 20, borderColor: 'black', borderWidth: 1, borderRadius: 10, backgroundColor: 'white' }} key={key}>
+
+            <View style={{ padding: 15, borderBottomColor: 'black', borderBottomWidth: 1, marginRight: 0, marginLeft: 0 }}>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> מס' חבילה : </Text>{pack.PackageID}</Text>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> תחנת איסוף : </Text>{pack.StartStation}</Text>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> לוקר איסוף : </Text>{pack.UserID2}</Text>
+              <Text style={{ fontSize: 14, padding: 5 }}><Text style={{ fontWeight: 'bold', fontSize: 14 }}> כתובת יעד : </Text>{pack.EndStation}</Text>
+            </View>
+            <View style={{ backgroundColor: 'grey', borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}>
+              <Button disabled={true} labelStyle={{ color: 'black', fontWeight: 'bold' }}>  </Button>
+            </View>
+          </View>)
+
+        }
       }
       else {
         cnt += 1

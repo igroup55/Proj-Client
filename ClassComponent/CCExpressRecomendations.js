@@ -206,9 +206,10 @@ export default class CCExpressRecomendations extends Component {
   };
   DepositToCustomerAlert = (key) => {
 
+    console.log(this.state.locations[key]["PhoneNum"]);
     Alert.alert(
-      "מסור חבילה ללקוח",
-      "האם אתה מעוניין למסור את החבילה ללקוח בכתובת " + this.state.locations[key].Address + "?",
+      "שם לקוח - " + this.state.locations[key].FullName + "\nמספר טלפון - 0" + this.state.locations[key].PhoneNum,
+      "האם אתה מעוניין למסור את החבילה ללקוח בכתובת " + this.state.locations[key].Address + "? ",
       [
         {
           text: "בטל",
@@ -290,10 +291,10 @@ export default class CCExpressRecomendations extends Component {
     });
     let locationsText = this.state.locations.map((location, key) => {
       let count = key + 1
-      
-      return (<TouchableOpacity style={{backgroundColor:'white',margin:7,borderRadius:8,borderWidth:1,borderColor:'black'}}  onPress={() => { this.DepositToCustomerAlert(key) }} key={key} >
 
-        <Text style={{ color: 'black', marginTop: 10, marginBottom: 5, fontSize: 17,lineHeight:20, fontWeight: 'bold' }} key={key}>  <View><Text style={{  backgroundColor:colorlist[key] , borderRadius:35,borderWidth:1,}}>     </Text></View>  {" כתובת "+count + " - " + location.Address}  </Text>
+      return (<TouchableOpacity style={{ backgroundColor: 'white', margin: 7, borderRadius: 8, borderWidth: 1, borderColor: 'black' }} onPress={() => { this.DepositToCustomerAlert(key) }} key={key} >
+
+        <Text style={{ color: 'black', marginTop: 10, marginBottom: 5, fontSize: 17, lineHeight: 20, fontWeight: 'bold' }} key={key}>  <View><Text style={{ backgroundColor: colorlist[key], borderRadius: 35, borderWidth: 1, }}>     </Text></View>  {" כתובת " + count + " - " + location.Address}  </Text>
         {/*  */}
 
       </TouchableOpacity>
@@ -304,7 +305,7 @@ export default class CCExpressRecomendations extends Component {
 
     const { latitude, longitude, coords } = this.state
     return (
-      <SafeAreaView style={{ borderTopColor: 'black', borderTopWidth: 2, backgroundColor: 'lightyellow' ,flex:1}}>
+      <SafeAreaView style={{ borderTopColor: 'black', borderTopWidth: 2, backgroundColor: 'lightyellow', flex: 1 }}>
         <ScrollView>
           <View  >
 
@@ -314,8 +315,8 @@ export default class CCExpressRecomendations extends Component {
               <Icon name="navigate-circle-outline" style={{ alignSelf: 'center', margin: 2, fontSize: 50 }} />
             </View>
 
-            <View style={{borderWidth:3,borderColor:'black',margin:5,width:355,shadowColor:'black',shadowOpacity:1,alignSelf:'center'}} >
-            <MapView showsUserLocation region={{ latitude: this.state.latitude, longitude: this.state.longitude, longitudeDelta: 0.0421, latitudeDelta: 0.0922 }} style={{ width:350,height: 400,borderRadius:20,alignSelf:'center' ,borderWidth:1,borderColor:'black'}}
+            <View style={{ borderWidth: 3, borderColor: 'black', margin: 5, width: 355, shadowColor: 'black', shadowOpacity: 1, alignSelf: 'center' }} >
+              <MapView showsUserLocation region={{ latitude: this.state.latitude, longitude: this.state.longitude, longitudeDelta: 0.0421, latitudeDelta: 0.0922 }} style={{ width: 350, height: 400, borderRadius: 20, alignSelf: 'center', borderWidth: 1, borderColor: 'black' }}
               >
                 <Marker
                   coordinate={{ latitude: this.state.latitude, longitude: this.state.longitude }}
@@ -333,7 +334,7 @@ export default class CCExpressRecomendations extends Component {
                 />
               </MapView>
             </View>
-          
+
 
 
             {/* <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש חבילות </Text></Button> */}
@@ -346,23 +347,23 @@ export default class CCExpressRecomendations extends Component {
 
           </View>
           <View style={{ alignItems: 'center', margin: 10, bottom: 5 }}>
-              <ScrollView>
-                {this.state.finished === 0 ? (locationsText) : (<View><Text style={{ marginTop: 20, fontSize: 20, fontWeight: 'bold' }}>המשלוחים שאספת נמסרו</Text>
-                  {/* <Icon style={{alignSelf:'center',fontSize:50,color:'green'}} name='checkmark-circle-outline' /> */}
-                  <Image source={{ uri: 'https://s4.gifyu.com/images/icons8-check-all-unscreen.gif' }} style={{ width: 80, height: 80, alignSelf: 'center', marginBottom: 20 }} />
-                </View>)}
-              </ScrollView>
-            </View>
-        
-        
-        {this.state.finished !== 0 ? (<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', }}><Button block  style={{backgroundColor:'#ffed4b', borderWidth:1,borderColor:'black', borderRadius: 5, width: 120, marginTop: 5, marginRight: 5 }} onPress={() => { this.props.navigation.navigate('Home') }}>
-          <Text style={{ color: 'black', fontWeight: 'bold' }}>חזור למסך הבית</Text>
-        </Button>
-          <Button block style={{backgroundColor:'grey', borderWidth:1,borderColor:'black', borderRadius: 5, width: 120, marginTop: 5, marginLeft: 5 }} onPress={() => { this.props.navigation.navigate('NewExpressRoute') }}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>בחר תחנה אחרת</Text>
-          </Button>
+            <ScrollView>
+              {this.state.finished === 0 ? (locationsText) : (<View><Text style={{ marginTop: 20, fontSize: 20, fontWeight: 'bold' }}>המשלוחים שאספת נמסרו</Text>
+                {/* <Icon style={{alignSelf:'center',fontSize:50,color:'green'}} name='checkmark-circle-outline' /> */}
+                <Image source={{ uri: 'https://s4.gifyu.com/images/icons8-check-all-unscreen.gif' }} style={{ width: 80, height: 80, alignSelf: 'center', marginBottom: 20 }} />
+              </View>)}
+            </ScrollView>
+          </View>
 
-        </View>) : (<View></View>)}
+
+          {this.state.finished !== 0 ? (<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', }}><Button block style={{ backgroundColor: '#ffed4b', borderWidth: 1, borderColor: 'black', borderRadius: 5, width: 120, marginTop: 5, marginRight: 5 }} onPress={() => { this.props.navigation.navigate('Home') }}>
+            <Text style={{ color: 'black', fontWeight: 'bold' }}>חזור למסך הבית</Text>
+          </Button>
+            <Button block style={{ backgroundColor: 'grey', borderWidth: 1, borderColor: 'black', borderRadius: 5, width: 120, marginTop: 5, marginLeft: 5 }} onPress={() => { this.props.navigation.navigate('NewExpressRoute') }}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>בחר תחנה אחרת</Text>
+            </Button>
+
+          </View>) : (<View></View>)}
         </ScrollView>
       </SafeAreaView>
     );

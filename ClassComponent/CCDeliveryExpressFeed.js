@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Text, View, FlatList, TouchableOpacity, Button , Modal,Pressable } from 'react-native'
+import { Text, View, FlatList, TouchableOpacity, Button, Modal, Pressable } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from 'react-native-paper';
 //import Geocode from "react-geocode";
-import { getDistance} from 'geolib';
-import {Icon} from 'native-base';
+import { getDistance } from 'geolib';
+import { Icon } from 'native-base';
 import * as Location from 'expo-location';
+import moment from 'moment';
 
 export default class CCDeliveryExpressFeed extends Component {
 
@@ -18,13 +19,13 @@ export default class CCDeliveryExpressFeed extends Component {
       StationName: '',
       StationLat: null,
       StationLong: null,
-      AddressLat : 32.437408,
+      AddressLat: 32.437408,
       AddressLong: 34.925621,
       selectedItem: [],
       SelectedArr: [],
-      XDistance:null,
-      custArray:[],
-      AlertModal:'',
+      XDistance: null,
+      custArray: [],
+      AlertModal: '',
       modalVisible: false
 
 
@@ -44,25 +45,25 @@ export default class CCDeliveryExpressFeed extends Component {
     //     console.error(error);
     //   }
     // );
-    let values = await AsyncStorage.multiGet(['XSStationName', 'XSstationLat', 'XSstationLong','UserId'])
+    let values = await AsyncStorage.multiGet(['XSStationName', 'XSstationLat', 'XSstationLong', 'UserId'])
 
-    this.setState({ StationName: values[0][1], StationLat: values[1][1], StationLong: values[2][1] ,UserID:JSON.parse(values[3][1]) }, ()=>{
-   
-      console.log('UserID : '+this.state.UserID.FullName)
+    this.setState({ StationName: values[0][1], StationLat: values[1][1], StationLong: values[2][1], UserID: JSON.parse(values[3][1]) }, () => {
+
+      console.log('UserID : ' + this.state.UserID.FullName)
       StationLat = this.state.StationLat
       StationLong = this.state.StationLong
       AddressLat = this.state.AddressLat
       AddressLong = this.state.AddressLong
 
-      
+
 
     })
 
- 
+
   }
 
   onPressHandler(pack) {
- console.log('Distance : '+this.state.XDistance/1000)
+    console.log('Distance : ' + this.state.XDistance / 1000)
     let renderData = [...this.state.PackagesList];
 
     renderData.map((data, key) => {
@@ -71,18 +72,18 @@ export default class CCDeliveryExpressFeed extends Component {
 
         data.selected = (data.selected == null) ? true : !data.selected;
 
-      
+
       }
 
       this.setState({ renderData });
     })
-    
-    this.setState({SelectedArr : [...renderData]})
-  
+
+    this.setState({ SelectedArr: [...renderData] })
+
 
   }
 
-  async getData (activity) {
+  async getData(activity) {
     try {
       if (activity === 'start') {
         jsonValue = await AsyncStorage.getItem('XStartStation')
@@ -100,7 +101,7 @@ export default class CCDeliveryExpressFeed extends Component {
 
       }
 
-      
+
 
     }
     catch (e) {
@@ -125,7 +126,7 @@ export default class CCDeliveryExpressFeed extends Component {
 
   getpackages = async () => {
 
-     //  fetch to get address from customerspackages
+    //  fetch to get address from customerspackages
 
     let weight = 0
     let express = 'True'
@@ -133,115 +134,118 @@ export default class CCDeliveryExpressFeed extends Component {
     const apiExpressUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + weight + '&express=' + express;
     const response = await fetch(apiExpressUrl);
     const data = await response.json()
-    this.setState({ PackagesList: data },()=>{this.state.PackagesList.map((data, key) => {
-      this.getcustDetails(data.PackageId,key)
-    })})
+    this.setState({ PackagesList: data }, () => {
+      this.state.PackagesList.map((data, key) => {
+        this.getcustDetails(data.PackageId, key)
+      })
+    })
 
-    
+
     console.log(this.state.PackagesList)
 
 
   }
 
-  getcustDetails = async (PackageId,key) => {
+  getcustDetails = async (PackageId, key) => {
 
-    
-console.log(PackageId)
-      const apiCustDetailsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Customers?PackageId='+PackageId;
-      const custresponse = await fetch(apiCustDetailsUrl);
-      const CustDetails = await custresponse.json()
-      
-      // this.state.PackagesList[key].AddressLat = reverseGC[0].latitude
-      // this.state.PackagesList[key].AddressLong = reverseGC[0].longitude
-      
-      this.state.PackagesList[key].Address = CustDetails.Address
-      console.log('Address : '+this.state.PackagesList[key].Address)
-      let reverseGC = await Location.geocodeAsync(CustDetails.Address);
-      let Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
-      this.state.PackagesList[key].Distance = Distance
-      console.log('Distance :'+ this.state.PackagesList[key].Distance )
-     
+
+    console.log(PackageId)
+    const apiCustDetailsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Customers?PackageId=' + PackageId;
+    const custresponse = await fetch(apiCustDetailsUrl);
+    const CustDetails = await custresponse.json()
+
+    // this.state.PackagesList[key].AddressLat = reverseGC[0].latitude
+    // this.state.PackagesList[key].AddressLong = reverseGC[0].longitude
+
+    this.state.PackagesList[key].Address = CustDetails.Address
+    console.log('Address : ' + this.state.PackagesList[key].Address)
+    let reverseGC = await Location.geocodeAsync(CustDetails.Address);
+    let Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
+    this.state.PackagesList[key].Distance = Distance
+    console.log('Distance :' + this.state.PackagesList[key].Distance)
+
     //  console.log('lon lat :' + reverseGC[0].latitude +','+ reverseGC[0].longitude )
-      this.setState({ custArray: [...this.state.custArray,CustDetails] })
-           
-    
-      
-   
-     
-     
-   
+    this.setState({ custArray: [...this.state.custArray, CustDetails] })
+
+
+
+
+
+
+
   }
 
-  async getaddresslocation (Address,key) {
-console.log('in getaddress function -'+Address+' key : '+key)
+  async getaddresslocation(Address, key) {
+    console.log('in getaddress function -' + Address + ' key : ' + key)
 
-   // console.log(reverseGC)
-  //  const Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
-    
-   // this.state.PackagesList[key].Distance = reverseGC
-   // console.log(this.state.PackagesList[key].Distance)
+    // console.log(reverseGC)
+    //  const Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
 
-  //   this.setState({XDistance : Distance},()=> {  console.log('reverse : ------------' +reverseGC[0].latitude+','+reverseGC[0].longitude)
-  //   console.log(this.state.XDistance)
-  // })
+    // this.state.PackagesList[key].Distance = reverseGC
+    // console.log(this.state.PackagesList[key].Distance)
+
+    //   this.setState({XDistance : Distance},()=> {  console.log('reverse : ------------' +reverseGC[0].latitude+','+reverseGC[0].longitude)
+    //   console.log(this.state.XDistance)
+    // })
 
   }
 
   AddSelectedPacks = () => {
 
-let selected = []
+    let selected = []
     this.state.SelectedArr.map((pack, key) => {
-    if(pack.selected === true){
-      console.log('SelectedArr : ' +pack.selected)
-      // this.setState({ selectedItem: [...this.state.selectedItem, pack] }, () => {console.log(this.state.selectedItem)})
-   selected.push(pack)
-   
-    }
-   
-    
+      if (pack.selected === true) {
+        console.log('SelectedArr : ' + pack.selected)
+        // this.setState({ selectedItem: [...this.state.selectedItem, pack] }, () => {console.log(this.state.selectedItem)})
+        selected.push(pack)
+
+      }
+
+
     })
     console.log(selected)
-    this.setState({selectedItem: selected},()=>{console.log('SelectedItem : '+this.state.selectedItem)
-    
+    this.setState({ selectedItem: selected }, () => {
+      console.log('SelectedItem : ' + this.state.selectedItem)
+      const datetime = moment().add(30, 'minutes').format()
 
-    this.state.selectedItem.map((item)=>{
-      const ExpressDetails = {
-    PackageID : item.PackageId,
-        Status: 1,
-        UserID : this.state.UserID.UserId,
-        FullName :this.state.UserID.FullName, 
-        //CustID:this.state.custArray
-        
+      this.state.selectedItem.map((item) => {
+        const ExpressDetails = {
+          PackageID: item.PackageId,
+          Status: 1,
+          UserID: this.state.UserID.UserId,
+          FullName: this.state.UserID.FullName,
+          //PackTime:datetime
+
         }
-          fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ExpressUser', {
-            method: 'POST',
-            body: JSON.stringify(ExpressDetails),
-            headers: new Headers({
-              'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-            })
+        fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ExpressUser', {
+          method: 'POST',
+          body: JSON.stringify(ExpressDetails),
+          headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
           })
+        })
 
-          const Package_Update = {
-            Status: 5,
-            PackageID:item.PackageId
-          }
+        const Package_Update = {
+          Status: 5,
+          PackageID: item.PackageId
+        }
 
-          fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
-            method: 'PUT',
-            body: JSON.stringify(Package_Update),
-            headers: new Headers({
-              'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-            })
+        fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
+          method: 'PUT',
+          body: JSON.stringify(Package_Update),
+          headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
           })
-      
-          this.setState({ AlertModal: 'החבילה שוריינה בהצלחה' });
-            { this.setModalVisible(true) }
-            setTimeout(() => {
-              this.props.navigation.navigate('ExpressPackages');
-            }, 2000);
-            //navigation to next component or home
-    })
-   
+        })
+
+        this.setState({ AlertModal: 'החבילה שוריינה בהצלחה' });
+        { this.setModalVisible(true) }
+        setTimeout(() => {
+          this.props.navigation.navigate('ExpressPackages');
+        }, 2000);
+        //navigation to next component or home
+      })
+
 
     })
 
@@ -250,9 +254,9 @@ let selected = []
     //   else
     //  this.setState = items.filter(item => item !== valueToRemove)
     // this.setState({ SelectedArr: [...this.state.SelectedArr, pack] })
- 
-    
-   
+
+
+
   }
 
   setModalVisible = (visible) => {
@@ -263,99 +267,99 @@ let selected = []
   render() {
 
     if (this.state.PackagesList.length !== 0) {
-      
+
 
       return (
 
         <View style={styles.container}>
-          <View style={{height:70 , borderColor:'black',borderWidth:1,borderRadius:12, margin:10,backgroundColor:'#ffed4b'}}><Text style={{textAlign:'center',padding:15,fontSize:25,fontWeight:'bold'}}> Express </Text></View>
+          <View style={{ height: 70, borderColor: 'black', borderWidth: 1, borderRadius: 12, margin: 10, backgroundColor: '#ffed4b' }}><Text style={{ textAlign: 'center', padding: 15, fontSize: 25, fontWeight: 'bold' }}> Express </Text></View>
           {/* <Text style={{textAlign:'center'}}>משלוחים מתחנת {this.state.StationName.replace(/"/gi,'')} </Text> */}
-          <View style={{backgroundColor:'white',borderWidth:1,borderColor:'black',height:500,borderRadius:10,margin:10}}>
-          <FlatList
-          // horizontal={true}
-          style={{maxheight:550}}
-          
-          data={this.state.PackagesList}
-          keyExtractor={item => item.PackageId.toString()}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item,key }) => (
-          
-            
-            <TouchableOpacity onPress={() => this.onPressHandler(item)}>
-              <Card
-                style={
-                  item.selected === true
-                    ? {
-                      padding: 10,
-                      marginRight: 20,
-                      marginLeft:20,
-                      marginTop:10,
-                      marginBottom:10,
-                      borderRadius: 5,
-                      margin: 2,
-                      backgroundColor: '#ffed4b',
-                      borderWidth:1.5,
-                      borderColor:'black'
-                    }
-                    : {
-                      padding: 10,
-                      margin: 2,
-                      marginTop:10,
-                      marginRight: 20,
-                      marginLeft:20,
-                      marginBottom:10,
-                      borderRadius: 5,
-                      backgroundColor: '#a1a1a1',
-                      borderWidth:0.5,
-                      borderColor:'black',
-                      
-                    }
-                }>
-                <View style={{alignItems:'center' , margin:10}} >
-                {/* item.Distance/1000+ */}
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- מס חבילה : </Text>{item.PackageId}</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- מחיר משלוח : </Text>{(item.Distance/1000+item.Pweight*2).toFixed(1) + ' ₪ ' }</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- משקל : </Text>עד {item.Pweight +' ק"ג'}</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- תחנת איסוף : </Text>{this.state.StationName.replace(/"/gi,'')}</Text>
-                  <Text style={{margin:5}}><Text style={{fontWeight:'bold'}}>- כתובת יעד : </Text>{item.Address}</Text>
-                </View>
-              </Card>
-            </TouchableOpacity>
-          )}
-        />
-        </View>
+          <View style={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'black', height: 500, borderRadius: 10, margin: 10 }}>
+            <FlatList
+              // horizontal={true}
+              style={{ maxheight: 550 }}
 
-          <TouchableOpacity  style={{ alignSelf: 'center', backgroundColor: '#ffed4b', margin: 20,padding:10, borderWidth: 1, borderColor: 'black' ,borderRadius:10}} onPress={this.AddSelectedPacks}><Text style={{textAlign:'center' , fontWeight:'bold' , fontSize:15}}>שריין חבילה</Text></TouchableOpacity>
-       
-          <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            this.setModalVisible(!this.state.modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
+              data={this.state.PackagesList}
+              keyExtractor={item => item.PackageId.toString()}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item, key }) => (
 
-            <View style={styles.modalView}>
-              <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
-              <Text style={styles.modalText}>{this.state.AlertModal}</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => this.setModalVisible(!this.state.modalVisible)}
-              >
-                <Text style={styles.textStyle}> סגור </Text>
-              </Pressable>
-            </View>
+
+                <TouchableOpacity onPress={() => this.onPressHandler(item)}>
+                  <Card
+                    style={
+                      item.selected === true
+                        ? {
+                          padding: 10,
+                          marginRight: 20,
+                          marginLeft: 20,
+                          marginTop: 10,
+                          marginBottom: 10,
+                          borderRadius: 5,
+                          margin: 2,
+                          backgroundColor: '#ffed4b',
+                          borderWidth: 1.5,
+                          borderColor: 'black'
+                        }
+                        : {
+                          padding: 10,
+                          margin: 2,
+                          marginTop: 10,
+                          marginRight: 20,
+                          marginLeft: 20,
+                          marginBottom: 10,
+                          borderRadius: 5,
+                          backgroundColor: '#a1a1a1',
+                          borderWidth: 0.5,
+                          borderColor: 'black',
+
+                        }
+                    }>
+                    <View style={{ alignItems: 'center', margin: 10 }} >
+                      {/* item.Distance/1000+ */}
+                      <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- מס חבילה : </Text>{item.PackageId}</Text>
+                      <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- מחיר משלוח : </Text>{(item.Distance / 1000 + item.Pweight * 2).toFixed(1) + ' ₪ '}</Text>
+                      <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- משקל : </Text>עד {item.Pweight + ' ק"ג'}</Text>
+                      <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- תחנת איסוף : </Text>{this.state.StationName.replace(/"/gi, '')}</Text>
+                      <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- כתובת יעד : </Text>{item.Address}</Text>
+                    </View>
+                  </Card>
+                </TouchableOpacity>
+              )}
+            />
           </View>
-        </Modal>
+
+          <TouchableOpacity style={{ alignSelf: 'center', backgroundColor: '#ffed4b', margin: 20, padding: 10, borderWidth: 1, borderColor: 'black', borderRadius: 10 }} onPress={this.AddSelectedPacks}><Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 15 }}>שריין חבילה</Text></TouchableOpacity>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              this.setModalVisible(!this.state.modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+
+              <View style={styles.modalView}>
+                <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
+                <Text style={styles.modalText}>{this.state.AlertModal}</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                >
+                  <Text style={styles.textStyle}> סגור </Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
         </View>)
 
     }
 
     else
-      return (<View style={styles.container}><Text style={{textAlign:'center',fontSize:20,fontWeight:'bold',marginTop:20}}> אין חבילות </Text></View>)
+      return (<View style={styles.container}><Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginTop: 20 }}> אין חבילות </Text></View>)
 
 
   }
@@ -366,7 +370,7 @@ const styles = ({
     flex: 1,
     backgroundColor: 'lightyellow',
     borderTopColor: 'black',
-     borderTopWidth: 2 ,
+    borderTopWidth: 2,
     justifyContent: 'center',
 
   },
@@ -430,8 +434,8 @@ const styles = ({
   },
   buttonClose: {
     backgroundColor: "#ffed4b",
-    borderColor:'black',
-    borderWidth:1
+    borderColor: 'black',
+    borderWidth: 1
   },
   textStyle: {
     color: "black",
