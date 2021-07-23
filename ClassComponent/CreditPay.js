@@ -400,7 +400,8 @@ const styles = ({
     borderTopWidth: 0,
     borderRightWidth: 0,
     borderLeftWidth: 0,
-    width: 200
+    width: 200,
+    textAlign:'right'
 
   },
   input2: {

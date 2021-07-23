@@ -27,8 +27,6 @@ export default class CCDeliveryExpressFeed extends Component {
       custArray: [],
       AlertModal: '',
       modalVisible: false
-
-
     }
   }
 
@@ -214,7 +212,7 @@ export default class CCDeliveryExpressFeed extends Component {
           Status: 1,
           UserID: this.state.UserID.UserId,
           FullName: this.state.UserID.FullName,
-          PackTime:datetime
+          PackTime: datetime
 
         }
         fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ExpressUser', {
@@ -238,14 +236,13 @@ export default class CCDeliveryExpressFeed extends Component {
           })
         })
 
-        this.setState({ AlertModal: 'החבילה שוריינה בהצלחה' });
+        this.setState({ AlertModal: 'החבילה שוריינה ל- 30 דקות ' });
         { this.setModalVisible(true) }
         setTimeout(() => {
           this.props.navigation.navigate('ExpressPackages');
         }, 2000);
         //navigation to next component or home
       })
-
 
     })
 
@@ -318,7 +315,7 @@ export default class CCDeliveryExpressFeed extends Component {
                     <View style={{ alignItems: 'center', margin: 10 }} >
                       {/* item.Distance/1000+ */}
                       <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- מס חבילה : </Text>{item.PackageId}</Text>
-                      <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- מחיר משלוח : </Text>{(item.Distance / 1000 + item.Pweight * 2).toFixed(1) + ' ₪ '}</Text>
+                      <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- מחיר משלוח : </Text>{(3000 / 1000 + item.Pweight * 2).toFixed(1) + ' ₪ '}</Text>
                       <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- משקל : </Text>עד {item.Pweight + ' ק"ג'}</Text>
                       <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- תחנת איסוף : </Text>{this.state.StationName.replace(/"/gi, '')}</Text>
                       <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- כתובת יעד : </Text>{item.Address}</Text>

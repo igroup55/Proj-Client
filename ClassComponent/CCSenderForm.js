@@ -38,7 +38,6 @@ export default class CCSenderForm extends Component {
       latitude: 0,
       longitude: 0,
     };
-
   }
 
   async componentDidMount() {
@@ -275,7 +274,17 @@ export default class CCSenderForm extends Component {
 
   }
 
+
+
+
+
+
+
   validate() {
+
+
+
+
 
     { this.ValidateCust() }
     { this.validatePnum() }
@@ -512,6 +521,7 @@ export default class CCSenderForm extends Component {
           console.log('Empty : ' + this.state.EEmptyLocker)
 
           const datetime = moment().add(30, 'minutes').format()
+          const until = moment().add(30, 'minutes').format('')
           const package_data = {
 
             StartStation: this.state.selected1,

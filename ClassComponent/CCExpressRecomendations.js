@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { CheckBox, Container, Header, Content, Form, Item, Input, Label, Picker, Footer, Right, Button, Icon, DatePicker } from 'native-base';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions, Alert, Image } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions, Alert, Image,Linking } from 'react-native';
 import CheckBoxes from './CCCheckBox';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ReactDOM from "react-dom";
@@ -190,6 +190,11 @@ export default class CCExpressRecomendations extends Component {
 
   };
 
+  _pressCall=(key)=>{
+    const url='tel://0'+this.state.locations[key].PhoneNum
+    Linking.openURL(url)}
+
+
   btnReverseGC = async () => {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== 'granted') {
@@ -214,8 +219,12 @@ export default class CCExpressRecomendations extends Component {
         {
           text: "בטל",
           onPress: () => console.log("Cancel Pressed"),
-          style: 'cancel'
+         
         },
+        {text:'חייג',
+        onPress:()=> this._pressCall(key)
+        
+      },
         { text: "מסור ללקוח", onPress: () => this.UpdateExpressPackageStatus(key) }
       ]
     );
@@ -281,11 +290,11 @@ export default class CCExpressRecomendations extends Component {
       return (<Marker key={key}
         coordinate={{ latitude: location.Latitude, longitude: location.Longitude }}
         title={location.Address}
-        description={'name: ' + location.FullName + " Phone: " + location.PhoneNumber}
+        description={'name: ' + location.FullName + " Phone: " + location.PhoneNum}
         pinColor={color}
         //  image={require('../assets/Box.png')}
 
-        onPress={() => this.handleSetNavigationPath(location.Address, location.Latitude, location.Longitude)}
+        //onPress={() => this.handleSetNavigationPath(location.Address, location.Latitude, location.Longitude)}
       />)
 
     });

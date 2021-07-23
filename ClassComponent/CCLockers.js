@@ -29,6 +29,8 @@ export default class CCLockers extends Component {
       UserId: null,
       UserCreditOBJ: [],
       Credit: 0,
+      minutes: 30,
+      seconds: 0
     }
   }
 
@@ -38,6 +40,25 @@ export default class CCLockers extends Component {
 
 
   async componentDidMount() {
+
+    this.myInterval = setInterval(() => {
+      const { seconds, minutes } = this.state
+      if (seconds > 0) {
+        this.setState(({ seconds }) => ({
+          seconds: seconds - 1
+        }))
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(this.myInterval)
+        } else {
+          this.setState(({ minutes }) => ({
+            minutes: minutes - 1,
+            seconds: 59
+          }))
+        }
+      }
+    }, 1000)
 
     this.getMultiple()
     this.getData()
@@ -55,6 +76,15 @@ export default class CCLockers extends Component {
     // console.log(this.state.longitude+" , "+this.state.longitude+" , "+this.state.stationLat+" , "+this.state.stationLong);
   }
 
+  tick = () => {
+    this.setState({
+      counter: this.state.counter - 1
+    });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.myInterval)
+  }
   async getData() {
     try {
       jsonValue = await AsyncStorage.getItem('UserId')
@@ -105,7 +135,7 @@ export default class CCLockers extends Component {
     CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
     console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
-     
+
       this.setState({ canOpenLocker: 1 })
 
     }
@@ -194,7 +224,7 @@ export default class CCLockers extends Component {
     this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
     this.setModalVisible(true)
     setTimeout(() => {
-      
+
       this.props.navigation.navigate('Home');
     }, 2000);
 
@@ -224,7 +254,7 @@ export default class CCLockers extends Component {
   CancelPackage() {
 
 
-  
+
 
     let TDGetPayment = Number(this.state.UserCreditOBJ[0].Credit) + this.state.Credit;
 
@@ -301,12 +331,10 @@ export default class CCLockers extends Component {
 
 
 
-
-
-
   }
 
   render() {
+    const { minutes, seconds } = this.state
     return (
       <View style={styles.container}>
         <Modal
@@ -353,7 +381,9 @@ export default class CCLockers extends Component {
             <Text style={{ fontWeight: 'bold' }}>בדיקה</Text>
           </Button>
         </View>) : (<View><Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} להפקדה -</Text>
-          <Button onPress={() => { this.PackDeposit() }} block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+          <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 18, marginTop: 10 }}>{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</Text>
+          <Button onPress={() => { this.PackDeposit() }} block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 15, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+
             <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
           </Button></View>)}
         {/* <Text style={styles.titles} >בדוק מרחק מהלוקר</Text>
