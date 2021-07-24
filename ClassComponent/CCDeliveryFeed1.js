@@ -266,7 +266,7 @@ class CCDeliveryFeed1 extends React.Component {
       if (weight === 3)
         if (this.state.PackagesList1.length === 0) {
 
-          this.setState({ AlertModal: "No Packages Found" });
+          this.setState({ AlertModal: "אין חבילות זמינות" });
           { this.setModalVisible(true) }
         }
         else {
@@ -275,7 +275,7 @@ class CCDeliveryFeed1 extends React.Component {
         }
       if (weight === 6)
         if (this.state.PackagesList2.length === 0) {
-          this.setState({ AlertModal: "No Packages Found" });
+          this.setState({ AlertModal: "אין חבילות זמינות" });
           { this.setModalVisible(true) }
 
         }
@@ -286,12 +286,12 @@ class CCDeliveryFeed1 extends React.Component {
         }
       if (weight === 10)
         if (this.state.PackagesList3.length === 0) {
-          this.setState({ AlertModal: "No Packages Found" });
+          this.setState({ AlertModal: "אין חבילות זמינות" });
           { this.setModalVisible(true) }
         }
 
         else {
-
+ 
           this.AddTDUser(weight)
 
 

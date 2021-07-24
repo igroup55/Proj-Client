@@ -1216,7 +1216,7 @@ export default class HomeActivityList extends Component {
 
         <Body>
           <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
-          <Text style={{ fontWeight: 'bold' }} note >מחיר : </Text>
+          <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
 
           {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:120 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }}><Text style={{textAlign:'center',fontWeight:'bold'}} >פרטים</Text></TouchableOpacity> */}

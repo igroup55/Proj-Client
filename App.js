@@ -194,7 +194,7 @@ export default function App() {
         }}  />           
 
 <Stack.Screen name="ExpressPackages" component={CCExpressLockers} options={{
-          title: 'משלוחים בתהליך    ',
+          title: 'משלוחים שלי    ',
           headerStyle: {
             backgroundColor: '#ffed4b',
           },

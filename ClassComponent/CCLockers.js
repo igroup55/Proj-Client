@@ -377,7 +377,7 @@ export default class CCLockers extends Component {
         {/* {} */}
         {this.state.canOpenLocker === 0 ? (<View>
           <Text style={styles.titles} >בדוק מרחק מהתחנה</Text>
-          <Button onPress={() => { this.isNearLocker() }} block success style={{ marginRight: 90, marginLeft: 90, marginBottom: 15, marginTop: 20, paddingHorizontal: 70, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
+          <Button onPress={() => { this.isNearLocker() }} block success style={{ marginRight: 80, marginLeft: 80, marginBottom: 15, marginTop: 20, paddingHorizontal: 70, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
             <Text style={{ fontWeight: 'bold' }}>בדיקה</Text>
           </Button>
         </View>) : (<View><Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} להפקדה -</Text>

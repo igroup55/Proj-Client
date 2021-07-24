@@ -673,12 +673,21 @@ export default class CCSenderForm extends Component {
           </Modal>
           <View style={{ borderTopColor: 'black', borderTopWidth: 2 }}>
 
-            <Form style={{ width: 390 }}>
+            <Form style={{ width: 'auto' }}>
               <View >
 
                 <Icon name="location" style={{ alignSelf: 'center', marginTop: 10 }} />
                 <Text style={styles.titles} >תחנת מוצא</Text>
-                <Item picker style={styles.InputText}>
+                <Item picker style={{
+                  textAlign: 'right',
+                  borderColor: 'green',
+                  borderStyle: 'solid',
+                  backgroundColor: '#cbe8ba',
+                  borderRadius: 10,
+                  marginRight: 15,
+                  marginTop: 10,
+                  marginLeft: 15
+                }}>
                   <Picker
                     mode="dropdown"
                     style={{ textAlign: 'right' }}
@@ -699,7 +708,16 @@ export default class CCSenderForm extends Component {
                 <Text> {this.state.SStationName}</Text>
                 <Icon name="flag" style={{ alignSelf: 'center', marginTop: 10 }} />
                 <Text style={styles.titles}>תחנת יעד</Text>
-                <Item picker style={styles.InputText}>
+                <Item picker style={{
+                  textAlign: 'right',
+                  borderColor: 'green',
+                  borderStyle: 'solid',
+                  backgroundColor: '#cbe8ba',
+                  borderRadius: 10,
+                  marginRight: 15,
+                  marginTop: 10,
+                  marginLeft: 15
+                }}>
 
                   <Picker
                     mode="dropdown"
@@ -753,7 +771,16 @@ export default class CCSenderForm extends Component {
 
 
                 <Text style={styles.titles}> משקל חבילה </Text>
-                <Item picker style={styles.InputText}>
+                <Item picker style={{
+                  textAlign: 'right',
+                  borderColor: 'green',
+                  borderStyle: 'solid',
+                  backgroundColor: '#cbe8ba',
+                  borderRadius: 10,
+                  marginRight: 15,
+                  marginTop: 10,
+                  marginLeft: 15
+                }}>
                   <Picker
                     mode="dropdown"
                     style={{ width: undefined, textAlign: 'right', borderColor: 'black', borderWidth: 2 }}
@@ -809,9 +836,8 @@ const styles = ({
     borderStyle: 'solid',
     backgroundColor: '#cbe8ba',
     borderRadius: 10,
-    marginRight: 10,
-    marginTop: 10
-
+    marginRight: 15,
+    marginTop: 1,
   },
   titles: {
     textAlign: 'center',

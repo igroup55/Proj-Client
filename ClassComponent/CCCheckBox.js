@@ -20,8 +20,8 @@ const CheckBoxes = () => {
   var Address = ''
 
   const [isSelected, setSelection] = useState(false);
-  this.storeData('Express?',isSelected)
-  
+  this.storeData('Express?', isSelected)
+
   return (
     <View style={styles.section}>
       <Icon style={{ alignSelf: 'center' }} name="home" />
@@ -37,17 +37,16 @@ const CheckBoxes = () => {
         {isSelected ? (<View style={styles.section}>
           <View  >
             <Item>
-              <Label>כתובת</Label>
               <Input style={styles.InputText}
                 placeholderTextColor="grey"
                 defaultValue={null}
                 placeholder="כתובת"
                 returnKeyType="next"
-                onChangeText={val => {Address= val }}
-                onBlur = {(e) => this.storeData('Address',Address)}
+                onChangeText={val => { Address = val }}
+                onBlur={(e) => this.storeData('Address', Address)}
               />
-              </Item>
-              <Text style={{color:'grey'}}> עיר , שם רחוב , מספר בית*</Text>
+            </Item>
+            <Text style={{ color: 'grey', marginRight:10 }}> עיר , שם רחוב , מספר בית*</Text>
           </View>
         </View>) : null}</Text>
     </View>
@@ -74,7 +73,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 5,
 
-
   },
   titles: {
     textAlign: 'center',
@@ -90,7 +88,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#cbe8ba',
     borderRadius: 10,
     marginRight: 10,
-    marginLeft: 10,
     alignSelf: 'center',
     width: 365
   },
