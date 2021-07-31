@@ -372,7 +372,16 @@ class CCDeliveryFeed1 extends React.Component {
           total = 1 - (total / this.state.TDUserList1.length)
         total = total.toFixed(2);
         console.log('total : ' + (total));
-        this.setState({ Rating3: total * 100 })
+        if(total >= 0 && total <= 1)
+        {
+          this.setState({ Rating3: total * 100 })
+        }
+        else{
+          if(total > 1)
+          this.setState({Rating3:100})
+          else
+          this.setState({Rating3:0})
+        }
 
       }
 
@@ -407,7 +416,16 @@ class CCDeliveryFeed1 extends React.Component {
           total = 1 - (total / this.state.TDUserList2.length)
         total = total.toFixed(2);
         console.log('total : ' + (total));
-        this.setState({ Rating6: total * 100 })
+        if(total >= 0 && total <= 1)
+        {
+          this.setState({ Rating6: total * 100 })
+        }
+        else{
+          if(total > 1)
+          this.setState({Rating6:100})
+          else
+          this.setState({Rating6:0})
+        }
 
       }
 
@@ -441,7 +459,17 @@ class CCDeliveryFeed1 extends React.Component {
           total = 1 - (total / this.state.TDUserList3.length)
         total = total.toFixed(2);
         console.log('total : ' + (total));
-        this.setState({ Rating10: total * 100 })
+        if(total >= 0 && total <= 1)
+        {
+          this.setState({ Rating10: total * 100 })
+        }
+        else{
+          if(total > 1)
+          this.setState({Rating10:100})
+          else
+          this.setState({Rating10:0})
+        }
+        
 
       }
 
