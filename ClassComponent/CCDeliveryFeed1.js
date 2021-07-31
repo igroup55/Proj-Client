@@ -112,7 +112,6 @@ class CCDeliveryFeed1 extends React.Component {
     let stationLong = this.state.SstationLong;
     let CurrentDistance = 0;
     CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
-    console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
 
 
@@ -146,34 +145,20 @@ class CCDeliveryFeed1 extends React.Component {
   toRad(angle) {
     return (angle * Math.PI) / 180;
   }
-  //---------------------------------------
-  // כפתור - אני כאן -
-  //   Get Packages By Weight And StationID - GET TO PAckages By Sending Paramter weight and stationID
-  //   We Choose One Package From The Response 
-  //   Render the Locker ID To User To Take the PAckage From the Locker ( נא לגשת ללוקר מספר *** ולאסוף את החבילה)
-
+  
   storeData = async (key, value) => {
 
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem(key, jsonValue);
-      console.log(key + ": " + jsonValue);
     }
     catch (e) {
-      console.log(e);
     }
   };
 
   AddTDUser(weight) {
 
     this.setState({ AlertModal: 'קטגוריה סומנה בהצלחה !! ' + "\n" + ' לחץ - אני כאן - בעת ההגעה לתחנת רכבת' }, () => { this.setModalVisible(true) });
-
-    // setTimeout(() => {
-    //   this.props.navigation.navigate('Home');
-    // }, 2000);
-
-
-
 
     const TDUsers_data = {
 
@@ -185,7 +170,6 @@ class CCDeliveryFeed1 extends React.Component {
       Rating: this.state.Rating
 
     }
-
 
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser', {
       method: 'POST',
@@ -202,7 +186,7 @@ class CCDeliveryFeed1 extends React.Component {
 
         },
         (error) => {
-          console.log("err post=", error);
+
         }).then(
           () => {
 
@@ -232,18 +216,10 @@ class CCDeliveryFeed1 extends React.Component {
 
   async Interested(weight) {
 
-
-
     this.setState({ Pweight: weight })
     const apiTDUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser?UserId=' + this.state.UserDetail;
     const response = await fetch(apiTDUserUrl);
-    const data = await response.json()
-    console.log('Data : ' + data)
-    // const GetRating = {
-
-    //   UserID:this.state.UserDetail
-
-    // }
+    const data = await response.json() 
 
     const GetRatingUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{UpdatedRating}/' + this.state.UserDetail;
     const RatingResponse = await fetch(GetRatingUrl);
@@ -256,7 +232,6 @@ class CCDeliveryFeed1 extends React.Component {
 
     else {
       this.setState({ Rating: GetRating_Data[0].Rating })
-      console.log(GetRating_Data[0].Rating)
     }
 
 
@@ -293,13 +268,7 @@ class CCDeliveryFeed1 extends React.Component {
         else {
  
           this.AddTDUser(weight)
-
-
         }
-
-
-
-
 
     }
     else {
@@ -309,18 +278,6 @@ class CCDeliveryFeed1 extends React.Component {
       { this.setModalVisible(true) }
 
     }
-
-    //   התעניינות--------------------------
-    // GET -CHECk if the user is interested in any packages ( the user is limited to 1 till now)
-    // POST TO TDUSER ( UserId ,Pweight,Status)
-
-    // איסוף------------
-
-    //   כפתור איסוף
-    //   Put to Packages ( Change Status to 3 (נאסף) )
-    //   Put to Lockers ( Change Status To 0 ( פנוי))
-    //    Put to TDUser ( add PackageID)
-
 
   }
 
@@ -346,9 +303,7 @@ class CCDeliveryFeed1 extends React.Component {
         var SuccessArr = []
         let Size = this.state.PackagesList1.length
         SuccessArr = this.k_combinations(RatingArr, Size);
-        console.log(SuccessArr)
-        console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
-
+     
         var total = 0;
         var probability = 1;
         for (let i = 0; i < SuccessArr.length; i++) {
@@ -361,17 +316,14 @@ class CCDeliveryFeed1 extends React.Component {
               probability = SuccessArr[i][j]
 
           }
-          console.log(probability);
           total += probability
         }
-        console.log(this.state.TDUserList1)
 
         if (this.state.PackagesList1.length === 1 && this.state.TDUserList1.length > 1)
           total = (total / (this.state.TDUserList1.length) * (1 / this.state.TDUserList1.length))
         else
           total = 1 - (total / this.state.TDUserList1.length)
         total = total.toFixed(2);
-        console.log('total : ' + (total));
         if(total >= 0 && total <= 1)
         {
           this.setState({ Rating3: total * 100 })
@@ -390,8 +342,6 @@ class CCDeliveryFeed1 extends React.Component {
         var SuccessArr = []
         let Size = this.state.PackagesList2.length
         SuccessArr = this.k_combinations(RatingArr, Size);
-        console.log(SuccessArr)
-        console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
 
         var total = 0;
         var probability = 1;
@@ -405,17 +355,14 @@ class CCDeliveryFeed1 extends React.Component {
               probability = SuccessArr[i][j]
 
           }
-          console.log(probability);
           total += probability
         }
-        console.log(this.state.TDUserList2)
 
         if (this.state.PackagesList2.length === 1 && this.state.TDUserList2.length > 1)
           total = (total / (this.state.TDUserList2.length) * (1 / this.state.TDUserList2.length))
         else
           total = 1 - (total / this.state.TDUserList2.length)
         total = total.toFixed(2);
-        console.log('total : ' + (total));
         if(total >= 0 && total <= 1)
         {
           this.setState({ Rating6: total * 100 })
@@ -433,8 +380,6 @@ class CCDeliveryFeed1 extends React.Component {
         var SuccessArr = []
         let Size = this.state.PackagesList3.length
         SuccessArr = this.k_combinations(RatingArr, Size);
-        console.log(SuccessArr)
-        console.log(SuccessArr[0][0] + ' * ' + SuccessArr[0][1])
 
         var total = 0;
         var probability = 1;
@@ -448,17 +393,14 @@ class CCDeliveryFeed1 extends React.Component {
               probability = SuccessArr[i][j]
 
           }
-          console.log(probability);
           total += probability
         }
-        console.log(this.state.TDUserList3)
 
         if (this.state.PackagesList3.length === 1 && this.state.TDUserList3.length > 1)
           total = (total / (this.state.TDUserList3.length) * (1 / this.state.TDUserList3.length))
         else
           total = 1 - (total / this.state.TDUserList3.length)
         total = total.toFixed(2);
-        console.log('total : ' + (total));
         if(total >= 0 && total <= 1)
         {
           this.setState({ Rating10: total * 100 })
@@ -470,7 +412,6 @@ class CCDeliveryFeed1 extends React.Component {
           this.setState({Rating10:0})
         }
         
-
       }
 
     }
@@ -583,7 +524,6 @@ class CCDeliveryFeed1 extends React.Component {
     let Pweight = weight
     let express = 'False'
 
-    //tar2 - url צריך לשנות אחרי שמעדכנים ל tar 1
     const apiUserUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight=' + weight + '&express=' + express;
     const response = await fetch(apiUserUrl);
     const data = await response.json()
@@ -623,7 +563,6 @@ class CCDeliveryFeed1 extends React.Component {
 
     );
 
-    console.log(this.state.PackagesList3)
 
     this.setState({ expanded: !this.state.expanded })
     { this.GetTDUser(Pweight) }
@@ -638,7 +577,6 @@ class CCDeliveryFeed1 extends React.Component {
     const PackagesFoundUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&Pweight= -1';
     const response = await fetch(PackagesFoundUrl);
     const data = await response.json()
-    console.log(data)
 
     if (data.length !== 0) {
 

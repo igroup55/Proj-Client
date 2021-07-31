@@ -41,19 +41,6 @@ export default class CreditPay extends Component {
     let FormCardNumber = this.state.FormCardNumber;
     let FormCVV = this.state.FormCVV;
 
-    console.log('Amount : ' + FormCreditAmount)
-    console.log('Owner : ' + FormCardOwner)
-    console.log('CardNumber: ' + FormCardNumber)
-    console.log('CVV : ' + FormCVV)
-    // || FormCreditAmount===0
-    // FormCreditAmount < 25 ? (this.setState({CE_FormCreditAmount:0})):this.setState({CE_FormCreditAmount:1})
-    // FormCardOwner === "" ? (this.setState({CE_FormCardOwner:0})) : this.setState({CE_FormCardOwner:1})
-    // this.state.FormCardNumber.length < 10 ? (this.setState({CE_FormCardNumber:0})) : this.setState({CE_FormCardNumber:1})
-    // FormCVV.length < 3 ? (this.setState({CE_FormCVV:0})) : this.setState({CE_FormCVV:1})
-
-    // let OK = this.state.CE_FormCreditAmount + this.state.CE_FormCardOwner + this.state.CE_FormCardNumber + this.state.CE_FormCVV
-    // console.log(this.state.CE_FormCreditAmount)
-
     if (FormCreditAmount < 25) {
       this.setState({ AlertModal: ' לא ניתן לקנות פחות מ 25 קרידיטים' });
       { this.setModalVisible(true) }
@@ -80,12 +67,6 @@ export default class CreditPay extends Component {
       }
     }
 
-
-
-
-
-
-
   }
 
   async getData() {
@@ -100,34 +81,27 @@ export default class CreditPay extends Component {
     } catch (e) {
       this.setState({ AlertModal: 'Error get Item' });
       { this.setModalVisible(true) }
-      // error reading value
     }
   }
 
 
 
   async getDataFromServer() {
-    console.log("userID is: " + this.state.UserID)
     const UserID = this.state.UserID;
 
     const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?UserID=' + UserID;
     const response = await fetch(apiStationsUrl);
     const data = await response.json()
     this.setState({ UserCreditOBJ: data, })
-    console.log('Credit :' + data[0].Credit);
-
-
 
     const apiStationsUrl2 = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Transaction?UserID=' + UserID;
     const response2 = await fetch(apiStationsUrl2);
     const Transactionsdata = await response2.json()
     this.setState({ TransactionsList: Transactionsdata, })
-    console.log(Transactionsdata);
 
   }
   async componentDidMount() {
     this.getData();
-
 
   }
 
@@ -297,25 +271,7 @@ export default class CreditPay extends Component {
                 onChangeText={val => this.setState({ FormCVV: val })}
 
               />
-              {/* <View style={{flexDirection:'row'}}>
-                <Text style={styles.titles2}>תוקף כרטיס</Text>
-                <TextInput style={styles.input2}
-                    underlineColorAndroid="transparent"
-                    placeholder="YYYY"
-                    placeholderTextColor="green"
-                    keyboardType="numeric"
-                    autoCapitalize="none"
-                    onChangeText={val => this.setState({ email: val })}
-                />
-                <TextInput style={styles.input2}
-                    underlineColorAndroid="transparent"
-                    placeholder="MM"
-                    placeholderTextColor="green"
-                    keyboardType="numeric"
-                    autoCapitalize="none"
-                    onChangeText={val => this.setState({ email: val })}
-                />
-              </View> */}
+             
             </View>
 
             <View>

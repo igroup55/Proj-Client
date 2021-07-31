@@ -62,7 +62,6 @@ export default class CCLockers extends Component {
 
     this.getMultiple()
     this.getData()
-    ///current location function
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({
         latitude: position.coords.latitude,
@@ -73,7 +72,6 @@ export default class CCLockers extends Component {
       error => this.setState({ error: error.message }),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
-    // console.log(this.state.longitude+" , "+this.state.longitude+" , "+this.state.stationLat+" , "+this.state.stationLong);
   }
 
   tick = () => {
@@ -98,7 +96,6 @@ export default class CCLockers extends Component {
     } catch (e) {
       this.setState({ AlertModal: 'Error get Item' });
       { this.setModalVisible(true) }
-      // error reading value
     }
   }
 
@@ -114,16 +111,13 @@ export default class CCLockers extends Component {
       this.setState({ stationLat: locationValues[0][1] })
       this.setState({ stationLong: locationValues[1][1] })
 
-    } catch (e) {
-      // read error
+    } 
+    catch (e) {
+
     }
 
 
-
-    // example console.log output:
-    // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
   }
-  //Location Distance Calculation Functions
 
   isNearLocker() {
     const NearDistance = 0.1;
@@ -133,7 +127,6 @@ export default class CCLockers extends Component {
     let stationLong = this.state.stationLong;
     let CurrentDistance = 0;
     CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
-    console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
 
       this.setState({ canOpenLocker: 1 })
@@ -218,9 +211,7 @@ export default class CCLockers extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
-    // this.setModalVisible(true) 
-    // this.props.navigation.navigate('Home')
-    // this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
+    
     this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
     this.setModalVisible(true)
     setTimeout(() => {
@@ -254,10 +245,7 @@ export default class CCLockers extends Component {
   CancelPackage() {
 
 
-
-
     let TDGetPayment = Number(this.state.UserCreditOBJ[0].Credit) + this.state.Credit;
-
 
     const UserCredits = {
       UserId: this.state.UserId,
@@ -329,8 +317,6 @@ export default class CCLockers extends Component {
       }, 3000),
     )
 
-
-
   }
 
   render() {
@@ -386,16 +372,7 @@ export default class CCLockers extends Component {
 
             <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
           </Button></View>)}
-        {/* <Text style={styles.titles} >בדוק מרחק מהלוקר</Text>
-        <Button onPress={()=>{this.isNearLocker()}} block success style={{ marginRight: 90 ,marginLeft:90 ,marginBottom:15 , marginTop:20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
-          <Text style={{ fontWeight: 'bold' }}>בדיקה</Text>
-        </Button> */}
-        {/*  */}
-        {/* <Text style={styles.titles} >- נא לגשת ללוקר מס' {this.state.SLockerID} להפקדה -</Text>
-        <Button onPress={()=>{this.PackDeposit()}} block success style={{ marginRight: 90 ,marginLeft:90 ,marginBottom:15 , marginTop:20, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
-          <Text style={{ fontWeight: 'bold' }}>הפקד חבילה</Text>
-        </Button> */}
-
+      
         <Button onPress={() => { this.getUSerCredit() }} block danger style={{ marginRight: 40, marginLeft: 40, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
           <Text style={{ fontWeight: 'bold' }}>ביטול משלוח</Text>
         </Button>

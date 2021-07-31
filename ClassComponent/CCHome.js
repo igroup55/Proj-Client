@@ -13,90 +13,81 @@ export default class Home extends Component {
       AlertModal: '',
       modalVisible: false,
       notification: {},
-      token:'',
-      UserId:null,
-activityList:false
+      token: '',
+      UserId: null,
+      activityList: false
     };
   }
   async componentDidMount() {
 
 
     registerForPushNotificationsAsync()
-    .then((token) => {
-    this.setState({ token:token });
-    //this._notificationSubscription = Notifications.addListener(this._handleNotification);
-    console.log("my token is: "+ this.state.token)
-    this.UpdateUserToken();
-    this.props.navigation.addListener('focus',()=> this.setState({activityList:true}),()=> this.setState({activityList:false}))
+      .then((token) => {
+        this.setState({ token: token });
+        this.UpdateUserToken();
+        this.props.navigation.addListener('focus', () => this.setState({ activityList: true }), () => this.setState({ activityList: false }))
 
-    });
+      });
     this.getData();
 
-    
+
   }
-    _handleNotification = (notification) => {
+  _handleNotification = (notification) => {
     this.setState({ notification: notification });
     alert(notification);
+  };
+
+
+
+  sendPushNotification = async () => {
+    let message = {
+      to: this.state.token,
+      sound: 'default',
+      title: 'Push my notification',
+      body: 'tamir sent you a message!',
+      data: { someData: { name: 'tamir', day: new Date() } },
     };
 
-  
-  
-    sendPushNotification =async()=> {
-      let message = {
-        to: this.state.token,
-        sound: 'default',
-        title: 'Push my notification',
-        body: 'tamir sent you a message!',
-        data: { someData: {name:'tamir',day: new Date()} },
-      };
-    
-      await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Accept-encoding': 'gzip, deflate',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
-      console.log(message.data)
-    }
-      
-    async getData () {
-      try {
-        jsonValue = await AsyncStorage.getItem('UserId')
-        jsonValue != null ? UserDetails = JSON.parse(jsonValue) : null;
-        console.log(UserDetails)
-        this.setState({ UserId: UserDetails.UserId })
-  
-      } catch (e) {
-        this.setState({ AlertModal: 'Error get Item' });
-        { this.setModalVisible(true) }
-        // error reading value
-      }
-    }
-    
-    
-UpdateUserToken=async()=>{
-  let userId= this.state.UserId;
-  let token = this.state.token;
-  console.log('in update')
-  console.log('userid : ' + userId)
-  console.log('token : ' + token)
-  userToken={
-    userId:userId,
-    token:token,
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
   }
-  let api = "http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users/{UpdateUserToken}?userId="+userId+"&token="+token
-await    fetch(api, {
-  method: 'PUT',
-  // body: JSON.stringify(userToken),
-  headers: new Headers({
-    'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-  })
-})
-console.log("token have been updated!!!!!!!!!");
-}
+
+  async getData() {
+    try {
+      jsonValue = await AsyncStorage.getItem('UserId')
+      jsonValue != null ? UserDetails = JSON.parse(jsonValue) : null;
+      this.setState({ UserId: UserDetails.UserId })
+
+    } catch (e) {
+      this.setState({ AlertModal: 'Error get Item' });
+      { this.setModalVisible(true) }
+    }
+  }
+
+
+  UpdateUserToken = async () => {
+    let userId = this.state.UserId;
+    let token = this.state.token;
+    userToken = {
+      userId: userId,
+      token: token,
+    }
+    let api = "http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users/{UpdateUserToken}?userId=" + userId + "&token=" + token
+    await fetch(api, {
+      method: 'PUT',
+      // body: JSON.stringify(userToken),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
+  }
   setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
   }
@@ -133,11 +124,11 @@ console.log("token have been updated!!!!!!!!!");
         </View>
         <View style={{ borderTopColor: 'black', borderTopWidth: 2 }} >
           <View ><Text style={styles.ActivityHeader}> פעולות אחרונות </Text></View>
-        
-            <View style={{ maxHeight: 250 }}>
-              <HomeActivityList activityList={this.state.activityList} />
-            </View>
-       
+
+          <View style={{ maxHeight: 250 }}>
+            <HomeActivityList activityList={this.state.activityList} />
+          </View>
+
           <Button
             title='הארנק שלי'
             onPress={() => { this.props.navigation.navigate('payments'); }}
@@ -167,14 +158,6 @@ console.log("token have been updated!!!!!!!!!");
             buttonStyle={styles.title}
 
           />
-
-{/* <Button
-          title='ניסיון פוש נוט'
-          onPress={()=>{this.sendPushNotification()}}
-          buttonStyle={styles.title}
-
-        /> */}
-
 
         </View>
         <Image
@@ -248,4 +231,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   }
-}); 
+});

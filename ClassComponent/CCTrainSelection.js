@@ -62,10 +62,8 @@ export default class CCTrainSelection extends Component {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem(key, jsonValue);
-      console.log(key + ": " + jsonValue);
     }
     catch (e) {
-      console.log(e);
     }
   };
 
@@ -196,36 +194,7 @@ export default class CCTrainSelection extends Component {
                   </Picker>
                 </Item>
               </View>
-
-
-
-              {/* <Icon name="calendar"  style={{ alignSelf: 'center', marginTop: 10 }} /> */}
-
-              {/* <DatePicker
-        style={{ alignSelf: 'center', marginTop: 10 }}
-        date={this.state.date}
-        mode="date"
-        placeholder="select date"
-        format="DD-MM-YYYY"
-        minDate={new Date()}
-        maxDate="2021-12-30"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-          dateIcon: {
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0
-          },
-          dateInput: {
-            marginLeft: 36
-          }
-          // ... You can check the source to find the other keys.
-        }}
-        onDateChange={(date) => {this.setState({date: date}) }}
-      /> */}
-
+           
               <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש משלוחים </Text></Button>
 
             </Form>

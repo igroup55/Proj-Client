@@ -29,34 +29,28 @@ export default class CCTrainRouteSelection extends Component {
     const response = await fetch(apiStationsUrl);
     const data = await response.json()
     this.setState({ StationsList: data, })
-    console.log(data);
   };
   onValueChange1 = (value) => {
     this.setState({
       selected1: value
     });
-    console.log(this.state.selected1);
 
   }
   onValueChange2 = (value) => {
     this.setState({
       selected2: value
     });
-    console.log(this.state.selected2);
 
   }
   onValueChange3 = (value) => {
     this.setState({
       selected3: value
     });
-    console.log(this.state.selected3);
   }
-
 
   navigate = () => {
 
     this.props.navigation.navigate('DeliveryFeed')
-
 
   }
 
@@ -85,11 +79,9 @@ export default class CCTrainRouteSelection extends Component {
                     selectedValue={this.state.selected1}
                     onValueChange={this.onValueChange1.bind(this)}
                   >
-
                     <Picker.Item label='בחר תחנת מוצא' value='None' />
 
                     {stations}
-
 
                   </Picker>
                 </Item>
@@ -117,38 +109,11 @@ export default class CCTrainRouteSelection extends Component {
 
 
               <Text style={{ alignSelf: 'center', marginTop: 10, fontWeight: 'bold' }}>בחר תאריך נסיעה</Text>
-              {/* <Icon name="calendar"  style={{ alignSelf: 'center', marginTop: 10 }} /> */}
 
-              {/* <DatePicker
-        style={{ alignSelf: 'center', marginTop: 10 }}
-        date={this.state.date}
-        mode="date"
-        placeholder="select date"
-        format="DD-MM-YYYY"
-        minDate={new Date()}
-        maxDate="2021-12-30"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-          dateIcon: {
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0
-          },
-          dateInput: {
-            marginLeft: 36
-          }
-          // ... You can check the source to find the other keys.
-        }}
-        onDateChange={(date) => {this.setState({date: date}) }}
-      /> */}
 
               <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש משלוחים </Text></Button>
 
             </Form>
-
-
 
           </View>
         </ScrollView>

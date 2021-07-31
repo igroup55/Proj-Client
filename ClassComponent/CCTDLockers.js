@@ -61,7 +61,6 @@ export default class CCLockers extends Component {
     const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser?UserID=' + this.state.UserId;
     const responseweight = await fetch(apiTDUser1Url);
     const TDArrival1data = await responseweight.json()
-    console.log(TDArrival1data.Pweight)
 
     this.setState({
       Pweight: TDArrival1data.Pweight,
@@ -79,7 +78,6 @@ export default class CCLockers extends Component {
     const apiGetLocker = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers/{PackageID}?PackageID=' + this.state.PackageID;
     const responseLocker = await fetch(apiGetLocker);
     const TDLocker = await responseLocker.json()
-    console.log(TDLocker)
 
     if (TDLocker[0]["StationID"] === this.state.StartStation) {
       this.setState({ SLockerID: TDLocker[0]["LockerID"] });
@@ -90,10 +88,7 @@ export default class CCLockers extends Component {
       this.setState({ ELockerID: TDLocker[0]["LockerID"] })
     }
 
-    console.log(this.state.SLockerID)
-    console.log(this.state.ELockerID)
 
-    ///current location function
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({
         latitude: position.coords.latitude,
@@ -108,26 +103,19 @@ export default class CCLockers extends Component {
     this.getSenderDetails()
 
   }
-  //קבלת איידי +טוקן שולח
   async getSenderDetails() {
 
-    console.log(this.state.PackageID)
     const apiSenderId = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages/{MYPackageID}?PackageId=' + this.state.PackageID;
     const responseSenderId = await fetch(apiSenderId);
     const senderId = await responseSenderId.json();
-    console.log("the senderId is: " + senderId.UserId);
     this.setState({ SenderId: senderId.UserId });
 
     const apiSenderToken = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Users/{GetSenderToken}?UserId=' + senderId.UserId + '&PackageID=' + this.state.PackageID;
     const responseSenderToken = await fetch(apiSenderToken);
     const senderToken = await responseSenderToken.json();
     this.setState({ senderToken: senderToken.Token });
-    console.log("the sender token is: " + this.state.senderToken)
 
   }
-
-
-  //
 
 
   async getData() {
@@ -137,7 +125,6 @@ export default class CCLockers extends Component {
       jsonValue != null ? UserDetails = JSON.parse(jsonValue) : null;
       this.setState({ UserName: UserDetails.FullName })
       this.setState({ UserId: UserDetails.UserId })
-      console.log(UserDetails.UserId)
       this.getUserCredits();
 
     } catch (e) {
@@ -148,16 +135,12 @@ export default class CCLockers extends Component {
   }
 
   async getUserCredits() {
-    //קבלת פרטי קרדיטים של משתמש
-    console.log("in usercredits before fetch")
-    console.log(this.state.UserId)
+
     const UserID = this.state.UserId;
     const apiUserCreditsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?UserID=' + UserID;
     const response2 = await fetch(apiUserCreditsUrl);
     const UCdata = await response2.json()
     this.setState({ UserCreditOBJ: UCdata, })
-
-    console.log("in usercredits after fetch")
 
   }
 
@@ -171,7 +154,6 @@ export default class CCLockers extends Component {
     this.UpdateTDCredits()
 
   }
-  ///////////////עדכון טרנזקציות תשלום//////////////////
 
   UpdateTDCredits() {
 
@@ -180,7 +162,6 @@ export default class CCLockers extends Component {
     let selfCredit = this.state.UserCreditOBJ[0].Credit;
     let UserId = this.state.UserId;
 
-    // let systemPayment =Number(selfCredit)-TDpayment;
     let TDGetPayment = Number(selfCredit) + this.state.TDPayment;
 
     const UserCredits2 = {
@@ -195,7 +176,6 @@ export default class CCLockers extends Component {
       CreditAmount: this.state.TDPayment,
       TransactionDate: date,
     }
-    {/*לשים לב שהניתוב הוא ל tar 2 */ }
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Transaction', {
       method: 'POST',
       body: JSON.stringify(Transaction),
@@ -212,15 +192,7 @@ export default class CCLockers extends Component {
           })
         })
       )
-      // .then(
-      //   fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits', {
-      //     method: 'PUT',
-      //     body: JSON.stringify(UserCredits2),
-      //     headers: new Headers({
-      //       'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-      //     })
-      //   })
-      // )
+
       .then(
 
 
@@ -241,18 +213,16 @@ export default class CCLockers extends Component {
     const PackagesList = await response.json()
     this.setState({
       ExistPackages: PackagesList
-    }, () => console.log(PackagesList))
+    })
 
 
 
     const api1 = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDate}?startStation=' + this.state.StartStation + '&endStation=' + this.state.EndStation + '&UserId=' + this.state.UserId + '&PickUpDT=' + this.state.PickUpDT;
     const response1 = await fetch(api1);
     const data = await response1.json();
-    //console.log(data+' last : '+data[data.length-1]["PickUpDT"]+' last 1 : '+data[data.length-1].PickUpDT );
-    console.log(data)
     this.setState({
       FutureDT: data[data.length - 1].PickUpDT,
-    }, () => console.log(this.state.FutureDT));
+    });
 
     if (PackagesList.length != 0 && data != null) {
       this.UpdateDTUser()
@@ -282,7 +252,6 @@ export default class CCLockers extends Component {
 
 
 
-  ////////////////////////////////////////////////////////
 
   PickUp() {
     this.setState({ Pressed: !this.state.Pressed })
@@ -304,35 +273,15 @@ export default class CCLockers extends Component {
       })
     })
 
-    // const Elocker_update = {
-
-    //   LockerID: this.state.ELockerID,
-    //   PackageID: this.state.PackageID,
-    //   Busy: 1
-
-    // }
-
-
-
-    // fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers', {
-    //   method: 'PUT',
-    //   body: JSON.stringify(Elocker_update),
-    //   headers: new Headers({
-    //     'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-    //   })
-    // })
-
     { this.UpdatePackageStatus() }
 
     this.PickedUpNotification();
-
 
   }
 
   UpdatePackageStatus() {
 
     const Package_update = {
-
 
       PackageID: this.state.PackageID,
       Status: 3
@@ -418,19 +367,11 @@ export default class CCLockers extends Component {
 
     }
 
-
-
-
-
   }
 
 
 
-
-
   Deposit() {
-
-    //this.setState({ Pressed: !this.state.Pressed })
 
     const UpdateRating = {
       StartStation: this.state.StartStation,
@@ -439,7 +380,6 @@ export default class CCLockers extends Component {
       UserID: this.state.UserId,
 
     }
-
 
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{Rating}', {
       method: 'PUT',
@@ -451,7 +391,6 @@ export default class CCLockers extends Component {
     })
 
     const Package_update = {
-
 
       PackageID: this.state.PackageID,
       Status: 4
@@ -476,14 +415,12 @@ export default class CCLockers extends Component {
 
   async UpdateTDStatus() {
 
-
     const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDeliveryId}?UserId=' + this.state.UserId;
     const responseweight = await fetch(apiTDUser1Url);
     const TDArrival1data = await responseweight.json()
     this.setState({
       DeliveryID: TDArrival1data[0].DeliveryID
     })
-
 
     const TD1Package_update = {
       PackageID: this.state.PackageID,
@@ -522,7 +459,6 @@ export default class CCLockers extends Component {
       },
       body: JSON.stringify(message),
     });
-    console.log(message.data)
   }
 
   PickedUpNotification = async () => {
@@ -543,15 +479,12 @@ export default class CCLockers extends Component {
       },
       body: JSON.stringify(message),
     });
-    console.log(message.data)
   }
-
 
 
   CancelPackage() {
 
     const Package_cancel = {
-
 
       PackageID: this.state.PackageID,
       Status: -1
@@ -676,10 +609,6 @@ export default class CCLockers extends Component {
         </View>
         {instruction}
         {button}
-
-        {/* <Button onPress={()=>{this.CancelPackage()}} block danger style={{ marginRight: 40 ,marginLeft:40, borderColor: 'black', borderWidth: 2, borderRadius: 8 }} >
-          <Text style={{ fontWeight: 'bold' }}>ביטול משלוח</Text>
-        </Button> */}
 
       </View>
     )

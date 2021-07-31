@@ -31,7 +31,6 @@ export default class Map extends Component {
               }}
               title='my place:)'
               description='here i am'
-            //image={require('../assets/icon.png')}
             />
           </MapView>
         </View>

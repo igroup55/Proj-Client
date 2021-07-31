@@ -55,11 +55,11 @@ export default class CCExpressLockers extends Component {
 
       jsonValue = await AsyncStorage.getItem('UserId')
       jsonValue != null ? User = JSON.parse(jsonValue) : null;
-      this.setState({ UserDetails: User }, () => { console.log(this.state.UserDetails.UserId), this.getfromserver() })
+      this.setState({ UserDetails: User }, () => { this.getfromserver() })
 
       jsonValue = await AsyncStorage.getItem('XSStationName')
       jsonValue != null ? Station = JSON.parse(jsonValue) : null;
-      this.setState({ SelectedStation: Station }, () => console.log(this.state.SelectedStation))
+      this.setState({ SelectedStation: Station })
 
       let locationValues = await AsyncStorage.multiGet(['XSstationLat', 'XSstationLong']);
 
@@ -68,10 +68,7 @@ export default class CCExpressLockers extends Component {
 
     }
     catch (e) {
-      // alert('error get item')
-      // this.setState({ AlertModal: 'Error get Item' });
-      // { this.setModalVisible(true) }
-      // error reading value
+
     }
 
 
@@ -84,11 +81,7 @@ export default class CCExpressLockers extends Component {
     const ActivityListDataEx = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ModuleActivity/{ModuleActivity}/{Express}/' + this.state.UserDetails.UserId;
     const responseActivityListEx = await fetch(ActivityListDataEx);
     const dataEx = await responseActivityListEx.json()
-    this.setState({ Packages: dataEx }, () => console.log(this.state.Packages))
-
-
-
-
+    this.setState({ Packages: dataEx })
 
   }
 
@@ -114,7 +107,6 @@ export default class CCExpressLockers extends Component {
     let CurrentDistance = 0;
     CurrentDistance = getDistance({ latitude: currentLat, longitude: currentLong }, { latitude: stationLat, longitude: stationLong })
 
-    console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
       this.PickUp()
 
@@ -131,7 +123,7 @@ export default class CCExpressLockers extends Component {
     this.setState({ modalVisible: visible });
   }
 
-   PickUp() {
+  PickUp() {
 
     this.state.Packages.map((pack, key) => {
       if (pack.StartStation === this.state.SelectedStation) {
@@ -155,18 +147,15 @@ export default class CCExpressLockers extends Component {
       }
 
     })
-    // ניווט לפיזור חבילות-הוא תותח הוא תותח הוא תותחחחחח
-    // this.props.navigation.navigate('')
   }
 
 
   async getLocker(pack) {
 
-    //let PackageId = this.state.Packages[this.state.Packages.length - 1].PackageID;
     const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + pack;
     const response = await fetch(apiPackagePricesUrl);
     const data = await response.json()
-    this.setState({ LockerId: data[0]["ELockerID"] }, () => console.log('LockerId: ' + this.state.LockerId))
+    this.setState({ LockerId: data[0]["ELockerID"] })
 
 
     this.UpdateLocker();

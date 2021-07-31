@@ -17,10 +17,8 @@ export default class CCLogin extends Component {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem(key, jsonValue);
-      console.log(key + ": " + jsonValue);
 
     } catch (e) {
-      console.log(e);
     }
   };
 
@@ -33,7 +31,6 @@ export default class CCLogin extends Component {
   loginuser() {
 
     this.state.Users.map((user) => {
-      console.log(user);
 
       if (this.state.email == user.EmailAddress && this.state.password == user.Password) {
         { this.storeData('UserId', user) }

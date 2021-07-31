@@ -34,34 +34,21 @@ export default class CCDeliveryExpressFeed extends Component {
 
     this.getData('start')
 
-    // Geocode.fromAddress("Eiffel Tower").then(
-    //   (response) => {
-    //     const { lat, lng } = response.results[0].geometry.location;
-    //     console.log(lat, lng);
-    //   },
-    //   (error) => {
-    //     console.error(error);
-    //   }
-    // );
+
     let values = await AsyncStorage.multiGet(['XSStationName', 'XSstationLat', 'XSstationLong', 'UserId'])
 
     this.setState({ StationName: values[0][1], StationLat: values[1][1], StationLong: values[2][1], UserID: JSON.parse(values[3][1]) }, () => {
 
-      console.log('UserID : ' + this.state.UserID.FullName)
       StationLat = this.state.StationLat
       StationLong = this.state.StationLong
       AddressLat = this.state.AddressLat
       AddressLong = this.state.AddressLong
 
-
-
     })
-
 
   }
 
   onPressHandler(pack) {
-    console.log('Distance : ' + this.state.XDistance / 1000)
     let renderData = [...this.state.PackagesList];
 
     renderData.map((data, key) => {
@@ -69,7 +56,6 @@ export default class CCDeliveryExpressFeed extends Component {
       if (data.PackageId === pack.PackageId) {
 
         data.selected = (data.selected == null) ? true : !data.selected;
-
 
       }
 
@@ -99,14 +85,9 @@ export default class CCDeliveryExpressFeed extends Component {
 
       }
 
-
-
     }
     catch (e) {
-      // alert('error get item')
-      // this.setState({ AlertModal: 'Error get Item' });
-      // { this.setModalVisible(true) }
-      // error reading value
+
     }
   }
 
@@ -115,10 +96,8 @@ export default class CCDeliveryExpressFeed extends Component {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem(key, jsonValue);
-      console.log(key + ": " + jsonValue);
     }
     catch (e) {
-      console.log(e);
     }
   };
 
@@ -139,7 +118,6 @@ export default class CCDeliveryExpressFeed extends Component {
     })
 
 
-    console.log(this.state.PackagesList)
 
 
   }
@@ -147,7 +125,6 @@ export default class CCDeliveryExpressFeed extends Component {
   getcustDetails = async (PackageId, key) => {
 
 
-    console.log(PackageId)
     const apiCustDetailsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Customers?PackageId=' + PackageId;
     const custresponse = await fetch(apiCustDetailsUrl);
     const CustDetails = await custresponse.json()
@@ -156,54 +133,27 @@ export default class CCDeliveryExpressFeed extends Component {
     // this.state.PackagesList[key].AddressLong = reverseGC[0].longitude
 
     this.state.PackagesList[key].Address = CustDetails.Address
-    console.log('Address : ' + this.state.PackagesList[key].Address)
     let reverseGC = await Location.geocodeAsync(CustDetails.Address);
     let Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
     this.state.PackagesList[key].Distance = Distance
-    console.log('Distance :' + this.state.PackagesList[key].Distance)
 
-    //  console.log('lon lat :' + reverseGC[0].latitude +','+ reverseGC[0].longitude )
     this.setState({ custArray: [...this.state.custArray, CustDetails] })
 
-
-
-
-
-
-
   }
 
-  async getaddresslocation(Address, key) {
-    console.log('in getaddress function -' + Address + ' key : ' + key)
-
-    // console.log(reverseGC)
-    //  const Distance = getDistance({ latitude: StationLat, longitude: StationLong }, { latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude })
-
-    // this.state.PackagesList[key].Distance = reverseGC
-    // console.log(this.state.PackagesList[key].Distance)
-
-    //   this.setState({XDistance : Distance},()=> {  console.log('reverse : ------------' +reverseGC[0].latitude+','+reverseGC[0].longitude)
-    //   console.log(this.state.XDistance)
-    // })
-
-  }
 
   AddSelectedPacks = () => {
 
     let selected = []
     this.state.SelectedArr.map((pack, key) => {
       if (pack.selected === true) {
-        console.log('SelectedArr : ' + pack.selected)
-        // this.setState({ selectedItem: [...this.state.selectedItem, pack] }, () => {console.log(this.state.selectedItem)})
         selected.push(pack)
 
       }
 
 
     })
-    console.log(selected)
     this.setState({ selectedItem: selected }, () => {
-      console.log('SelectedItem : ' + this.state.selectedItem)
       const datetime = moment().add(30, 'minutes').format()
 
       this.state.selectedItem.map((item) => {
@@ -246,13 +196,6 @@ export default class CCDeliveryExpressFeed extends Component {
 
     })
 
-    // alert(this.state.SelectedArr);
-    //   this.setState({ SelectedArr: [...this.state.SelectedArr, pack] })
-    //   else
-    //  this.setState = items.filter(item => item !== valueToRemove)
-    // this.setState({ SelectedArr: [...this.state.SelectedArr, pack] })
-
-
 
   }
 
@@ -270,10 +213,8 @@ export default class CCDeliveryExpressFeed extends Component {
 
         <View style={styles.container}>
           <View style={{ height: 70, borderColor: 'black', borderWidth: 1, borderRadius: 12, margin: 10, backgroundColor: '#ffed4b' }}><Text style={{ textAlign: 'center', padding: 15, fontSize: 25, fontWeight: 'bold' }}> Express </Text></View>
-          {/* <Text style={{textAlign:'center'}}>משלוחים מתחנת {this.state.StationName.replace(/"/gi,'')} </Text> */}
           <View style={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'black', height: 500, borderRadius: 10, margin: 10 }}>
             <FlatList
-              // horizontal={true}
               style={{ maxheight: 550 }}
 
               data={this.state.PackagesList}
@@ -313,7 +254,6 @@ export default class CCDeliveryExpressFeed extends Component {
                         }
                     }>
                     <View style={{ alignItems: 'center', margin: 10 }} >
-                      {/* item.Distance/1000+ */}
                       <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- מס חבילה : </Text>{item.PackageId}</Text>
                       <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- מחיר משלוח : </Text>{(3000 / 1000 + item.Pweight * 2).toFixed(1) + ' ₪ '}</Text>
                       <Text style={{ margin: 5 }}><Text style={{ fontWeight: 'bold' }}>- משקל : </Text>עד {item.Pweight + ' ק"ג'}</Text>

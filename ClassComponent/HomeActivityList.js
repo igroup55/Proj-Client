@@ -125,14 +125,10 @@ export default class HomeActivityList extends Component {
     this.setState({ ActivityList2: dataTD })
 
 
-    console.log(this.state.ActivityList2)
     const ActivityListDataEx = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/ModuleActivity/{ModuleActivity}/{Express}/' + this.state.UserID;
     const responseActivityListEx = await fetch(ActivityListDataEx);
     const dataEx = await responseActivityListEx.json()
     this.setState({ ActivityList3: dataEx })
-    console.log('Express' + responseActivityListEx)
-
-
 
   }
 
@@ -195,9 +191,6 @@ export default class HomeActivityList extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
-    // this.setModalVisible(true) 
-    // this.props.navigation.navigate('Home')
-    // this.setState({ AlertModal: 'המשלוח הופקד בהצלחה ' })
     this.setState({
       AlertModal:
         <View>
@@ -212,29 +205,12 @@ export default class HomeActivityList extends Component {
         </View>
     });
     this.setModalVisible(true)
-    // setTimeout(() => {
-    //   this.props.navigation.navigate('Home');
-    // }, 3000);
 
   }
 
   async Deposit(key) {
 
-    //alert('packageID : ' + this.state.ActivityList1[key].PackageID + ' startstation : ' + this.state.ActivityList1[key].StartStation + ' EndStation : ' + this.state.ActivityList1[key].EndStation);
-
-
-    // const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.ActivityList1[key].PackageID;
-    // const response = await fetch(apiPackagePricesUrl);
-    // const data = await response.json()
-    // this.setState({
-    //   StartStationId: data[0]["StartStation"],
-    //   EndStationId: data[0]["EndStation"],
-    //   SLockerID: data[0]["SLockerID"],
-    //   ELockerID: data[0]["ELockerID"]
-    // })
-    // alert(this.state.SLockerID + ' -- ' + this.state.ELockerID)
-
-
+    
     const apiCoordsStartStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations?stationID=' + this.state.StartStationId;
     const Sresponse = await fetch(apiCoordsStartStationsUrl);
     const Sdata = await Sresponse.json()
@@ -250,7 +226,6 @@ export default class HomeActivityList extends Component {
     let stationLong = this.state.Slongitude;
     let CurrentDistance = 0;
     CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
-    console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
       this.setState({
         AlertModal:
@@ -317,7 +292,6 @@ export default class HomeActivityList extends Component {
     const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations';
     const response = await fetch(apiStationsUrl);
     const data = await response.json()
-    //this.setState({ StationsList: data }) 
     data.map(StartS => {
       if (this.state.ActivityList2[0].StartStation === StartS.StationName)
         this.setState({ StartStationId: StartS.StationID })
@@ -370,7 +344,6 @@ export default class HomeActivityList extends Component {
     }
 
 
-    ///current location function
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({
         Slatitude: position.coords.latitude,
@@ -446,7 +419,6 @@ export default class HomeActivityList extends Component {
     let stationLong = this.state.Slongitude;
     let CurrentDistance = 0;
     CurrentDistance = this.computeDistance([currentLat, currentLong], [stationLat, stationLong]);
-    console.log("your distance from the station is :" + CurrentDistance + " km");
     if (CurrentDistance >= NearDistance) {
       this.setState({ canOpenLocker: 1 })
     }
@@ -467,7 +439,6 @@ export default class HomeActivityList extends Component {
       { this.setModalVisible(true) }
     }
   }
-  //שימוש בנוסחאת האברסין לחישוב מרחק בין 2 נקודות בעלות נקודות אורך ורוחב
 
 
   PickUp() {
@@ -585,8 +556,6 @@ export default class HomeActivityList extends Component {
 
   async TDDeposit(Key) {
 
-    // alert('packageID : ' + this.state.ActivityList2[key].PackageID + ' startstation : ' + this.state.ActivityList2[key].StartStation + ' EndStation : ' + this.state.ActivityList2[Key].EndStation);
-
     const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.ActivityList2[0].PackageID;
     const response = await fetch(apiPackagePricesUrl);
     const data = await response.json()
@@ -629,8 +598,6 @@ export default class HomeActivityList extends Component {
       })
     })
 
-    //this.setState({ AlertModal: 'החבילה הופקדה בהצלחה' });
-    //{ this.setModalVisible(true) }
 
     { this.UpdateTDStatus() }
   }
@@ -639,17 +606,13 @@ export default class HomeActivityList extends Component {
 
 
 
-    //console.log(this.state.ActivityList2[0].UserID1)
     const apiTDUser1Url = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDeliveryId}?UserId=' + this.state.ActivityList2[0].UserID1;
     const responseweight = await fetch(apiTDUser1Url);
     const TDArrival1data = await responseweight.json()
-    console.log(' ----' + TDArrival1data)
     this.setState({
       DeliveryID: TDArrival1data[0].DeliveryID
     })
-    console.log(TDArrival1data[0].DeliveryID)
 
-    console.log(this.state.PackageID)
 
     const TD1Package_update = {
       PackageID: this.state.PackageID,
@@ -664,8 +627,6 @@ export default class HomeActivityList extends Component {
         'Content-type': 'application/json; charset=UTF-8'
       })
     })
-    console.log('bye')
-
 
     this.getPrice();
 
@@ -702,7 +663,6 @@ export default class HomeActivityList extends Component {
     let UserId = this.state.UserID;
 
 
-    // let systemPayment =Number(selfCredit)-TDpayment;
     let TDGetPayment = Number(selfCredit) + this.state.TDPayment;
 
     const UserCredits2 = {
@@ -735,9 +695,7 @@ export default class HomeActivityList extends Component {
           })
         })
       )
-      // .then(
 
-      // )
       .then(
         this.setState({
           AlertModal:
@@ -753,9 +711,7 @@ export default class HomeActivityList extends Component {
             </View>
         }),
         this.setModalVisible(true),
-        // setTimeout(() => {
-        //   this.props.navigation.navigate('Home');
-        // }, 3000),
+        
       )
     this.getFutureDT();
   }
@@ -768,18 +724,16 @@ export default class HomeActivityList extends Component {
     const PackagesList = await response.json()
     this.setState({
       ExistPackages: PackagesList
-    }, () => console.log(PackagesList))
+    })
 
 
 
     const api1 = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/TDUser/{GetDate}?startStation=' + this.state.StartStationId + '&endStation=' + this.state.EndStationId + '&UserId=' + this.state.UserID + '&PickUpDT=' + this.state.PickUpDT;
     const response1 = await fetch(api1);
     const data = await response1.json();
-    //console.log(data+' last : '+data[data.length-1]["PickUpDT"]+' last 1 : '+data[data.length-1].PickUpDT );
-    console.log(data)
     this.setState({
       FutureDT: data[data.length - 1].PickUpDT,
-    }, () => console.log(this.state.FutureDT));
+    });
 
     if (PackagesList.length != 0 && data != null) {
       this.UpdateDTUser()
@@ -804,11 +758,6 @@ export default class HomeActivityList extends Component {
     })
 
   }
-
-
-
-
-
 
 
 
@@ -898,7 +847,6 @@ export default class HomeActivityList extends Component {
   async getTDLocker(key) {
 
     if (this.state.ActivityList2[key].Status != 0 && this.state.ActivityList2[key].Status != -1) {
-      console.log(this.state.ActivityList2[key])
       const apiPackagePricesUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages?PackageId=' + this.state.ActivityList2[key].PackageID;
       const response = await fetch(apiPackagePricesUrl);
       const data = await response.json()
@@ -947,9 +895,7 @@ export default class HomeActivityList extends Component {
         const responseLocker = await fetch(apiGetLocker);
         const TDLocker = await responseLocker.json()
 
-        console.log(TDLocker[0]["StationID"]);
         if (TDLocker[0]["StationID"] === this.state.StartStationId) {
-          console.log('Slocker')
           this.setState({
             SLockerID: TDLocker[0]["LockerID"],
             ELockerID: TDLocker[1]["LockerID"]
@@ -1022,10 +968,8 @@ export default class HomeActivityList extends Component {
             </Pressable>
           </View>
         </View>)
-    }, () => console.log('td status : ' + this.state.ActivityList2[key].Status)
-    );
+    });
     { this.setModalVisible(true) }
-
 
   }
 
@@ -1061,26 +1005,7 @@ export default class HomeActivityList extends Component {
 
       return (<TouchableOpacity key={key}><ListItem avatar onPress={() => {
         this.getLocker(key)
-        // this.setState({
-        //   AlertModal: (
-        //     <View>
-        //       <Text style={[styles.Packdetails, { fontSize: 20 }]}>#{Activities.PackageID}</Text>
-        //       <Text style={styles.Packdetails}>תחנת מוצא : {Activities.StartStation}</Text>
-        //       <Text style={styles.Packdetails}>תחנת יעד : {Activities.EndStation}</Text>
-        //       <Text style={styles.Packdetails}>לוקר מספר: {this.state.SLockerID}</Text>
-        //       <Text style={styles.Packdetails} > סטטוס : {statustitle}</Text>
-        //       <Text></Text>
-
-        //       {button}
-
-        //       <Pressable
-        //         style={[styles.button, styles.buttonClose]}
-        //         onPress={() => this.setModalVisible(!this.state.modalVisible)}>
-        //         <Text style={styles.textStyle}> סגור </Text>
-        //       </Pressable>
-        //     </View>)
-        // });
-        // { this.setModalVisible(true) }
+        
       }} ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/vcgW6dB/Sender-Package.jpg' }} />
         </Right>
         <Body>
@@ -1088,7 +1013,6 @@ export default class HomeActivityList extends Component {
           <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
           <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
-          {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:85 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }} ><Text> </Text></TouchableOpacity> */}
         </Body>
         <Left>
           {status}
@@ -1125,26 +1049,7 @@ export default class HomeActivityList extends Component {
 
       return (<TouchableOpacity key={key}><ListItem avatar onPress={() => {
         this.getTDLocker(key)
-        // this.setState({
-        //   AlertModal: (
-        //     <View>
-        //       <Text style={styles.Packdetails} >{Activities.StartStation}     {ArrowIcon}     {Activities.EndStation}</Text>
-        //       <Text style={styles.Packdetails} > סטטוס : {statustitle}</Text>
-        //       <Text></Text>
-        //       <View>
-
-        //         {Button}
-
-        //         <Pressable
-        //           style={[styles.button, styles.buttonClose]}
-        //           onPress={() => this.setModalVisible(!this.state.modalVisible)}
-        //         >
-        //           <Text style={styles.textStyle}> סגור </Text>
-        //         </Pressable>
-        //       </View>
-        //     </View>)
-        // });
-        // { this.setModalVisible(true) }
+      
       }}   ><Right><Thumbnail style={{ borderWidth: 1, borderColor: 'black' }} source={{ uri: 'https://i.ibb.co/HHjzgtP/Delivery-TD.jpg' }} />
         </Right>
 
@@ -1152,8 +1057,6 @@ export default class HomeActivityList extends Component {
           <Text style={{ fontWeight: 'bold' }} note >מוצא :  {Activities.StartStation} </Text>
           <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
-
-          {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:120 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }}><Text style={{textAlign:'center',fontWeight:'bold'}} >פרטים</Text></TouchableOpacity> */}
 
         </Body>
         <Left>
@@ -1219,8 +1122,6 @@ export default class HomeActivityList extends Component {
           <Text></Text>
           <Text style={{ fontWeight: 'bold' }} note >יעד :  {Activities.EndStation} </Text>
 
-          {/* <TouchableOpacity style={{ fontWeight: 'bold' , marginTop:12 , marginBottom:5 , backgroundColor:'lightblue',width:120 , borderRadius:5,borderWidth:1 ,alignSelf:'center' }}><Text style={{textAlign:'center',fontWeight:'bold'}} >פרטים</Text></TouchableOpacity> */}
-
         </Body>
         <Left>
           {status}
@@ -1253,12 +1154,9 @@ export default class HomeActivityList extends Component {
           <Content>
 
             <List >
-              {/* <ActivityIndicator style={{marginTop:150}} size="large" color="#A7D489" /> */}
               <View >
 
                 {this.state.ActivityList1.length > 0 || this.state.ActivityList2.length > 0 || this.state.ActivityList3.length > 0 ? (<View >{ActivitiesTD}{Activities}{ActivitiesEx}</View>) : <Image style={{ width: 200, height: 150, alignSelf: 'center', marginTop: 40 }} source={{ uri: 'https://i.gifer.com/FpSr.gif' }} />}
-
-                {/* {Activities} */}
               </View>
 
             </List>

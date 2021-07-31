@@ -96,7 +96,6 @@ export default class CCSenderForm extends Component {
 
     let reverseGC = await Location.geocodeAsync(this.state.Address);
 
-    console.log({ reverseGC });
 
     this.setState({ latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude }, () => console.log('the coords: ' + reverseGC[0].latitude + ', ' + reverseGC[0].longitude))
 
@@ -115,7 +114,6 @@ export default class CCSenderForm extends Component {
       longitude: this.state.longitude,
     }
 
-    console.log('customer address : ' + customer_data.Address + ' latutude: ' + customer_data.latitude + ' longitude: ' + customer_data.longitude + ' customer PackageID :' + customer_data.PackageID + ' customer name : ' + customer_data.FullName + ' customer number : ' + customer_data.PhoneNum)
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Customers', {
       method: 'POST',
       body: JSON.stringify(customer_data),
@@ -123,7 +121,6 @@ export default class CCSenderForm extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
-
 
 
   }
@@ -139,7 +136,6 @@ export default class CCSenderForm extends Component {
     }
 
 
-
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Lockers', {
       method: 'PUT',
       body: JSON.stringify(Slocker_update),
@@ -147,8 +143,6 @@ export default class CCSenderForm extends Component {
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
       })
     })
-
-
 
 
     const Elocker_update = {
@@ -183,8 +177,6 @@ export default class CCSenderForm extends Component {
       })
     })
 
-
-
   }
 
   async getData() {
@@ -201,7 +193,6 @@ export default class CCSenderForm extends Component {
     } catch (e) {
       this.setState({ AlertModal: 'Error get item' });
       { this.setModalVisible(true) }
-      // error reading value
     }
   }
 
@@ -210,9 +201,9 @@ export default class CCSenderForm extends Component {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem(key, jsonValue);
-      console.log(key + ": " + jsonValue);
-    } catch (e) {
-      console.log(e);
+    } 
+    catch (e) {
+
     }
   };
 
@@ -228,7 +219,6 @@ export default class CCSenderForm extends Component {
     })
 
   }
-  ///////////////עדכון טרנזקציות תשלום//////////////////
 
   async UpdateSenderCredits() {
     let FullName = this.state.UserCreditOBJ[0].FullName;
@@ -249,7 +239,6 @@ export default class CCSenderForm extends Component {
       CreditAmount: this.state.payment,
       TransactionDate: date,
     }
-    {/*לשים לב שהניתוב הוא ל tar 2 */ }
     fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Transaction', {
       method: 'POST',
       body: JSON.stringify(Transaction),
@@ -274,17 +263,7 @@ export default class CCSenderForm extends Component {
 
   }
 
-
-
-
-
-
-
   validate() {
-
-
-
-
 
     { this.ValidateCust() }
     { this.validatePnum() }
@@ -309,7 +288,6 @@ export default class CCSenderForm extends Component {
       SLongitude: Sdata[0].Longitude
     });
 
-    //alert(this.state.SLatitude + ' , ' + this.state.SLongitude);
 
     const apiCoordsEndStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Stations?stationID=' + this.state.selected2;
     const Eresponse = await fetch(apiCoordsEndStationsUrl);
@@ -319,7 +297,6 @@ export default class CCSenderForm extends Component {
       ELongitude: Edata[0].Longitude
     });
 
-    //alert(this.state.ELatitude + ' , ' + this.state.ELongitude);
 
 
     StartLatitude = this.state.SLatitude;
@@ -327,13 +304,9 @@ export default class CCSenderForm extends Component {
     EndLatitude = this.state.ELatitude;
     EndLongitude = this.state.ELongitude;
 
-    // this.computeDistance([this.state.SLatitude, this.state.SLongitude], [this.state.ELatitude, this.state.ELongitude]);
-    // alert(Distance);
     let Distance = 0;
 
     Distance = getDistance({ latitude: StartLatitude, longitude: StartLongitude }, { latitude: EndLatitude, longitude: EndLongitude })
-    // alert(`Distance\n\n${Distance} Meter\nOR\n${Distance / 1000} KM`
-    // );
 
 
     if (Distance / 1000 <= 15) {
@@ -362,7 +335,6 @@ export default class CCSenderForm extends Component {
   ValidateCust() {
     let rjx = /^[A-Za-z\u0590-\u05fe\s]+$/;
     let isNameValid = rjx.test(this.state.CustName);
-    console.log("name is valid?: " + isNameValid);
     if (!isNameValid) {
       this.setState({ Error_CustName: "שדה זה הינו חובה" })
     }
@@ -375,7 +347,6 @@ export default class CCSenderForm extends Component {
   validatePnum() {
     let rjx = /[0-9]{10}/;
     let isPhoneValid = rjx.test(this.state.CustPNum);
-    console.log("phone is valid?: " + isPhoneValid);
     if (!isPhoneValid) {
       this.setState({ Error_CustPNum: "שדה זה הינו חובה" })
     }
@@ -383,20 +354,14 @@ export default class CCSenderForm extends Component {
       this.setState({ Error_CustPNum: "" })
     }
 
-
-
   }
 
   async getCreditById() {
-
-
-
 
     const apiStationsUrl = 'http://proj.ruppin.ac.il/igroup55/test2/tar1/api/UserCredits?UserID=' + this.state.UserId;
     const response = await fetch(apiStationsUrl);
     const data = await response.json()
     this.setState({ UserCreditOBJ: data, })
-    console.log('Credit :' + data[0].Credit);
     if (this.state.selected1 !== null && this.state.selected2 !== null) {
       if (data[0].Credit < this.state.payment) {
         this.props.navigation.navigate('payments');
@@ -447,7 +412,6 @@ export default class CCSenderForm extends Component {
   }
 
 
-  ////////////////////////////////////////////////////////
   async addPack() {
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -460,7 +424,6 @@ export default class CCSenderForm extends Component {
     const Start = await response1.json()
     this.setState({ SEmptyLocker: Start })
 
-    console.log('Start:' + Start)
 
 
 
@@ -470,7 +433,6 @@ export default class CCSenderForm extends Component {
     const End = await response.json()
 
     this.setState({ EEmptyLocker: End })
-    console.log('End :' + End)
 
 
     if (this.state.selected1 !== this.state.selected2 && this.state.selected1 !== null && this.state.selected2 !== null) {
@@ -485,7 +447,6 @@ export default class CCSenderForm extends Component {
           addressValue = await AsyncStorage.getItem('Address')
           if (this.state.ExpressP === true) {
             addressValue != "" ? Address = JSON.parse(addressValue) : null;
-            console.log('address string : ' + addressValue)
             this.setState({ Address: Address })
 
 
@@ -496,10 +457,8 @@ export default class CCSenderForm extends Component {
             let location = await Location.getCurrentPositionAsync({});
             if (location) {
               let reverseGC = await Location.geocodeAsync(addressValue);
-              console.log('reverseGC : ' + reverseGC[0])
               if (reverseGC[0] !== undefined) {
 
-                console.log('the coords: ' + reverseGC[0].latitude + ', ' + reverseGC[0].longitude);
                 this.setState({ latitude: reverseGC[0].latitude, longitude: reverseGC[0].longitude });
               }
               else {
@@ -514,12 +473,6 @@ export default class CCSenderForm extends Component {
 
           }
 
-
-
-          //
-          console.log('Express Package : ' + this.state.ExpressP)
-          console.log('Empty : ' + this.state.EEmptyLocker)
-
           const datetime = moment().add(30, 'minutes').format()
           const until = moment().add(30, 'minutes').format('')
           const package_data = {
@@ -532,11 +485,7 @@ export default class CCSenderForm extends Component {
             PackTime: datetime,
             ExpressP: this.state.ExpressP,
 
-
-
-
           }
-
 
           fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
             method: 'POST',
@@ -546,8 +495,6 @@ export default class CCSenderForm extends Component {
             })
           })
             .then(res => {
-
-
               return res.json()
             })
             .then(
@@ -573,8 +520,6 @@ export default class CCSenderForm extends Component {
                 console.log("err post=", error);
               }).then(
 
-
-
               );
 
 
@@ -585,42 +530,6 @@ export default class CCSenderForm extends Component {
           this.setState({ AlertModal: 'אין לוקרים פנויים כעת , נא לנסות מאוחר יותר' });
           { this.setModalVisible(true) }
 
-          //       ------------------------------------------------------------------------------------
-          // המשך לאפשרות העלאת המשלוח ושליחת הודעה קופצת לשולח בעת שמתפנה לוקר 
-          //       -----------------------------------------------------------------------------------
-          // const package_data = {
-
-          //   StartStation: this.state.selected1,
-          //   EndStation: this.state.selected2,
-          //   Pweight: this.state.selected3,
-          //   UserId: this.state.UserId,
-          //   Status: 0
-          // }
-
-          // fetch('http://proj.ruppin.ac.il/igroup55/test2/tar1/api/Packages', {
-          //   method: 'POST',
-          //   body: JSON.stringify(package_data),
-          //   headers: new Headers({
-          //     'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-          //   })
-          // })
-          //   .then(res => {
-
-          //     return res.json()
-          //   })
-          //   .then(
-          //     (result) => {
-
-          //       this.setState({ PackageID: result })
-
-          //       this.AddCust()
-          //       this.props.navigation.navigate('CCLockers');
-
-          //     },
-          //     (error) => {
-          //       console.log("err post=", error);
-          //     }).then(
-          //      );
         }
       }
       else {
@@ -628,7 +537,6 @@ export default class CCSenderForm extends Component {
         { this.setModalVisible(true) }
       }
     }
-
 
     else {
       this.setState({ AlertModal: 'אי אפשר לבצע משלוח מתחנת מוצא ליעד זהים' });
@@ -798,15 +706,7 @@ export default class CCSenderForm extends Component {
                   </Picker>
                 </Item>
               </View>
-
-              {/* <View  style={styles.section}>
-              <Icon name="person" style={{ alignSelf: 'center', marginTop: 10 }} />
-                <Text style={styles.titles}> פרטי לקוח קצה </Text>
-                <Item floatingLabel style={styles.InputText}>
-                  <Label ></Label>
-                  <Input />
-                </Item></View> */}
-
+          
               <Button onPress={() => { this.validate() }} style={{ alignSelf: 'center', backgroundColor: 'green', marginTop: 70, marginBottom: 10, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  צור כרטיס משלוח  </Text></Button>
 
             </Form>

@@ -27,10 +27,7 @@ export default class CCExpressRouteSelection extends Component {
 
   }
 
-  // async componentDidMount () {
-
-
-  // };
+ 
   onValueChange1 = (value) => {
     this.setState({
       StartStation: value
@@ -44,7 +41,6 @@ export default class CCExpressRouteSelection extends Component {
     const response = await fetch(apiStationsUrl);
     const data = await response.json()
     this.setState({ StationsList: data, })
-    console.log(data);
 
 
     navigator.geolocation.getCurrentPosition(position => {
@@ -64,10 +60,8 @@ export default class CCExpressRouteSelection extends Component {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem(key, jsonValue);
-      console.log(key + ": " + jsonValue);
     }
     catch (e) {
-      console.log(e);
     }
   };
 
@@ -93,7 +87,6 @@ export default class CCExpressRouteSelection extends Component {
     else {
       this.setState({ AlertModal: 'בחר תחנה' });
       { this.setModalVisible(true) }
-      //alert('בחר תחנה');
 
     }
   }
@@ -144,30 +137,7 @@ export default class CCExpressRouteSelection extends Component {
             </View>
           </View>
         </Modal>
-        {/* <Header style={{ backgroundColor: '#ffed4b', borderBottomWidth: 2, borderColor: 'black', borderBottomColor: 'black' }}><Text style={{ fontSize: 30, fontWeight: 'bold', backgroundColor: '#ffed4b' }}> JestApp</Text></Header> */}
-        {/* <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-              onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
-                this.setModalVisible(!this.state.modalVisible);
-              }}
-            >
-              <View style={styles.centeredView}>
-
-                <View style={styles.modalView}>
-                  <Icon style={{ marginBottom: 20, marginTop: 0 }} name="cube" />
-                  <Text style={styles.modalText}>{this.state.AlertModal}</Text>
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => this.setModalVisible(!this.state.modalVisible)}
-                  >
-                    <Text style={styles.textStyle}> סגור </Text>
-                  </Pressable>
-                </View>
-              </View>
-            </Modal> */}
+       
 
         <Form >
           <View >
@@ -208,28 +178,19 @@ export default class CCExpressRouteSelection extends Component {
                 coordinate={{ latitude: this.state.latitude, longitude: this.state.longitude }}
                 title='my place:)'
                 description='here i am'
-              //image={require('../assets/icon.png')}
               />
               {locations}
             </MapView>
           </View>
 
-
           <Button onPress={this.navigate} style={{ alignSelf: 'center', backgroundColor: '#ffed4b', marginTop: 70, borderRadius: 10, borderWidth: 1, borderColor: 'black' }}><Text style={{ fontWeight: 'bold' }}>  חפש חבילות </Text></Button>
 
-
         </Form>
-
-
-
       </View>
-
 
     );
   }
 }
-
-
 
 const styles = ({
   container: {
